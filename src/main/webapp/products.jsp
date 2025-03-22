@@ -305,6 +305,26 @@
     }
 
 
+    .product-card::before {
+        content: "";
+        position: absolute;
+        width: 80px;  /* Độ dài vệt sáng */
+        height: 5px; /* Độ dày vệt sáng */
+        background: linear-gradient(90deg, rgba(255, 102, 153, 1), rgb(238, 16, 16), rgba(255, 204, 102, 1));
+        filter: blur(3px); /* Làm mờ ánh sáng */
+        animation: borderRun1 4s linear infinite;
+        z-index: 20;
+    }
+
+    @keyframes borderRun1 {
+        0%   { top: 0; left: 0; width: 80px; height: 5px; }  /* Góc trái trên */
+        25%  { top: 0; left: 100%; transform: translateX(-100%); } /* Chạy sang phải */
+        50%  { top: 100%; left: 100%; transform: translateY(-180%); rotate: 0deg; } /* Chạy xuống */
+        75%  { top: 100%; left: 0; transform: translateX(0%); rotate: 180deg; } /* Chạy sang trái */
+        100% { top: 0; left: 0; transform: rotate(270deg); } /* Quay lại điểm ban đầu */
+    }
+
+
 
 </style>
 <body>
@@ -485,18 +505,19 @@
             </div>
             <div class="col-9" style="">
                 <div class="d-flex ps-5" style="width: 100%;">
+
                     <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
                         <c:forEach var="item" items="${sessionScope.listproduct.items}">
-                            <li class="nav-item" style="width: 30%; height: 500px ;" >
-                                <div class="h-100 d-inline-block border rounded product-item shadow-sm" style="height: auto; position: relative; overflow: hidden; background: #fff; border-radius: 10px;">
+                            <li class="col-md-3 col-sm-5" style="margin-bottom: 15px;">
+                                <div class="card product-card" style="border: 1px solid rgb(227, 227, 227); height: 400px;">
                                     <!-- Hình ảnh sản phẩm -->
                                     <div class="img_product position-relative">
                                         <a href="product_detail?id=${item.id}" style="text-decoration: none; color: inherit;">
-                                            <img src="img/${item.fileName1}" class="default-img" alt="Product Image" style="width: 100%; height: 300px; border-bottom: 1px solid #eee;">
+                                            <img src="img/${item.fileName1}" class="default-img " alt="Product Image" style="width: 100%; height: 200px; border-bottom: 1px solid #eee;">
                                             <img src="img/${item.fileName2}" class="hover-img position-absolute" alt="Hover Image" style="width: 100%; height: auto; top: 0; left: 0; transition: opacity 0.3s ease;">
                                         </a>
                                         <!-- Icons hiển thị khi hover -->
-                                        <div class="product-icons position-absolute d-flex gap-3 justify-content-center align-items-center" style="top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.5s;">
+                                        <div class="product-icons product-image" style="top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.5s;">
                                             <!-- Icon giỏ hàng -->
                                             <form id="cart-form-${item.id}" action="product_deIcon" method="GET" style="display: none;">
                                                 <input type="hidden" name="productID" value="${item.id}">
@@ -537,13 +558,7 @@
                                 </div>
                             </li>
 
-                            <div id="notification" class="notification" style="display:none; width: 40%; border-radius: 10px">
-                                <img id="notification-img" src="img/${item.fileName2}" alt="Product Image" style="width: 50%; border-radius: 5px">
-                                <div id="notification-name"></div>
-                                <div id="notification-price"></div>
-                                <div id="notification-quantity"></div>
-                                <div id="notification-message" class="message">Thành công</div>
-                            </div>
+
                         </c:forEach>
 
                     </ul>

@@ -84,7 +84,7 @@
                         <div class="alert alert-danger">${errorMessage}</div>
                     </c:if>
 
-                    <form action="../addShipping" method="POST">
+                    <form action="../admin/addShipping" method="POST">
                         <div class="mb-3">
                             <label for="deliveryService" class="form-label">Chọn Dịch Vụ Giao Hàng</label>
                             <select class="form-select" id="deliveryService" aria-label="Chọn dịch vụ" name="deliveryService">

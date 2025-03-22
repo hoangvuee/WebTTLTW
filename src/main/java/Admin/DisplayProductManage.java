@@ -13,23 +13,19 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        value = "/getAllProduct"
+        value = "/admin/getAllProduct"
 )
 public class DisplayProductManage  extends HttpServlet {
     ServiceProduct serviceProduct = new ServiceProduct();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session1 = req.getSession(false);
-        Integer idRole = (Integer) session1.getAttribute("idRole");
-        if(idRole == null || idRole != 1){
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-        }
+
         HttpSession session = req.getSession(true);
         try {
             ListProductManage productManage = serviceProduct.getAllProducts();
             session.setAttribute("productManages",productManage);
-            resp.sendRedirect("getCategory");
+            resp.sendRedirect("../getCategory");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

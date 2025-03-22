@@ -80,7 +80,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editUserForm" action="../change_info" method="POST">
+                <form id="editUserForm" action="../admin/change_info" method="POST">
                     <div class="mb-3">
                         <label for="editUserName" class="form-label">Tên</label>
                         <input type="text" class="form-control" id="editUserName" required name="name">

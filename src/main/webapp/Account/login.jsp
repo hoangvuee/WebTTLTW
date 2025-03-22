@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/">
 </head>
 <style>
     body{
@@ -112,7 +112,9 @@
                     <p>hoặc đăng nhập bằng</p>
                     <div class="social-buttons">
                         <img src="../img/vector-blue-social-media-logo_1080184-225.jpg.avif" alt="Facebook">
-                        <img src="../img/Google_Icons-09-512.webp" alt="Google">
+                        <a href="#" id="loginBtn">
+                            <img src="../img/Google_Icons-09-512.webp" alt="Google">
+                        </a>
                         <img src="../img/Logo-Zalo-Arc.png.webp" alt="Zalo">
                         <img src="../img/yahoo-512.webp" alt="Yahoo">
                     </div>
@@ -122,4 +124,48 @@
     </div>
 </div>
 </body>
+<script>
+    const client_id = "673781377779-7p6kijl6vllmrrmc3jeocqia7d2jojjv.apps.googleusercontent.com";
+    const redirect_uri = "http://localhost:8080/WebFinall/callback"; // Servlet xử lý đăng nhập Google
+    const scope = encodeURIComponent("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile");
+
+    const auth_url = "https://accounts.google.com/o/oauth2/v2/auth" +
+        "?scope=" + scope +
+        "&response_type=token" +
+        "&redirect_uri=" + encodeURIComponent(redirect_uri) +
+        "&client_id=" + client_id;
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+        window.location.href = auth_url;
+    });
+
+    window.onload = function () {
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        const access_token = params.get("access_token");
+
+        if (access_token && !sessionStorage.getItem("token_sent")) {
+            sessionStorage.setItem("token_sent", "true"); // Đánh dấu token đã gửi
+
+            // Gửi token đến Servlet để xử lý
+            fetch("http://localhost:8080/WebFinall/callback?access_token=" + access_token)
+                .then(response => response.text())
+                .then(data => {
+                    console.log("Response từ server:", data);
+                    if (data.includes("Login failed")) {
+                        alert("Đăng nhập thất bại, vui lòng thử lại!");
+                        sessionStorage.removeItem("token_sent"); // Cho phép gửi lại nếu lỗi
+                    } else {
+                        window.location.replace("../index.jsp"); // Chuyển hướng sau khi login
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi gửi token:", error);
+                    alert("Lỗi khi đăng nhập, vui lòng thử lại!");
+                    sessionStorage.removeItem("token_sent");
+                });
+        }
+    };
+</script>
+
+
 </html>

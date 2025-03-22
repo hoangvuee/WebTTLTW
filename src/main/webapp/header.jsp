@@ -75,7 +75,7 @@
                             <!-- Menu dành cho admin -->
                             <c:if test="${sessionScope.idRole == '1'}">
                                 <li class="nav-item">
-                                    <a class="nav-link fw-bold text-dark" href="${pageContext.request.contextPath}/getAllProduct">
+                                    <a class="nav-link fw-bold text-dark" href="${pageContext.request.contextPath}/admin/getAllProduct">
                                         ADMIN
                                     </a>
                                 </li>
@@ -100,7 +100,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="${pageContext.request.contextPath}/giohang.jsp">
+                                <a href="${pageContext.request.contextPath}/shoppingCart.jsp">
                                     <button type="button" class="btn">
                                         <i class="fa-solid fa-cart-shopping"></i>
                                     </button>

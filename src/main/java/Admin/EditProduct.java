@@ -12,17 +12,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        value = "/editProduct"
+        value = "/admin/editProduct"
 )
 public class EditProduct extends HttpServlet {
     ServiceProduct serviceProduct = new ServiceProduct();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session1 = req.getSession(false);
-        Integer idRole = (Integer) session1.getAttribute("idRole");
-        if(idRole == null || idRole != 1){
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-        }
+
         int productId = Integer.parseInt(req.getParameter("productId"));
         String productName = req.getParameter("productName");
         double productPrice = Double.parseDouble(req.getParameter("productPrice"));
@@ -46,7 +42,7 @@ public class EditProduct extends HttpServlet {
        // serviceProduct.updateProduct(productId,productPrice,productQuantity,productDescription,productWeight, Boolean.parseBoolean(productStatus));
         try {
             serviceProduct.updateProductAndVariant(productId,productWeight,productPrice,productQuantity,productDescription,idCategory,idSupplier,productStatus);
-            resp.sendRedirect("getAllProduct");
+            resp.sendRedirect("admin/getAllProduct");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

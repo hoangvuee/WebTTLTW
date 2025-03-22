@@ -1,6 +1,7 @@
 package Controller.Account;
 
 import Models.User.User;
+import Sercurity.JwtUtil;
 import Services.ServiceRole;
 import Services.ServiceUser;
 import jakarta.servlet.ServletException;
@@ -66,9 +67,13 @@ public class SignIn extends HttpServlet {
             session.setAttribute("idRole", idRole);
             session.setAttribute("nameRole", nameRole);
 
-            User user = serviceUser.getUserByIdInfor(idUser);
+            User user = serviceUser.getUserByEmail(email);
             if (user != null) {
                 session.setAttribute("userInfor", user);
+                String token = JwtUtil.generateToken(email, serviceRole.getRoleNameById(user.getIdRole()));
+               session.setAttribute("authToken", token);
+                System.out.println(token);
+                resp.setHeader("Authorization", "Bearer " + token);
             }
             resp.sendRedirect("setupData");
         } else {

@@ -401,6 +401,31 @@ ConnDB dao = new ConnDB();
                     user.setUserName(rs.getString("userName"));
                     user.setCreateDate(rs.getDate("createDate"));
                     user.setActive(rs.getBoolean("isActive"));
+                    user.setIdRole(rs.getInt("idRole"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public User getUserByEmail1(String email) {
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setEmail(rs.getString("email"));
+                    user.setUserPassword(rs.getString("userPassword"));
+                    user.setUserName(rs.getString("userName"));
+                    user.setCreateDate(rs.getDate("createDate"));
+                    user.setActive(rs.getBoolean("isActive"));
+                    user.setIdRole(rs.getInt("idRole"));
                     return user;
                 }
             }
@@ -480,7 +505,23 @@ ConnDB dao = new ConnDB();
         }
         return hexString.toString();
     }
+    public boolean addUserGG(User user) {
+        ConnDB dao = new ConnDB();
+        String sql = "INSERT INTO users (email,  userName, image , createDate,idRole,isActive) VALUES (?, ?, ?, NOW(),?, true)";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getUserName());
+            stmt.setString(3, user.getImage());
+            stmt.setInt(4,2);
 
+            int result = stmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
        UserDao s = new UserDao();
         String h = s.hashPassword("hoangvu123");

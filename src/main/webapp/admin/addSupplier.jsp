@@ -46,7 +46,7 @@
     </div>
   </c:if>
 
-  <form action="../addSupplier" method="POST">
+  <form action="../admin/addSupplier" method="POST">
     <div class="mb-3">
       <label for="supplierName" class="form-label">Supplier Name</label>
       <input type="text" class="form-control" id="supplierName" placeholder="Enter supplier name" required name="supplierName">

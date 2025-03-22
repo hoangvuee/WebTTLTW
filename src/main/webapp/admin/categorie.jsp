@@ -47,7 +47,7 @@
         <div class="alert alert-danger">${errorMessage}</div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/addCategories" method="POST">
+    <form action="${pageContext.request.contextPath}/admin/addCategories" method="POST">
         <div class="mb-3">
             <label for="categoryName" class="form-label">Category Name</label>
             <input type="text" class="form-control" id="categoryName" placeholder="Enter category name" required name="categoryName">

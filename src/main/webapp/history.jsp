@@ -189,8 +189,14 @@ td img{
             <div class="sidebar p-4">
                 <div class="text-center mb-4">
                     <c:set var="item" value="${sessionScope.userInfor}"/>
-                    <img src="img/${item.image}" alt="User Avatar" class="user-avatar mb-3">
-                    <h5>${item.userName}</h5>
+                    <c:choose>
+                        <c:when test="${item.image.startsWith('http')}">
+                            <img src="${item.image}" alt="User Avatar" class="user-avatar mb-3">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="img/${item.image}" alt="User Avatar" class="user-avatar mb-3">
+                        </c:otherwise>
+                    </c:choose>                    <h5>${item.userName}</h5>
                     <p class="text-muted">Tham gia từ ${item.createDate}</p>
                     <a href="getUser" style="text-decoration: none"><button class="btn btn-primary w-100" >Thông tin</button></a>
                 </div>

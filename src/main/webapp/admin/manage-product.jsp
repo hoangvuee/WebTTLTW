@@ -93,7 +93,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="../addProduct" method="POST" enctype="multipart/form-data">
+                <form action="../admin/addProduct" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="productName" class="form-label">Tên sản phẩm</label>
                         <input type="text" class="form-control" id="product_Name" name="product_Name">
@@ -197,7 +197,7 @@
 <!-- Modal Sửa -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="${pageContext.request.contextPath}/editProduct" method="POST">
+        <form action="${pageContext.request.contextPath}/admin/editProduct" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Chỉnh sửa sản phẩm</h5>

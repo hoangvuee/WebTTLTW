@@ -187,4 +187,11 @@ public class User implements Serializable {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public User(String email, String userName, String image, int idRole) {
+        this.email = email;
+        this.userName = userName;
+        this.image = image;
+        this.idRole = idRole;
+    }
 }
