@@ -483,8 +483,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-9" style="">
-                <div id = "content" class="d-flex ps-5" style="width: 100%;">
+            <div class="col-9" style="" id = "content-product">
+                <div class="d-flex ps-5" style="width: 100%;">
                     <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
                         <c:forEach var="item" items="${sessionScope.listproduct.items}">
                             <li class="nav-item" style="width: 30%; height: 500px ;" >
@@ -688,25 +688,52 @@
         // Gửi form đến servlet
         form.submit();
     }
-    function searchByName(param){
-        var txtsearch = param.value;
-        $.ajax({
-            uri: "/SearchAjax",
-            type: "GET",
-            data:{
-                productName : txtsearch
-            },
-            success: function (data){
-                var row = document.getElementById("content")
-                row.innerHTML = data;
-            },
-            error: function (xhr){
+    function searchByName(param) {
+        const txtsearch = param.value;
+        console.log("Search term:", txtsearch); // Debug search term
 
+        if (txtsearch.trim() === '') {
+            // Nếu ô tìm kiếm trống, không gửi request
+            return;
+        }
+
+        $.ajax({
+            url: "SearchAjax",
+            type: "GET",
+            data: {
+                productName: txtsearch
+            },
+            beforeSend: function() {
+                // Hiển thị loading nếu cần
+                document.getElementById("content-product").innerHTML = '<div class="text-center">Đang tìm kiếm...</div>';
+            },
+            success: function(data) {
+                console.log("Received data:", data); // Debug response data
+                const row = document.getElementById("content-product");
+                
+                if (!data || data.trim() === '') {
+                    row.innerHTML = '<div class="text-center">Không tìm thấy sản phẩm nào</div>';
+                    return;
+                }
+
+                row.innerHTML = `
+                    <div class="d-flex ps-5" style="width: 100%;">
+                        <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
+                            ${data}
+                        </ul>
+                    </div>
+                `;
+            },
+            error: function(xhr, status, error) {
+                console.error("Ajax error:", {xhr, status, error});
+                const row = document.getElementById("content-product");
+                row.innerHTML = '<div class="text-center text-danger">Đã xảy ra lỗi khi tìm kiếm</div>';
             }
         });
     }
-</script>
 
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/updateProductPrice.js"></script>
 </body>
