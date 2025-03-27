@@ -710,16 +710,14 @@
             success: function(data) {
                 console.log("Received data:", data); // Debug response data
                 const row = document.getElementById("content-product");
-                
-                if (!data || data.trim() === '') {
+                if (data.trim() === '') {
                     row.innerHTML = '<div class="text-center">Không tìm thấy sản phẩm nào</div>';
-                    return;
+                } else {
+                    row.innerHTML = data;
                 }
-
-                row.innerHTML = data;
             },
             error: function(xhr, status, error) {
-                console.error("Ajax error:", {xhr, status, error});
+                console.log("Error:", error);
                 const row = document.getElementById("content-product");
                 row.innerHTML = '<div class="text-center text-danger">Đã xảy ra lỗi khi tìm kiếm</div>';
             }

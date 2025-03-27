@@ -47,8 +47,8 @@ public class SearchAjax extends HttpServlet {
             }
 
             for (Product o : listProduct.getItems()) {
-                String html = "<li class=\"nav-item\" style=\"width: 30%; height: 500px;\">" +
-                    "<div class=\"h-100 d-inline-block border rounded product-item shadow-sm\" style=\"height: auto; position: relative; overflow: hidden; background: #fff; border-radius: 10px;\">" +
+                String html =
+                    "<div class=\"h-30 d-inline-block border rounded product-item shadow-sm\" style=\"height: auto; position: relative; overflow: hidden; background: #fff; border-radius: 10px;\">" +
                     
                     "<!-- Hình ảnh sản phẩm -->" +
                     "<div class=\"img_product position-relative\">" +
@@ -89,8 +89,7 @@ public class SearchAjax extends HttpServlet {
                     "<div class=\"product_name text-dark fw-bold mb-2\">" + o.getName() + "</div>" +
                     "<div class=\"price text-danger fw-bold\" style=\"font-size: 1.2rem;\">" + o.getPriceMin() + " đ - " + o.getPriceMax() + " đ</div>" +
                     "</div>" +
-                    "</div>" +
-                    "</li>";
+                    "</div>" ;
                 out.println(html);
             }
 
