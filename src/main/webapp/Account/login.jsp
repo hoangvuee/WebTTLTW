@@ -13,6 +13,8 @@
     <title>Đăng Nhập</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <style>
     body{
@@ -54,8 +56,14 @@
         transform: scale(1.1);
         transition: transform 0.2s;
     }
+    .g-recaptcha {
+        display: block !important;
+        visibility: visible !important;
+    }
 </style>
 <body>
+
+
 <%
     HttpSession session1 = request.getSession(false);
     Integer idUser = (Integer) session1.getAttribute("idUser");
@@ -78,8 +86,13 @@
                 <input type="email" class="form-control" id="email" name="email" placeholder="Nhập địa chỉ email của bạn">
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu của bạn">
+                <label for="password" class="form-label">Mật khẩu: </label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
+                    <span class="input-group-text">
+            <i class="fa-solid fa-eye" id="togglePassword" style="cursor: pointer;"></i></span>
+                </div>
+
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="remember" name="rememberMe">
@@ -88,16 +101,31 @@
 
 
             </div>
+            <div class="mb-3" id="captcha-container">
+                <%
+                    Integer failedAttempts = (Integer) session.getAttribute("failedAttempts");
+                    System.out.println(failedAttempts + "CAPCHA JSP");
+                    if (failedAttempts != null && failedAttempts >= 3) {
+                %>
+
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="6Lf30PwqAAAAADW2bDyLzaxykPZDCjVYb8d49LMS"></div>
+                </div>
+                <%
+                    }
+                %>
+            </div>
             <button type="submit" class="btn btn-dark w-100">Đăng nhập</button>
 
             <%
-                String errorMessage = (String) request.getAttribute("errorMessage");
+                String errorMessage = (String) session.getAttribute("errorMessage");
                 if (errorMessage != null) {
             %>
             <div class="alert alert-danger text-center" role="alert">
                 <%= errorMessage %>
             </div>
             <%
+                    session.removeAttribute("errorMessage");
                 }
             %>
             <div class="text-center mt-3">
@@ -155,7 +183,7 @@
                         alert("Đăng nhập thất bại, vui lòng thử lại!");
                         sessionStorage.removeItem("token_sent"); // Cho phép gửi lại nếu lỗi
                     } else {
-                        window.location.replace("../index.jsp"); // Chuyển hướng sau khi login
+                        window.location.replace("../index.jsp?logout=true"); // Chuyển hướng sau khi login
                     }
                 })
                 .catch(error => {
@@ -165,7 +193,32 @@
                 });
         }
     };
-</script>
+    function togglePassword(inputId, iconId) {
+        var passwordInput = document.getElementById(inputId);
+        var icon = document.getElementById(iconId);
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
 
+    // Gán sự kiện cho từng icon
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        togglePassword("password", "togglePassword");
+    });
+
+</script>
+<script>
+
+</script>
+<script>
+    console.log("Loading reCAPTCHA...");
+</script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 </html>

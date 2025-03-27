@@ -471,6 +471,74 @@
                         </div>
                     </form>
                 </div>
+                <section class="my-4">
+                    <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#storeModal" style=" background: linear-gradient(135deg, #ff512f, #dd2476);">
+                        <i class="bi bi-shop"></i> Chọn cửa hàng
+                    </button>
+                </section>
+                <h5 class="fw-bold">Cửa hàng đang chọn<i class="fa-solid fa-store"></i>: <span id="selectedStore" class="text-danger">Chưa chọn</span></h5>
+                <div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="storeModalLabel">
+                                    <i class="bi bi-shop-window"></i> Chọn cửa hàng
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Bộ lọc tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label">Tỉnh/Thành phố</label>
+                                        <select class="form-select">
+                                            <option>Bắc Giang</option>
+                                            <option>Hà Nội</option>
+                                            <option>Hồ Chí Minh</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Quận/Huyện</label>
+                                        <select class="form-select">
+                                            <option>Lạng Giang</option>
+                                            <option>Việt Yên</option>
+                                            <option>Yên Dũng</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button class="btn btn-danger w-100">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Danh sách cửa hàng -->
+                                <h4 class="mt-4 fw-bold text-center text-uppercase">Danh sách cửa hàng</h4>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="card store-card p-3 shadow-sm text-center" onclick="selectStore('CHTT Lạng Giang BGG')">
+                                            <h5 class="fw-bold"><i class="bi bi-geo-alt-fill"></i> CHTT Lạng Giang BGG</h5>
+                                            <p>Số 207 - Phố Voi - Thị Trấn Voi - Huyện Lạng Giang</p>
+                                            <p><i class="bi bi-telephone-fill"></i> 18008098</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card store-card p-3 shadow-sm text-center" onclick="selectStore('Chi nhánh Viettel')">
+                                            <h5 class="fw-bold"><i class="bi bi-geo-alt-fill"></i> Chi nhánh Viettel</h5>
+                                            <p>Số 332 đường Hồ Cát, Thị trấn Vôi, Bắc Giang</p>
+                                            <p><i class="bi bi-telephone-fill"></i> 0977357868</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle"></i> Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <div class="pt-3">
                         <div class="d-flex ps-1 text-danger fw-bold fs-5">Bán Chạy Nhất</div>

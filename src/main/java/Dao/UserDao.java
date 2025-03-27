@@ -343,7 +343,7 @@ ConnDB dao = new ConnDB();
 
     public boolean registerUser(User user) {
         ConnDB dao = new ConnDB();
-        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber) VALUES (?, ?, ?, NOW(), true,?,?)";
+        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber) VALUES (?, ?, ?, NOW(), false,?,?)";
         try (Connection conn = dao.getConn();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
@@ -402,6 +402,8 @@ ConnDB dao = new ConnDB();
                     user.setCreateDate(rs.getDate("createDate"));
                     user.setActive(rs.getBoolean("isActive"));
                     user.setIdRole(rs.getInt("idRole"));
+                    user.setImage(rs.getString("image"));
+                    user.setGoogle(rs.getBoolean("isGoogle"));
                     return user;
                 }
             }
@@ -522,9 +524,48 @@ ConnDB dao = new ConnDB();
         }
         return false;
     }
+    public boolean addUserFb(User user) {
+        ConnDB dao = new ConnDB();
+        String sql = "INSERT INTO users (email,  userName, image , createDate,idRole,isActive,isGoogle) VALUES (?, ?, ?, NOW(),?, true,?)";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getUserName());
+            stmt.setString(3, user.getImage());
+            stmt.setInt(4,2);
+            stmt.setBoolean(5,false);
+
+            int result = stmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public String getUserAvatar(int idUser){
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT image FROM users WHERE id = ?";
+        String avatar = null; // Biến lưu ảnh đại diện
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUser); // Đổi từ String thành int
+            ResultSet rs = stmt.executeQuery(); // Dùng executeQuery()
+
+            if (rs.next()) {
+                avatar = rs.getString("image"); // Lấy URL ảnh từ cột "image"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return avatar; // Trả về URL ảnh hoặc null nếu không có ảnh
+    }
+
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
        UserDao s = new UserDao();
-        String h = s.hashPassword("hoangvu123");
+       User user = new User("hvunguyen@icloud.com","Hoàng Vũ","https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3715900748708113&height=200&width=200&ext=1745670652&hash=AbZfIjyUQdW-oHmSgXN6CKYq",2);
+       s.addUserFb(user);
 //        System.out.println(s.updateUser(4,2,"YAUSO",false));
        // boolean ui = Boolean.parseBoolean("1");
       //  System.out.println(ui);
