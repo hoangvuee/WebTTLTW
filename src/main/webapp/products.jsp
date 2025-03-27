@@ -339,7 +339,7 @@
     <div class="container">
         <div class="row" style="margin-top: 20px" >
             <form action="products" method="GET" class="search-form">
-                <input type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
+                <input oninput="searchByName(this)"  type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
                 <button type="submit" class="btn"style="border-radius: 15px;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -484,7 +484,7 @@
                 </div>
             </div>
             <div class="col-9" style="">
-                <div class="d-flex ps-5" style="width: 100%;">
+                <div id = "content" class="d-flex ps-5" style="width: 100%;">
                     <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
                         <c:forEach var="item" items="${sessionScope.listproduct.items}">
                             <li class="nav-item" style="width: 30%; height: 500px ;" >
@@ -687,6 +687,23 @@
 
         // Gửi form đến servlet
         form.submit();
+    }
+    function searchByName(param){
+        var txtsearch = param.value;
+        $.ajax({
+            uri: "/SearchAjax",
+            type: "GET",
+            data:{
+                productName : txtsearch
+            },
+            success: function (data){
+                var row = document.getElementById("content")
+                row.innerHTML = data;
+            },
+            error: function (xhr){
+
+            }
+        });
     }
 </script>
 
