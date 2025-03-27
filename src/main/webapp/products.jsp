@@ -716,13 +716,7 @@
                     return;
                 }
 
-                row.innerHTML = `
-                    <div class="d-flex ps-5" style="width: 100%;">
-                        <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
-                            ${data}
-                        </ul>
-                    </div>
-                `;
+                row.innerHTML = data;
             },
             error: function(xhr, status, error) {
                 console.error("Ajax error:", {xhr, status, error});
