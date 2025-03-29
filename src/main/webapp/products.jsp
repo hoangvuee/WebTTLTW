@@ -359,7 +359,7 @@
     <div class="container">
         <div class="row" style="margin-top: 20px" >
             <form action="products" method="GET" class="search-form">
-                <input type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
+                <input oninput="searchByName(this)"  type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
                 <button type="submit" class="btn"style="border-radius: 15px;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -571,7 +571,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-9" style="">
+            <div class="col-9" style="" id = "content-product">
                 <div class="d-flex ps-5" style="width: 100%;">
 
                     <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
@@ -771,8 +771,44 @@
         // Gửi form đến servlet
         form.submit();
     }
-</script>
+    function searchByName(param) {
+        const txtsearch = param.value;
+        console.log("Search term:", txtsearch); // Debug search term
 
+        if (txtsearch.trim() === '') {
+            // Nếu ô tìm kiếm trống, không gửi request
+            return;
+        }
+
+        $.ajax({
+            url: "SearchAjax",
+            type: "GET",
+            data: {
+                productName: txtsearch
+            },
+            beforeSend: function() {
+                // Hiển thị loading nếu cần
+                document.getElementById("content-product").innerHTML = '<div class="text-center">Đang tìm kiếm...</div>';
+            },
+            success: function(data) {
+                console.log("Received data:", data); // Debug response data
+                const row = document.getElementById("content-product");
+                if (data.trim() === '') {
+                    row.innerHTML = '<div class="text-center">Không tìm thấy sản phẩm nào</div>';
+                } else {
+                    row.innerHTML = data;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Error:", error);
+                const row = document.getElementById("content-product");
+                row.innerHTML = '<div class="text-center text-danger">Đã xảy ra lỗi khi tìm kiếm</div>';
+            }
+        });
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/updateProductPrice.js"></script>
 </body>
