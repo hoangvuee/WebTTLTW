@@ -20,12 +20,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thanhtoan</title>
   <link rel="stylesheet" href="css/styleThanhtoan.css">
+  <link rel="stylesheet" href="css/shoppingcart.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://esgoo.net/scripts/jquery.js"></script>
 
 
   <link rel="stylesheet" href="css/fontawesome.css">
@@ -152,7 +156,152 @@
     background-color: #e67e22;
     transform: scale(1.05);
   }
+  .shipping-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Khoảng cách giữa các ô */
+  }
 
+  .shipping-option {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9; /* Màu nền nhạt */
+    border: 2px solid #ddd; /* Viền nhẹ */
+    border-radius: 12px; /* Bo góc */
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .shipping-option:hover {
+    background: #ececec; /* Hiệu ứng hover */
+    border-color: #8a2be2; /* Viền tím nhẹ */
+  }
+
+  .shipping-option input {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #8a8a8a; /* Màu radio */
+  }
+
+  .shipping-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  .shipping-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .shipping-option {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 16px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  select {
+    max-height: 300px; /* Giới hạn chiều cao */
+    overflow-y: auto;  /* Hiện thanh cuộn khi dài quá */
+  }
+  .shipping-option:hover {
+    background: #f3e5ff; /* Màu nhạt tím */
+    border-color: #616161;
+  }
+
+  .shipping-option input {
+    display: none; /* Ẩn radio mặc định */
+  }
+
+  .shipping-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .shipping-title {
+    font-size: 17px;
+    font-weight: bold;
+  }
+
+  .shipping-price {
+    font-size: 14px;
+    color: #666;
+  }
+
+  /* Khi được chọn, đổi màu viền và thêm hiệu ứng */
+  .shipping-option input:checked + .shipping-content {
+    color: #da4338;
+    font-weight: bold;
+  }
+
+  /* Hiệu ứng bo tròn cho radio button */
+  .shipping-option::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #7a7a7a;
+    border-radius: 50%;
+    background: #fff;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .shipping-option input:checked + .shipping-content::before {
+    background: #6e6d6e;
+  }
+  /* Container cho ô nhập mã giảm giá */
+  .shipping-discount {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+  }
+
+  /* Ô nhập mã giảm giá */
+  .shipping-discount input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s ease-in-out;
+  }
+
+  /* Khi focus vào ô nhập */
+  .shipping-discount input:focus {
+    border-color: #868686;
+    box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+  }
+
+  /* Nút Áp dụng */
+  .shipping-discount button {
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #f46868, #f75932);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+  }
+
+  /* Hiệu ứng khi hover vào nút */
+  .shipping-discount button:hover {
+    background: linear-gradient(135deg, #6a0dad, #4b0082);
+  }
 </style>
 
 <body>
@@ -223,10 +372,10 @@
               </article>
             </article>
             <!--Thong tin ca  nhan de thanh toan-->
-            <div class="container py-5" style="margin-left: -20px" >
+            <div class=" py-8" style="margin-left: -20px" >
               <div class="row">
                 <!-- Thông Tin Thanh Toán -->
-                <div class="col-md-6">
+                <div class="col-md-5">
                   <div class="card payment-info-card">
                     <div class="payment-info-header text-center" style="background-color: #ff7b00">
                       Thông Tin Thanh Toán
@@ -245,23 +394,35 @@
                         <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email (tùy chọn)">
                       </div>
                       <div class="row">
+                        <!-- Chọn tỉnh/thành phố -->
                         <div class="col-md-6 mb-3">
-                          <label for="city" class="form-label">Tỉnh/Thành Phố *</label>
-                          <select class="form-select" id="city" name="city" onchange="updateDistricts()">
+                          <label for="province" class="form-label">Tỉnh/Thành Phố *</label>
+                          <select class="form-select" id="province" name="province">
                             <option value="">Chọn một tùy chọn...</option>
-                            <option value="Hà Nội">Hà Nội</option>
-                            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                            <option value="Đà Nẵng">Đà Nẵng</option>
-                            <option value="Cần Thơ">Cần Thơ</option>
                           </select>
                         </div>
+
+                        <!-- Chọn quận/huyện -->
                         <div class="col-md-6 mb-3">
                           <label for="district" class="form-label">Quận/Huyện *</label>
                           <select class="form-select" id="district" name="district">
                             <option value="">Chọn quận/huyện...</option>
                           </select>
                         </div>
+
+                        <!-- Chọn phường/xã -->
+                        <div class="col-md-6 mb-3">
+                          <label for="ward" class="form-label">Phường/Xã *</label>
+                          <select class="form-select" id="ward" name="ward">
+                            <option value="">Chọn phường/xã...</option>
+                          </select>
+                        </div>
                       </div>
+
+                      <!-- Ẩn các input để gửi giá trị tên (text) -->
+                      <input type="hidden" id="province_name" name="province_name" value="">
+                      <input type="hidden" id="district_name" name="district_name" value="">
+                      <input type="hidden" id="ward_name" name="ward_name" value="">
 
 
                       <div class="mb-3">
@@ -276,18 +437,56 @@
                         <label for="notes" class="form-label">Ghi Chú Đơn Hàng</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay địa điểm giao hàng"></textarea>
                       </div>
+                      <p>Địa chỉ cửa hàng mua: Tp.Cần thơ</p>
                     </div>
 
                   </div>
+                  <div id="cod-info" class="payment-inf">
+                    <form id="shippingForm">
+                    <h4 ><i class="fa-solid fa-truck"></i> <span>Chọn phương thức giao hàng</span></h4>
+                    <div class="card-body p-4" id="shipping-options">
+
+                      <c:forEach var="item" items="${sessionScope.totalship.items}">
+                        <label class="shipping-option">
+                          <input type="radio"
+                                 name="shippingMethod"
+                                 value="${item.id}"
+                                 data-price="${item.price}"
+                                 id="shipping_${item.id}"
+                                 onchange="updateShippingCost(this)"
+                                 required>
+
+                          <div class="shipping-content">
+                            <span class="shipping-title">${item.name}</span>
+                            <span class="shipping-price">
+                <strong>
+                    <fmt:formatNumber value="${item.price}" type="number" groupingUsed="true" /> đ
+                </strong>
+            </span>
+                          </div>
+                        </label>
+                        <input type="hidden" id="shippingPrice" name="shippingPrice" value="0">
+
+                      </c:forEach>
+                    </div>
+
+                    <!-- Ô nhập mã giảm giá vận chuyển -->
+                    <div class="shipping-discount">
+                      <input type="text" id="shippingCoupon" placeholder="Nhập mã giảm giá vận chuyển">
+                      <button id="applyShippingCoupon">Áp dụng</button>
+                    </div>
+                    </form>
+                  </div>
+
                 </div>
 
                 <!-- Thông Tin Đơn Hàng -->
-                <div class="col-md-6">
+                <div class="col-md-5" style="width: 700px">
                   <div class="card order-summary-card">
                     <div class="order-summary-header text-center" style="background-color: #ff7b00;">
                       Thông Tin Đơn Hàng
                     </div>
-                    <div class="card-body" style="overflow: scroll ;height: 300px">
+                    <div class="card-body" style="overflow: scroll ;height: 500px;">
                       <!-- Sản phẩm -->
                       <%
                         Cart cart = (Cart) session.getAttribute("cr7");
@@ -307,32 +506,37 @@
 
                       %>
                       <c:forEach var="item" items="${sessionScope.cr7.items}">
-                        <div class="product-item">
-                          <div class="product-details d-flex align-items-center">
-                            <img src="img/${item.img}" alt="Product">
-                            <div>
-                              <div class="fw-bold">${item.name} - ${item.weight}gr</div>
-                              <div>ID: ${item.id}</div>
-                              <div>Số lượng: ${item.quantity}</div>
+                        <div class="cart-item" style="height: 100px">
+                          <img src="img/${item.img}" alt="Sản phẩm">
+                          <div class="cart-info">
+                            <h5>${item.name}</h5>
+                            <p><span style="color: rgb(83, 7, 7);">ID:</span> ${item.id} | <span style="color: rgb(83, 7, 7);">Trọng lượng:</span>${item.weight}gr</p>
 
+                            <!-- Hiển thị giá -->
+                            <div class="price-container" style="color: rgb(240, 89, 89); ;"><b>Giá:</b>
+                              <span class="original-price">${item.rawTotal} đ</span>
+                              <span class="discount-badge">-${item.sale}%</span>
+                              <span class="discount-price"><fmt:formatNumber value="${item.total}" type="number" groupingUsed="true" /> đ</span>
                             </div>
                           </div>
-                          <!-- Giá cũ (gạch ngang) -->
-                          <div class="old-price text-muted" style="text-decoration: line-through;margin-right: -25px">
-                            <fmt:formatNumber value="${item.rawTotal}" type="number" groupingUsed="true" /> đ
-                          </div><span style=";color: red">(${item.sale}%)</span>
-                          <!-- Tính giá mới -->
-                          <c:set var="total" value="${item.total}" />
-                          <!-- Giá mới -->
-                          <div class="new-price text-danger">
-                            <fmt:formatNumber value="${item.total}" type="number" groupingUsed="true" /> đ
-                          </div>
+
+                          <!-- Input số lượng -->
+                          <td class="text-center">
+                            <div class="quantity-control">
+
+                              <input type="text" id="quantity-${item.id}" class="form-control form-control-sm text-center mx-1" value="${item.quantity}" style="width: 50px;" readonly data-price="${item.price}">
+
+                            </div>
+                          </td>
+
+                          <!-- Nút xóa -->
+                          <td><a href="remove?productID=${item.id}&weight=${item.weight}"><button class="remove-btn ms-3"><i class="fas fa-trash-alt"></i></button></a></td>
                         </div>
                       </c:forEach>
                       <!-- Tổng cộng -->
 
                     </div>
-                    <div class="total-section d-flex justify-content-between mt-4">
+                    <div class="total-section d-flex justify-content-between mt-4" style="height: 50px">
                       <span>Tổng cộng:</span>
                       <c:set var="sum" value="${sessionScope.cr7.totalPrice}" />
 
@@ -343,47 +547,14 @@
 
 
 
-                    <div class="card mb-4 shadow-sm border-0 rounded-3">
-                      <div class="card-body p-4">
-                        <form id="shippingForm">
-                          <h5 class="mb-4">Phương Thức Giao Hàng</h5>
-                          <c:forEach var="item" items="${sessionScope.totalship.items}">
-                            <!-- Tùy chọn giao hàng -->
-                            <div class="form-check mb-3">
-                              <input type="radio"
-                                     class="form-check-input"
-                                     id="shipping_${item.id}"
-                                     name="shippingMethod"
-                                     value="${item.id}"
-                                     data-price="${item.price}"
-                              onchange="updateShippingCost(this)"
-                              required>
-                              <label class="form-check-label" for="shipping_${item.id}">
-                                  ${item.name} -
-                                <span class="fw-bold text-danger">
-        <fmt:formatNumber value="${item.price}" type="number" groupingUsed="true" /> đ
-      </span>
-                              </label>
-                            </div>
-                            <input type="hidden" id="shippingPrice" name="shippingPrice" value="0">
-                          </c:forEach>
 
 
+                   <div class="accordion mt-4" id="paymentAccordion">
 
-                          <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Nhập mã giảm giá" id="codCoupon">
-                            <button class="btn btn-success" type="button" onclick="applyCoupon()">Áp dụng</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
 
-                    <!-- Phương Thức Thanh Toán --><div class="accordion mt-4" id="paymentAccordion">
-
-                    <!-- COD - Thanh toán khi nhận hàng -->
                     <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
                       <h2 class="accordion-header" id="codHeader">
-                        <input type="radio" name="paymentMethod" id="cod" class="me-2" onchange="handlePaymentSelection(this)" value="COD-Thanh toán khi nhận hàng">
+                        <input type="radio" name="paymentMethod" id="cod" class="me-2" onchange="handlePaymentSelection(this)" >
                         <label for="cod" class="accordion-button collapsed">
                           <i class="fa-solid fa-truck me-2"></i>COD - Thanh toán khi nhận hàng
                         </label>
@@ -463,6 +634,95 @@
 <div style=" background-color: #f3eee7;  height: 450px">
   <%@include file="footer.jsp"%>
 </div>
+<script>
+  // Hàm tải tỉnh/thành phố từ API
+  // Hàm tải tỉnh/thành phố từ API
+  async function loadProvinces() {
+    const response = await fetch('https://esgoo.net/api-tinhthanh/1/0.htm');
+    const data = await response.json();
+    const provinceSelect = document.getElementById('province');
+
+    if (data.error === 0) {
+      data.data.forEach(province => {
+        let option = new Option(province.full_name, province.id);
+        provinceSelect.add(option);
+      });
+    }
+  }
+
+  // Hàm tải quận/huyện theo tỉnh/thành phố
+  async function loadDistricts(provinceID) {
+    const districtSelect = document.getElementById('district');
+    const wardSelect = document.getElementById('ward');
+
+    // Reset quận/huyện và phường/xã
+    districtSelect.innerHTML = '<option value="">Chọn quận/huyện...</option>';
+    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+
+    if (!provinceID) return;
+
+    try {
+      const url = 'https://esgoo.net/api-tinhthanh/2/' + provinceID + '.htm';
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.error === 0 && data.data) {
+        data.data.forEach(district => {
+          let option = new Option(district.full_name, district.id);
+          districtSelect.add(option);
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi tải quận/huyện:", error);
+    }
+  }
+
+  // Hàm tải phường/xã theo quận/huyện
+  async function loadWards(districtID) {
+    const wardSelect = document.getElementById('ward');
+    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+
+    if (!districtID) return;
+
+    const url = 'https://esgoo.net/api-tinhthanh/3/' + districtID + '.htm';
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.error === 0) {
+      data.data.forEach(ward => {
+        let option = new Option(ward.full_name, ward.id);
+        wardSelect.add(option);
+      });
+    }
+  }
+
+  // Khi trang tải, tải tỉnh/thành phố
+  loadProvinces();
+
+  // Khi chọn tỉnh/thành phố
+  document.getElementById('province').addEventListener('change', function () {
+    const provinceID = this.value;
+    const provinceName = this.options[this.selectedIndex].text; // Lấy tên tỉnh/thành phố
+    document.getElementById('province_name').value = provinceName; // Cập nhật giá trị vào input ẩn
+    loadDistricts(provinceID);
+  });
+
+  // Khi chọn quận/huyện
+  document.getElementById('district').addEventListener('change', function () {
+    const districtID = this.value;
+    const districtName = this.options[this.selectedIndex].text; // Lấy tên quận/huyện
+    document.getElementById('district_name').value = districtName; // Cập nhật giá trị vào input ẩn
+    loadWards(districtID);
+  });
+
+  // Khi chọn phường/xã
+  document.getElementById('ward').addEventListener('change', function () {
+    const wardID = this.value;
+    const wardName = this.options[this.selectedIndex].text; // Lấy tên phường/xã
+    document.getElementById('ward_name').value = wardName; // Cập nhật giá trị vào input ẩn
+  });
+
+</script>
 
 
 <script>
@@ -490,31 +750,12 @@
 
 
   }
+  fetch('https://esgoo.net/api-tinhthanh/1/0.htm')
+          .then(response => response.json())
+          .then(data => console.log(data));
 
-  const districts = {
-    'Hà Nội': ['Ba Đình', 'Hoàn Kiếm', 'Đống Đa', 'Cầu Giấy', 'Thanh Xuân'],
-    'Hồ Chí Minh': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 7'],
-    'Đà Nẵng': ['Hải Châu', 'Liên Chiểu', 'Sơn Trà', 'Ngũ Hành Sơn', 'Cẩm Lệ'],
-    'Cần Thơ': ['Ninh Kiều', 'Bình Thủy', 'Cái Răng', 'Ô Môn', 'Thới Lai']
-  };
 
-  function updateDistricts() {
-    const city = document.getElementById('city').value;
-    const districtSelect = document.getElementById('district');
 
-    // Clear the current options
-    districtSelect.innerHTML = '<option value="">Chọn quận/huyện...</option>';
-
-    if (city !== '') {
-      const districtsList = districts[city];
-      districtsList.forEach(district => {
-        const option = document.createElement('option');
-        option.value = district;
-        option.text = district;
-        districtSelect.add(option);
-      });
-    }
-  }
   let productTotal = parseFloat(<%= cart.getTotalPrice() %>); // Tổng tiền sản phẩm
 
   function updateShippingCost(radio) {
@@ -533,8 +774,13 @@
       currency: "VND",
     }).format(total);
   }
+
+
+
 </script>
+
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/scripthanhtoan.js"></script>
 </html>
