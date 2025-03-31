@@ -1,6 +1,7 @@
 <%@ page import="Models.inforTransaction.Transaction" %>
 <%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <%@ page import="Models.WishlistProduct.WishlistProduct" %>
+<%@ page import="Models.User.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%--
@@ -178,6 +179,75 @@ td img{
     height: 60px;
     border-radius: 10px;
 }
+        /* Modal - kiểu cơ bản */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4); /* Màu nền mờ */
+            padding-top: 60px;
+        }
+
+        /* Nội dung modal */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* Nút đóng modal */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Định dạng các trường trong form */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
@@ -189,6 +259,8 @@ td img{
             <div class="sidebar p-4">
                 <div class="text-center mb-4">
                     <c:set var="item" value="${sessionScope.userInfor}"/>
+
+
                     <c:choose>
                         <c:when test="${item.image.startsWith('http')}">
                             <img src="${item.image}" alt="User Avatar" class="user-avatar mb-3">
@@ -196,7 +268,8 @@ td img{
                         <c:otherwise>
                             <img src="img/${item.image}" alt="User Avatar" class="user-avatar mb-3">
                         </c:otherwise>
-                    </c:choose>                    <h5>${item.userName}</h5>
+                    </c:choose>
+                    <h5>${item.userName}</h5>
                     <p class="text-muted">Tham gia từ ${item.createDate}</p>
                     <a href="getUser" style="text-decoration: none"><button class="btn btn-primary w-100" >Thông tin</button></a>
                 </div>
@@ -209,6 +282,8 @@ td img{
             </div>
         </div>
 <%
+    User user = (User) session.getAttribute("userInfor");
+    System.out.println(user.toString() + "Thong tin usser");
 
     Transaction transaction = (Transaction) session.getAttribute("transactions");
     if (transaction != null && transaction.getItems() != null && !transaction.getItems().isEmpty()) {
@@ -332,6 +407,9 @@ td img{
                     </table>
                 </div>
             </div>
+            <!-- Modal Đánh giá sản phẩm -->
+
+
 
             <!-- Detail Section -->
             <div class="card detail-section" id="detail-section1">
@@ -346,7 +424,32 @@ td img{
         </div>
 </div>
 </div>
-
+<div id="ratingModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Đánh giá sản phẩm</h2>
+        <form id="ratingForm">
+            <input type="hidden" id="productId" name="productId">
+            <div class="form-group">
+                <label for="status">Trạng thái:</label>
+                <select id="status" name="status">
+                    <option value="Mới">Mới</option>
+                    <option value="Đã sử dụng">Đã sử dụng</option>
+                    <option value="Bị lỗi">Bị lỗi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="comment">Ý kiến:</label>
+                <textarea id="comment" name="comment" rows="4" placeholder="Viết bình luận..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="stars">Đánh giá:</label>
+                <input type="number" id="stars" name="stars" min="1" max="5" placeholder="Số sao (1-5)" required>
+            </div>
+            <button type="button" onclick="submitRating()">Gửi đánh giá</button>
+        </form>
+    </div>
+</div>
 <%@include file="footer.jsp"%>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -384,9 +487,12 @@ td img{
                             '<span class="product-id"><strong>ID sản phẩm:</strong> ' + product.idProduct + '</span>' +
                             '<span class="product-price"><strong>Giá sản phẩm:</strong> ' + product.price + ' đ</span>' +
                             '<span class="product-name"><strong>Tên sản phẩm:</strong> ' + product.nameProduct + '</span>' +
-                            '<span class="product-quantity"><strong>Số lượng:</strong> ' + product.quantity + '</span>' + // Thêm số lượng
+                            '<span class="product-quantity"><strong>Số lượng:</strong> ' + product.quantity + '</span>' +
+                            // Thêm phần đánh giá với nút để mở modal
+                            '<button onclick="openRatingForm(' + product.idProduct + ')">Đánh giá</button>' +
                             '</div>' +
                             '</li>';
+
 
                     }).join('');  // join() để gộp các phần tử mảng thành một chuỗi
 
@@ -408,6 +514,15 @@ td img{
             detailSection.classList.remove('active');
         });
     });
+    function openRatingForm(productId) {
+        document.getElementById('productId').value = productId;
+        document.getElementById('ratingModal').style.display = 'block';
+    }
+
+    // Hàm đóng modal
+    function closeModal() {
+        document.getElementById('ratingModal').style.display = 'none';
+    }
     function checkNone(){
         document.getElementById("check").style.display = "block";
         document.getElementById("ls").style.display="none";
@@ -432,6 +547,31 @@ td img{
             });
         });
     });
+
+
+    // Hàm gửi đánh giá khi nhấn "Gửi đánh giá"
+    function submitRating() {
+        const productId = document.getElementById('productId').value;
+        const status = document.getElementById('status').value;
+        const comment = document.getElementById('comment').value;
+        const stars = document.getElementById('stars').value;
+
+        // Kiểm tra xem các trường có hợp lệ không
+        if (!stars || stars < 1 || stars > 5) {
+            alert("Vui lòng nhập đánh giá hợp lệ (1 đến 5 sao).");
+            return;
+        }
+
+        // Gửi dữ liệu đánh giá (có thể gửi đến server để lưu vào cơ sở dữ liệu)
+        console.log("Đánh giá cho sản phẩm ID " + productId);
+        console.log("Trạng thái: " + status);
+        console.log("Ý kiến: " + comment);
+        console.log("Số sao: " + stars);
+
+        // Đóng modal sau khi gửi
+        closeModal();
+    }
+
 </script>
 
 </body>
