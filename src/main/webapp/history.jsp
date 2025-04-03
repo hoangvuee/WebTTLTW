@@ -174,11 +174,11 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-td img{
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-}
+        td img{
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+        }
         /* Modal - kiểu cơ bản */
         .modal {
             display: none;
@@ -247,7 +247,61 @@ td img{
         button:hover {
             background-color: #45a049;
         }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 90%;
+        }
 
+        .notification.success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .notification.error {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .notification .icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notification {
+                width: 90%;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -275,33 +329,33 @@ td img{
                 </div>
                 <ul class="list-group" style="cursor: pointer" id="menuList">
 
-                  <li class="list-group-item" onclick="checkNone()">Sản phẩm yêu thích</li>
+                    <li class="list-group-item" onclick="checkNone()">Sản phẩm yêu thích</li>
                     <li class="list-group-item active" onclick="checkBlock()">Lịch sử giao dịch</li>
                     <a href="sign_out" style="text-decoration: none"><li class="list-group-item" style="background-color: deepskyblue">Đăng xuất</li></a>
                 </ul>
             </div>
         </div>
-<%
-    User user = (User) session.getAttribute("userInfor");
-    System.out.println(user.toString() + "Thong tin usser");
+        <%
+            User user = (User) session.getAttribute("userInfor");
+            System.out.println(user.toString() + "Thong tin usser");
 
-    Transaction transaction = (Transaction) session.getAttribute("transactions");
-    if (transaction != null && transaction.getItems() != null && !transaction.getItems().isEmpty()) {
-        for (int i = 0; i < transaction.getItems().size(); i++) {
-            System.out.println(transaction.getItems().get(i).getProducts());
-            System.out.println( "Size cua transaction " + transaction.getItems().size());
-        }// Kiểm tra in ra dữ liệu
-    } else {
-        System.out.println("Transaction hoặc danh sách items trống!");
-    }
-    WishlistProduct wishlistProduct = (WishlistProduct) session.getAttribute("wishlist");
-    if(wishlistProduct == null){
-        wishlistProduct = new WishlistProduct();
-        session.setAttribute("wishlist",wishlistProduct);
-    }
-    System.out.println(wishlistProduct.getItems().size() + "wishlist");
+            Transaction transaction = (Transaction) session.getAttribute("transactions");
+            if (transaction != null && transaction.getItems() != null && !transaction.getItems().isEmpty()) {
+                for (int i = 0; i < transaction.getItems().size(); i++) {
+                    System.out.println(transaction.getItems().get(i).getProducts());
+                    System.out.println( "Size cua transaction " + transaction.getItems().size());
+                }// Kiểm tra in ra dữ liệu
+            } else {
+                System.out.println("Transaction hoặc danh sách items trống!");
+            }
+            WishlistProduct wishlistProduct = (WishlistProduct) session.getAttribute("wishlist");
+            if(wishlistProduct == null){
+                wishlistProduct = new WishlistProduct();
+                session.setAttribute("wishlist",wishlistProduct);
+            }
+            System.out.println(wishlistProduct.getItems().size() + "wishlist");
 
-%>
+        %>
         <!-- Content -->
         <div class="col-md-9" id="ls">
             <h4 class="mb-4">Lịch sử giao dịch</h4>
@@ -331,13 +385,13 @@ td img{
                         </thead>
                         <tbody>
                         <c:forEach var="item" items="${sessionScope.transactions.items}">
-                        <tr>
-                            <td>${item.idOrder}</td>
-                            <td>${item.transactionDate}</td>
-                            <td>Thanh toán</td>
-                            <td> <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true" /> đ</td>
-                            <td><button class="btn btn-sm btn-primary view-detail" data-id-order="${item.idOrder}">Xem chi tiết</button></td>
-                        </tr>
+                            <tr>
+                                <td>${item.idOrder}</td>
+                                <td>${item.transactionDate}</td>
+                                <td>Thanh toán</td>
+                                <td> <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true" /> đ</td>
+                                <td><button class="btn btn-sm btn-primary view-detail" data-id-order="${item.idOrder}">Xem chi tiết</button></td>
+                            </tr>
                         </c:forEach>
                         </tbody>
 
@@ -422,14 +476,16 @@ td img{
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </div>
 <div id="ratingModal" class="modal" style="display:none;">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h2>Đánh giá sản phẩm</h2>
-        <form id="ratingForm">
+        <form id="ratingForm" action="${pageContext.request.contextPath}/feedbacks" method="post">
             <input type="hidden" id="productId" name="productId">
+            <input type="hidden" id="orderId" name="orderId"> <!-- Thêm input ẩn cho orderId -->
+
             <div class="form-group">
                 <label for="status">Trạng thái:</label>
                 <select id="status" name="status">
@@ -446,10 +502,32 @@ td img{
                 <label for="stars">Đánh giá:</label>
                 <input type="number" id="stars" name="stars" min="1" max="5" placeholder="Số sao (1-5)" required>
             </div>
-            <button type="button" onclick="submitRating()">Gửi đánh giá</button>
+            <button type="submit">Gửi đánh giá</button>
         </form>
     </div>
 </div>
+<%-- Kiểm tra nếu có query parameter "success" --%>
+<% String success = request.getParameter("success"); %>
+<% if ("true".equals(success)) { %>
+<div class="notification success">
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>Đánh giá thành công!</span>
+</div>
+<% } else if ("false".equals(success)) { %>
+<div class="notification error">
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>Đã có lỗi xảy ra, vui lòng thử lại.</span>
+</div>
+<% } %>
+
+
 <%@include file="footer.jsp"%>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -489,9 +567,11 @@ td img{
                             '<span class="product-name"><strong>Tên sản phẩm:</strong> ' + product.nameProduct + '</span>' +
                             '<span class="product-quantity"><strong>Số lượng:</strong> ' + product.quantity + '</span>' +
                             // Thêm phần đánh giá với nút để mở modal
-                            '<button onclick="openRatingForm(' + product.idProduct + ')">Đánh giá</button>' +
+                            '<button onclick="openRatingForm(' + product.idProduct + ', \'' + idOrder + '\')">Đánh giá</button>' +  // Đảm bảo orderId là giá trị, không phải đối tượng
                             '</div>' +
                             '</li>';
+
+
 
 
                     }).join('');  // join() để gộp các phần tử mảng thành một chuỗi
@@ -514,9 +594,10 @@ td img{
             detailSection.classList.remove('active');
         });
     });
-    function openRatingForm(productId) {
-        document.getElementById('productId').value = productId;
-        document.getElementById('ratingModal').style.display = 'block';
+    function openRatingForm(productId, orderId) {
+        document.getElementById('productId').value = productId; // Gán productId vào form
+        document.getElementById('orderId').value = orderId; // Gán orderId vào form
+        document.getElementById('ratingModal').style.display = 'block'; // Mở modal
     }
 
     // Hàm đóng modal
@@ -571,9 +652,16 @@ td img{
         // Đóng modal sau khi gửi
         closeModal();
     }
-
+    document.addEventListener('DOMContentLoaded', function() {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        });
+    });
 </script>
 
 </body>
 </html>
-
