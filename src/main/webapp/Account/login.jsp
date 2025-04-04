@@ -60,6 +60,155 @@
         display: block !important;
         visibility: visible !important;
     }
+    :root {
+        --primary-color: #4361ee;
+        --error-color: #f72585;
+        --success-color: #4cc9f0;
+        --text-color: #2b2d42;
+        --light-gray: #f8f9fa;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    .verification-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        z-index: 1000;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -40%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    .verification-alert-icon {
+        font-size: 3.5rem;
+        color: var(--error-color);
+        margin-bottom: 15px;
+    }
+
+    .verification-alert h3 {
+        color: var(--text-color);
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+    }
+
+    .verification-alert p {
+        color: #6c757d;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .countdown-display {
+        display: inline-block;
+        background: var(--light-gray);
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin: 10px 0;
+    }
+
+    .countdown-number {
+        color: var(--error-color);
+        font-size: 1.2em;
+    }
+
+    .verification-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #3a56d4;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline:hover {
+        background: rgba(67, 97, 238, 0.1);
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+    /* Các loại thông báo khác nhau */
+    .verification-alert-icon .fa-exclamation-circle {
+        color: #FFC107; /* Màu vàng cho cảnh báo */
+    }
+
+    .verification-alert-icon .fa-times-circle {
+        color: #DC3545; /* Màu đỏ cho lỗi */
+    }
+
+    .verification-alert-icon .fa-check-circle {
+        color: #28A745; /* Màu xanh cho thành công */
+    }
+
+    /* Nút đóng cho thông báo thường */
+    #closeAlert {
+        background: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    #closeAlert:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
 </style>
 <body>
 
@@ -72,6 +221,7 @@
     }
 
 %>
+
 <div class="container login-container">
     <div class="row w-100">
         <div class="col-lg-6 d-none d-lg-block">
@@ -117,17 +267,95 @@
             </div>
             <button type="submit" class="btn btn-dark w-100">Đăng nhập</button>
 
-            <%
-                String errorMessage = (String) session.getAttribute("errorMessage");
-                if (errorMessage != null) {
-            %>
+
             <div class="alert alert-danger text-center" role="alert">
-                <%= errorMessage %>
-            </div>
-            <%
+                <%
+                    String errorType = (String) session.getAttribute("errorType");
+                    String errorMessage = (String) session.getAttribute("errorMessage");
+                    String redirectPage = (String) session.getAttribute("redirectPage");
+                    Integer redirectDelay = (Integer) session.getAttribute("redirectDelay");
+                    session.removeAttribute("errorType");
                     session.removeAttribute("errorMessage");
-                }
-            %>
+                    session.removeAttribute("redirectPage");
+                    session.removeAttribute("redirectDelay");
+                %>
+
+                <% if (errorType != null && errorMessage != null) { %>
+                <div class="overlay"></div>
+                <div class="verification-alert">
+                    <div class="verification-alert-icon">
+                        <i class="fas <%= errorType.equals("unverified") ? "fa-exclamation-circle" : "fa-times-circle" %>"></i>
+                    </div>
+                    <h3><%= errorType.equals("unverified") ? "Tài khoản chưa xác thực" : "Đăng nhập không thành công" %></h3>
+                    <p><%= errorMessage %></p>
+
+                    <% if (redirectPage != null && redirectDelay != null && errorType.equals("unverified")) { %>
+                    <div class="countdown-display">
+                        Tự động chuyển hướng sau <span class="countdown-number" id="countdown"><%= redirectDelay %></span> giây
+                    </div>
+
+                    <div class="verification-actions">
+                        <button class="btn btn-primary" id="redirectNow">
+                          <a> <i class="fas fa-check-circle"></i> Xác thực ngay</a>
+                        </button>
+                        <button class="btn btn-outline" id="cancelRedirect">
+                            <i class="fas fa-times"></i> Ở lại trang
+                        </button>
+                    </div>
+                    <% } else { %>
+                    <div class="verification-actions">
+                        <button class="btn btn-primary" id="closeAlert">
+                            <i class="fas fa-check"></i> Đã hiểu
+                        </button>
+                    </div>
+                    <% } %>
+                </div>
+
+                <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        <% if (errorType.equals("unverified") && redirectPage != null && redirectDelay != null) { %>
+                        let timeLeft = <%= redirectDelay %>;
+                        let countdownElement = document.getElementById("countdown");
+                        let redirectNowBtn = document.getElementById("redirectNow");
+                        let cancelBtn = document.getElementById("cancelRedirect");
+                        let countdownInterval;
+
+                        function startCountdown() {
+                            countdownInterval = setInterval(function() {
+                                timeLeft--;
+                                countdownElement.textContent = timeLeft;
+
+                                if (timeLeft <= 0) {
+                                    clearInterval(countdownInterval);
+                                    window.location.href = "<%= redirectPage %>";
+                                }
+                            }, 1000);
+                        }
+
+                        startCountdown();
+
+                        redirectNowBtn.addEventListener("click", function() {
+                            clearInterval(countdownInterval);
+                            window.location.href = "<%= redirectPage %>";
+                        });
+
+                        cancelBtn.addEventListener("click", function() {
+                            clearInterval(countdownInterval);
+                            document.querySelector(".overlay").remove();
+                            document.querySelector(".verification-alert").remove();
+                        });
+                        <% } else { %>
+                        document.getElementById("closeAlert").addEventListener("click", function() {
+                            document.querySelector(".overlay").remove();
+                            document.querySelector(".verification-alert").remove();
+                        });
+                        <% } %>
+                    });
+                </script>
+                <% } %>
+            </div>
+
             <div class="text-center mt-3">
             <a href="register.jsp">Đăng ký</a>
         </div>
@@ -139,7 +367,7 @@
                 <div class="text-center mt-3">
                     <p>hoặc đăng nhập bằng</p>
                     <div class="social-buttons">
-                        <img src="../img/vector-blue-social-media-logo_1080184-225.jpg.avif" alt="Facebook">
+                      <a href="${pageContext.request.contextPath}/facebook-login">  <img src="../img/vector-blue-social-media-logo_1080184-225.jpg.avif" alt="Facebook"></a>
                         <a href="#" id="loginBtn">
                             <img src="../img/Google_Icons-09-512.webp" alt="Google">
                         </a>
