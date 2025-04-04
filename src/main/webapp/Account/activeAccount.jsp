@@ -14,6 +14,7 @@
   <title>Xác thực tài khoản | Tên Ứng Dụng</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     :root {
       --primary-color: #4361ee;
@@ -481,7 +482,9 @@
       <div class="form-group" id="emailForm">
         <div class="input-icon">
           <i class="fas fa-envelope"></i>
-          <input type="email" name="email" value="<%= email != null ? email : "" %>" placeholder="Email nhận mã xác thực" required>
+          <input type="email" name="email" id="verifyEmail"
+                 value="<%= email != null ? email : "" %>"
+                 placeholder="Email nhận mã xác thực" required>
         </div>
 
         <div class="resend-link">
@@ -489,9 +492,11 @@
           <span class="timer" id="emailTimer">(60s)</span>
         </div>
 
-        <button type="submit" class="btn" name="verifyAction" value="sendEmail">
+        <button type="button" class="btn" id="sendEmailBtn">
           <i class="fas fa-paper-plane"></i> Gửi Liên Kết Xác Thực
         </button>
+
+        <div id="emailStatus" class="mt-2" style="display:none;"></div>
       </div>
     </form>
 
@@ -605,36 +610,69 @@
   });
 
   // Xử lý gửi lại Email
-  resendEmail.addEventListener('click', function() {
-    if (emailTimer.style.display === 'none' || emailTimer.textContent === '(0s)') {
-      fetch('ResendOtpServlet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'action=resendEmail'
-      })
-              .then(response => response.json())
-              .then(data => {
-                if (data.success) {
-                  alert('Email xác thực mới đã được gửi!');
-                  clearInterval(emailTimerInterval);
-                  emailTimerInterval = startTimer(emailTimer, 60);
-                } else {
-                  alert('Có lỗi xảy ra khi gửi lại email: ' + data.message);
-                }
-              })
-              .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi gửi lại email');
-              });
-    }
-  });
+
 
   // Tự động focus vào ô OTP đầu tiên
   if (otpForm.classList.contains('active')) {
     otpInputs[0].focus();
   }
+</script>
+<script>
+  $(document).ready(function() {
+    // Xử lý khi click nút gửi email
+    $('#sendEmailBtn').click(function() {
+      const email = $('#verifyEmail').val();
+
+      if (!email) {
+        alert('Vui lòng nhập email');
+        return;
+      }
+
+      $('#emailStatus').html('<i class="fas fa-spinner fa-spin"></i> Đang gửi email...').show();
+
+      // Gửi AJAX request
+      $.ajax({
+        url: '${pageContext.request.contextPath}/activeAccount',
+        type: 'POST',
+        data: { email: email },
+        success: function(response) {
+          if (response.success) {
+            $('#emailStatus').html('<i class="fas fa-check-circle text-success"></i> ' + response.message).show();
+            startEmailTimer(); // Bắt đầu đếm ngược
+          } else {
+            $('#emailStatus').html('<i class="fas fa-times-circle text-danger"></i> ' + response.message).show();
+          }
+        },
+        error: function() {
+          $('#emailStatus').html('<i class="fas fa-times-circle text-danger"></i> Lỗi kết nối, vui lòng thử lại').show();
+        }
+      });
+    });
+
+    // Xử lý khi click gửi lại email
+    $('#resendEmail').click(function() {
+      if ($('#emailTimer').text() === '(0s)' || $('#emailTimer').css('display') === 'none') {
+        $('#sendEmailBtn').click(); // Kích hoạt gửi lại
+      }
+    });
+
+    // Hàm đếm ngược thời gian
+    function startEmailTimer() {
+      let timeLeft = 60;
+      const timerElement = $('#emailTimer');
+      timerElement.text('(' + timeLeft + 's)').show();
+
+      const interval = setInterval(function() {
+        timeLeft--;
+        timerElement.text('(' + timeLeft + 's)');
+
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          timerElement.hide();
+        }
+      }, 1000);
+    }
+  });
 </script>
 </body>
 </html>
