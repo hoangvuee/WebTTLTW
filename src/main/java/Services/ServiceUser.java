@@ -110,6 +110,9 @@ public class ServiceUser {
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 10);
     }
+    public boolean updateUserActive(String email, boolean isActive){
+        return userDao.updateUserActive(email, isActive);
+    }
     public boolean checkCredentials(String email, String password) {
 
             return userDao.checkCredentials(email,password);
@@ -172,6 +175,9 @@ public class ServiceUser {
     }
     public String getUserAvatar(int idUser) {
         return userDao.getUserAvatar(idUser);
+    }
+    public boolean isUserActiveByEmail(String email){
+        return userDao.isUserActiveByEmail(email);
     }
 
     public static void main(String[] args) throws SQLException {
