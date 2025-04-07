@@ -59,7 +59,7 @@ public class CheckQuantityProductSub extends HttpServlet {
             }
 
             session.setAttribute("cr7", cart);
-            resp.sendRedirect("giohang.jsp");
+            resp.sendRedirect("shoppingCart.jsp");
 
         } catch (NumberFormatException e) {
             System.out.println("Lỗi chuyển đổi tham số: " + e.getMessage());

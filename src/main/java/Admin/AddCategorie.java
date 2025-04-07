@@ -12,19 +12,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(value = "/addCategories")
+@WebServlet(value = "/admin/addCategories")
 public class AddCategorie extends HttpServlet {
     ServiceAddCategories serviceAddCategories = new ServiceAddCategories();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        Integer idRole = (Integer) session.getAttribute("idRole");
 
-        if (idRole == null || idRole != 1) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-            return;
-        }
 
         String categoryName = req.getParameter("categoryName");
         String categoryDescription = req.getParameter("categoryDescription");
@@ -36,7 +30,7 @@ public class AddCategorie extends HttpServlet {
             req.setAttribute("successMessage", "Category added successfully!");
 
             // Chuyển hướng về trang giao diện thêm category
-            RequestDispatcher dispatcher = req.getRequestDispatcher("admin/categorie.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("categorie.jsp");
             dispatcher.forward(req, resp);
 
         } catch (SQLException e) {
@@ -44,7 +38,7 @@ public class AddCategorie extends HttpServlet {
             req.setAttribute("errorMessage", "Error adding category. Please try again.");
 
             // Chuyển hướng lại về trang giao diện thêm category
-            RequestDispatcher dispatcher = req.getRequestDispatcher("admin/categorie.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("categorie.jsp");
             dispatcher.forward(req, resp);
         }
     }

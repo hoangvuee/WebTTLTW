@@ -90,7 +90,7 @@
                 <h5 class="modal-title" id="updateStatusModalLabel">Cập nhật trạng thái đơn hàng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="../updateOrderStatus" method="POST">
+            <form action="../admin/updateOrderStatus" method="POST">
                 <!-- Dùng POST để gửi dữ liệu đến server -->
                 <div class="modal-body">
                     <input type="hidden" id="orderIdInput" name="idOrder">

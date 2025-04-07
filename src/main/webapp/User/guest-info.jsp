@@ -41,7 +41,14 @@
                             <div class="row align-items-center">
                                 <!-- Ảnh đại diện -->
                                 <div class="col-md-4 text-center">
-                                    <img src="../img/${item.image}" alt="Profile Image" class="profile-image" id="profile-image" onclick="changeProfileImage()" style="width: 200px;height: 200px">
+                                    <c:choose>
+                                        <c:when test="${item.image.startsWith('http')}">
+                                            <img src="${item.image}" alt="Profile Image" class="profile-image" id="profile-image" style="width: 200px;height: 200px" onclick="changeProfile()">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="../img/${item.image}" alt="Profile Image" class="profile-image" id="profile-image" style="width: 200px;height: 200px" onclick="changeProfile()">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
 
                                 <!-- Thông tin cá nhân -->

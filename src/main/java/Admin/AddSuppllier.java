@@ -12,18 +12,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-value = "/addSupplier"
+value = "/admin/addSupplier"
         )
 public class AddSuppllier extends HttpServlet {
     ServiceAddSupplier addSupplier = new ServiceAddSupplier();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        Integer idRole = (Integer) session.getAttribute("idRole");
-        if (idRole == null || idRole != 1) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-            return;
-        }
+
 
         String supplierName = req.getParameter("supplierName");
         String contactInfo = req.getParameter("contactInfo");
@@ -37,7 +32,7 @@ public class AddSuppllier extends HttpServlet {
             } else {
                 req.setAttribute("message", "Failed to add supplier.");
             }
-            req.getRequestDispatcher("admin/addSupplier.jsp").forward(req, resp);  // Chuyển hướng đến JSP
+            req.getRequestDispatcher("addSupplier.jsp").forward(req, resp);  // Chuyển hướng đến JSP
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

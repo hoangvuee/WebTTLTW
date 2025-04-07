@@ -39,8 +39,9 @@ public class CheckOut extends HttpServlet {
         String phoneNumber = req.getParameter("phoneNumber");
         System.out.println(phoneNumber);
         String email = req.getParameter("email");
-        String city = req.getParameter("city");
-        String district = req.getParameter("district");
+        String city = req.getParameter("province_name");
+        System.out.println(city + "dia chi thanh pho");
+        String district = req.getParameter("district_name");
         String address = req.getParameter("address");
         String notes = req.getParameter("notes");
         String payment = req.getParameter("paymentMethod");

@@ -22,18 +22,14 @@ import java.sql.SQLException;
         maxFileSize = 1024 * 1024 * 10,      // 10MB: Kích thước tối đa cho mỗi file
         maxRequestSize = 1024 * 1024 * 50    // 50MB: Tổng kích thước request tối đa
 )
-@WebServlet(value = "/addProduct")
+@WebServlet(value = "/admin/addProduct")
 public class Manage_addProduct extends HttpServlet {
 
     private final ServiceAddProduct productService = new ServiceAddProduct();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session1 = req.getSession(false);
-        Integer idRole = (Integer) session1.getAttribute("idRole");
-        if(idRole == null || idRole != 1){
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-        }
+
         try {
             // 1. Lấy dữ liệu từ form
             String productName = req.getParameter("product_Name");
@@ -66,7 +62,7 @@ public class Manage_addProduct extends HttpServlet {
             }
 
             // Chuyển hướng sau khi thành công
-            resp.sendRedirect("getCategory");
+            resp.sendRedirect("../getCategory");
         } catch (Exception e) {
             e.printStackTrace();
             resp.getWriter().println("Có lỗi xảy ra: " + e.getMessage());

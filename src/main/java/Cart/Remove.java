@@ -26,7 +26,7 @@ public class Remove extends HttpServlet {
         ca.removeCart(id,weight);
         System.out.println("Co vao day kog");
         session.setAttribute("cr7",ca);
-        resp.sendRedirect("giohang.jsp");
+        resp.sendRedirect("shoppingCart.jsp");
 
     }
 }

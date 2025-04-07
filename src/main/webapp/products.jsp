@@ -305,6 +305,26 @@
     }
 
 
+    .product-card::before {
+        content: "";
+        position: absolute;
+        width: 80px;  /* Độ dài vệt sáng */
+        height: 5px; /* Độ dày vệt sáng */
+        background: linear-gradient(90deg, rgba(255, 102, 153, 1), rgb(238, 16, 16), rgba(255, 204, 102, 1));
+        filter: blur(3px); /* Làm mờ ánh sáng */
+        animation: borderRun1 4s linear infinite;
+        z-index: 20;
+    }
+
+    @keyframes borderRun1 {
+        0%   { top: 0; left: 0; width: 80px; height: 5px; }  /* Góc trái trên */
+        25%  { top: 0; left: 100%; transform: translateX(-100%); } /* Chạy sang phải */
+        50%  { top: 100%; left: 100%; transform: translateY(-180%); rotate: 0deg; } /* Chạy xuống */
+        75%  { top: 100%; left: 0; transform: translateX(0%); rotate: 180deg; } /* Chạy sang trái */
+        100% { top: 0; left: 0; transform: rotate(270deg); } /* Quay lại điểm ban đầu */
+    }
+
+
 
 </style>
 <body>
@@ -339,7 +359,7 @@
     <div class="container">
         <div class="row" style="margin-top: 20px" >
             <form action="products" method="GET" class="search-form">
-                <input type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
+                <input oninput="searchByName(this)"  type="text" name="productName" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="border-radius: 15px;width: 80%;margin-left: 100px">
                 <button type="submit" class="btn"style="border-radius: 15px;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -451,6 +471,74 @@
                         </div>
                     </form>
                 </div>
+                <section class="my-4">
+                    <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#storeModal" style=" background: linear-gradient(135deg, #ff512f, #dd2476);">
+                        <i class="bi bi-shop"></i> Chọn cửa hàng
+                    </button>
+                </section>
+                <h5 class="fw-bold">Cửa hàng đang chọn<i class="fa-solid fa-store"></i>: <span id="selectedStore" class="text-danger">Chưa chọn</span></h5>
+                <div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="storeModalLabel">
+                                    <i class="bi bi-shop-window"></i> Chọn cửa hàng
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Bộ lọc tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label">Tỉnh/Thành phố</label>
+                                        <select class="form-select">
+                                            <option>Bắc Giang</option>
+                                            <option>Hà Nội</option>
+                                            <option>Hồ Chí Minh</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Quận/Huyện</label>
+                                        <select class="form-select">
+                                            <option>Lạng Giang</option>
+                                            <option>Việt Yên</option>
+                                            <option>Yên Dũng</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button class="btn btn-danger w-100">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Danh sách cửa hàng -->
+                                <h4 class="mt-4 fw-bold text-center text-uppercase">Danh sách cửa hàng</h4>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="card store-card p-3 shadow-sm text-center" onclick="selectStore('CHTT Lạng Giang BGG')">
+                                            <h5 class="fw-bold"><i class="bi bi-geo-alt-fill"></i> CHTT Lạng Giang BGG</h5>
+                                            <p>Số 207 - Phố Voi - Thị Trấn Voi - Huyện Lạng Giang</p>
+                                            <p><i class="bi bi-telephone-fill"></i> 18008098</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card store-card p-3 shadow-sm text-center" onclick="selectStore('Chi nhánh Viettel')">
+                                            <h5 class="fw-bold"><i class="bi bi-geo-alt-fill"></i> Chi nhánh Viettel</h5>
+                                            <p>Số 332 đường Hồ Cát, Thị trấn Vôi, Bắc Giang</p>
+                                            <p><i class="bi bi-telephone-fill"></i> 0977357868</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle"></i> Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <div class="pt-3">
                         <div class="d-flex ps-1 text-danger fw-bold fs-5">Bán Chạy Nhất</div>
@@ -483,20 +571,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-9" style="">
+            <div class="col-9" style="" id = "content-product">
                 <div class="d-flex ps-5" style="width: 100%;">
+
                     <ul class="nav d-flex flex-wrap gap-4" style="width: 100%">
                         <c:forEach var="item" items="${sessionScope.listproduct.items}">
-                            <li class="nav-item" style="width: 30%; height: 500px ;" >
-                                <div class="h-100 d-inline-block border rounded product-item shadow-sm" style="height: auto; position: relative; overflow: hidden; background: #fff; border-radius: 10px;">
+                            <li class="col-md-3 col-sm-5" style="margin-bottom: 15px;">
+                                <div class="card product-card" style="border: 1px solid rgb(227, 227, 227); height: 400px;">
                                     <!-- Hình ảnh sản phẩm -->
                                     <div class="img_product position-relative">
                                         <a href="product_detail?id=${item.id}" style="text-decoration: none; color: inherit;">
-                                            <img src="img/${item.fileName1}" class="default-img" alt="Product Image" style="width: 100%; height: 300px; border-bottom: 1px solid #eee;">
+                                            <img src="img/${item.fileName1}" class="default-img " alt="Product Image" style="width: 100%; height: 200px; border-bottom: 1px solid #eee;">
                                             <img src="img/${item.fileName2}" class="hover-img position-absolute" alt="Hover Image" style="width: 100%; height: auto; top: 0; left: 0; transition: opacity 0.3s ease;">
                                         </a>
                                         <!-- Icons hiển thị khi hover -->
-                                        <div class="product-icons position-absolute d-flex gap-3 justify-content-center align-items-center" style="top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.5s;">
+                                        <div class="product-icons product-image" style="top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.5s;">
                                             <!-- Icon giỏ hàng -->
                                             <form id="cart-form-${item.id}" action="product_deIcon" method="GET" style="display: none;">
                                                 <input type="hidden" name="productID" value="${item.id}">
@@ -537,13 +626,7 @@
                                 </div>
                             </li>
 
-                            <div id="notification" class="notification" style="display:none; width: 40%; border-radius: 10px">
-                                <img id="notification-img" src="img/${item.fileName2}" alt="Product Image" style="width: 50%; border-radius: 5px">
-                                <div id="notification-name"></div>
-                                <div id="notification-price"></div>
-                                <div id="notification-quantity"></div>
-                                <div id="notification-message" class="message">Thành công</div>
-                            </div>
+
                         </c:forEach>
 
                     </ul>
@@ -688,8 +771,44 @@
         // Gửi form đến servlet
         form.submit();
     }
-</script>
+    function searchByName(param) {
+        const txtsearch = param.value;
+        console.log("Search term:", txtsearch); // Debug search term
 
+        if (txtsearch.trim() === '') {
+            // Nếu ô tìm kiếm trống, không gửi request
+            return;
+        }
+
+        $.ajax({
+            url: "SearchAjax",
+            type: "GET",
+            data: {
+                productName: txtsearch
+            },
+            beforeSend: function() {
+                // Hiển thị loading nếu cần
+                document.getElementById("content-product").innerHTML = '<div class="text-center">Đang tìm kiếm...</div>';
+            },
+            success: function(data) {
+                console.log("Received data:", data); // Debug response data
+                const row = document.getElementById("content-product");
+                if (data.trim() === '') {
+                    row.innerHTML = '<div class="text-center">Không tìm thấy sản phẩm nào</div>';
+                } else {
+                    row.innerHTML = data;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Error:", error);
+                const row = document.getElementById("content-product");
+                row.innerHTML = '<div class="text-center text-danger">Đã xảy ra lỗi khi tìm kiếm</div>';
+            }
+        });
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/updateProductPrice.js"></script>
 </body>

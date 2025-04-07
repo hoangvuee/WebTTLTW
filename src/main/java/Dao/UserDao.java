@@ -343,7 +343,7 @@ ConnDB dao = new ConnDB();
 
     public boolean registerUser(User user) {
         ConnDB dao = new ConnDB();
-        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber) VALUES (?, ?, ?, NOW(), true,?,?)";
+        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber,isGoogle) VALUES (?, ?, ?, NOW(), false,?,?,false)";
         try (Connection conn = dao.getConn();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
@@ -401,6 +401,33 @@ ConnDB dao = new ConnDB();
                     user.setUserName(rs.getString("userName"));
                     user.setCreateDate(rs.getDate("createDate"));
                     user.setActive(rs.getBoolean("isActive"));
+                    user.setIdRole(rs.getInt("idRole"));
+                    user.setImage(rs.getString("image"));
+                  //  user.setGoogle(rs.getBoolean("isGoogle"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public User getUserByEmail1(String email) {
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setEmail(rs.getString("email"));
+                    user.setUserPassword(rs.getString("userPassword"));
+                    user.setUserName(rs.getString("userName"));
+                    user.setCreateDate(rs.getDate("createDate"));
+                    user.setActive(rs.getBoolean("isActive"));
+                    user.setIdRole(rs.getInt("idRole"));
                     return user;
                 }
             }
@@ -480,14 +507,109 @@ ConnDB dao = new ConnDB();
         }
         return hexString.toString();
     }
+    public boolean addUserGG(User user) {
+        ConnDB dao = new ConnDB();
+        String sql = "INSERT INTO users (email,  userName, image , createDate,idRole,isActive) VALUES (?, ?, ?, NOW(),?, true)";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getUserName());
+            stmt.setString(3, user.getImage());
+            stmt.setInt(4,2);
+
+            int result = stmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean addUserFb(User user) {
+        ConnDB dao = new ConnDB();
+        String sql = "INSERT INTO users (email,  userName, image , createDate,idRole,isActive,isGoogle) VALUES (?, ?, ?, NOW(),?, true,?)";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getUserName());
+            stmt.setString(3, user.getImage());
+            stmt.setInt(4,2);
+            stmt.setBoolean(5,false);
+
+            int result = stmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public String getUserAvatar(int idUser){
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT image FROM users WHERE id = ?";
+        String avatar = null; // Biến lưu ảnh đại diện
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUser); // Đổi từ String thành int
+            ResultSet rs = stmt.executeQuery(); // Dùng executeQuery()
+
+            if (rs.next()) {
+                avatar = rs.getString("image"); // Lấy URL ảnh từ cột "image"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return avatar; // Trả về URL ảnh hoặc null nếu không có ảnh
+    }
+    public boolean isUserActiveByEmail(String email){
+        String query = "SELECT isActive FROM users WHERE email = ?";
+        ConnDB dao = new ConnDB();
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int active = rs.getInt("isActive"); // Lấy kiểu int thay vì boolean
+                return active == 1; // hoặc return active != 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false; // Trả về false nếu không tìm thấy người dùng hoặc có lỗi
+    }
+
+
+    public boolean updateUserActive(String email, boolean isActive) {
+        String query = "UPDATE users SET isActive = ? WHERE email = ?";
+        ConnDB dao = new ConnDB();
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, isActive ? 1 : 0); // Chuyển boolean thành 1 (true) hoặc 0 (false)
+            stmt.setString(2, email);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // Nếu có ít nhất 1 hàng bị ảnh hưởng thì thành công
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Trả về false nếu có lỗi hoặc không cập nhật được
+    }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
        UserDao s = new UserDao();
-        String h = s.hashPassword("hoangvu123");
+//       User user = new User("hvunguyen@icloud.com","Hoàng Vũ","https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3715900748708113&height=200&width=200&ext=1745670652&hash=AbZfIjyUQdW-oHmSgXN6CKYq",2);
+//       s.addUserFb(user);
 //        System.out.println(s.updateUser(4,2,"YAUSO",false));
        // boolean ui = Boolean.parseBoolean("1");
       //  System.out.println(ui);
         //System.out.println(s.checkIsAvtive("user@gmail.com",h));
+        System.out.println(s.isUserActiveByEmail("vue@gmail.com"));
 
     }
 
