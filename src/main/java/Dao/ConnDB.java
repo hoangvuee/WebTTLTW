@@ -3,15 +3,27 @@ package Dao;
 import java.sql.*;
 
 public class ConnDB {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/DataWeb";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "";
- public  Connection conn;
+    // Get database connection info from environment variables (Docker)
+    private static final String DB_HOST = System.getenv("MYSQL_HOST") != null ?
+            System.getenv("MYSQL_HOST") : "mysql";
+    private static final String DB_PORT = System.getenv("MYSQL_PORT") != null ?
+            System.getenv("MYSQL_PORT") : "3306";
+    private static final String DB_NAME = System.getenv("MYSQL_DATABASE") != null ?
+            System.getenv("MYSQL_DATABASE") : "javadb";
+    private static final String DB_USER = System.getenv("MYSQL_USER") != null ?
+            System.getenv("MYSQL_USER") : "javauser";
+    private static final String DB_PASSWORD = System.getenv("MYSQL_PASSWORD") != null ?
+            System.getenv("MYSQL_PASSWORD") : "javapass";
+
+    // Build the JDBC URL using the environment values
+    private static final String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+
+    public Connection conn;
 
     public Connection getConn() {
         try {
             if (conn == null || conn.isClosed()) {
-                // Mở kết nối mới nếu kết nối đã đóng
+                // Open a new connection if closed
                 conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             }
         } catch (SQLException e) {
@@ -20,29 +32,17 @@ public class ConnDB {
         return conn;
     }
 
-    public ConnDB(){
-    try {
-        // Kết nối đến cơ sở dữ liệu
-        Class.forName("com.mysql.cj.jdbc.Driver");
-       conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
-
-    } catch (ClassNotFoundException | SQLException e) {
-        e.printStackTrace();
+    public ConnDB() {
+        try {
+            // Connect to the database
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            System.out.println("Connected to the database successfully: " + DB_URL);
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-
-}
-//public void addProduct(int id, String name, double price, int quantity, String image) throws SQLException {
-//        String sql  = "INSERT INTO products (id, nameProduct,price, quantity,imgProduct) VALUES (?, ?, ?, ?, ?)";
-//     stmt = conn.prepareStatement(sql);
-//    stmt.setString(1, String.valueOf(id));
-//    stmt.setString(2, name);
-//    stmt.setDouble(3, price);
-//    stmt.setInt(4, quantity);
-//    stmt.setString(5,   image);
-//    stmt.executeUpdate();
-//
-//}
 
     public static void main(String[] args) {
         ConnDB s = new ConnDB();
