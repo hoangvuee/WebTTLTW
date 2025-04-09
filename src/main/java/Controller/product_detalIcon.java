@@ -24,8 +24,10 @@ public class product_detalIcon extends HttpServlet {
         ServiceProduct serviceProduct = new ServiceProduct();
         String id = req.getParameter("productID");
         String weight = req.getParameter("weight");
+        String url = req.getParameter("url");
         System.out.println(id);
         System.out.println(weight);
+        System.out.println(url);
 
         CartProduct pro = null;
         HttpSession session = req.getSession(true);

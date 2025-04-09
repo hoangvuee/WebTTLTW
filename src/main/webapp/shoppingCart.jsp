@@ -97,8 +97,8 @@
                                 <!-- Hiển thị giá -->
                                 <div class="price-container" style="color: rgb(240, 89, 89); ;"><b>Giá:</b>
                                     <span class="original-price">${item.price} đ</span>
-                                    <span class="discount-badge">-20%</span>
-                                    <span class="discount-price"><fmt:formatNumber value="${item.price}" type="number" groupingUsed="true" /> đ</span>
+                                    <span class="discount-badge">-${item.sale}%</span>
+                                    <span class="discount-price"><fmt:formatNumber value="${item.total}" type="number" groupingUsed="true" /> đ</span>
                                 </div>
                             </div>
 
@@ -134,20 +134,22 @@
             <div class="col-lg-4">
                 <div class="cart-summary">
                     <h5 class="mb-3 box">📦 Cộng giỏ hàng</h5>
-                    <c:set var="sum" value="${sessionScope.cr7.totalPrice}" />
+                    <c:set var="discountPrice" value="${sessionScope.cr7.totalPrice}" />
+                    <c:set var="totalPrice" value="${sessionScope.cr7.rawTotalPrice}" />
+                    <c:set var="saveMoney" value="${sessionScope.cr7.saveMoney}" />
                     <ul class="list-unstyled">
                         <li class="d-flex justify-content-between">
                             <span>Tạm tính:</span> 
-                            <strong id="cart-total"><fmt:formatNumber value="${sum}" type="number" groupingUsed="true" /> đ</strong>
+                            <strong id="cart-total"><fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true" /> đ</strong>
                         </li>
                         <li class="d-flex justify-content-between mt-2">
                             <span class="fw-bold text-warning">Tiết kiệm:</span>
-                            <span id="discount-amount" class="text-danger">-500.000 đ</span>
+                            <span id="discount-amount" class="text-danger"> -<fmt:formatNumber value="${saveMoney}" type="number" groupingUsed="true" /> đ</span>
                         </li>
                         
                         <li class="total-price d-flex justify-content-between mt-2">
                             <span class="fw-bold">Tổng cộng:</span>
-                            <span id="final-total" class="text-danger fw-bold"><fmt:formatNumber value="${sum}" type="number" groupingUsed="true" /> đ</span>
+                            <span id="final-total" class="text-danger fw-bold"><fmt:formatNumber value="${discountPrice}" type="number" groupingUsed="true" /> đ</span>
                         </li>
                     </ul>
                     <a href="getShipping" style="text-decoration: none">   <button class="checkout-btn">
