@@ -1,6 +1,7 @@
 package Models.Feedback;
 
 import java.util.Date;
+import java.util.List;
 
 public class Feedback {
     private String comment;
@@ -11,6 +12,30 @@ public class Feedback {
     private String userName;
     private Date birthDate;
     private String phoneNumber;
+    private List<String> reviewImages;
+
+    public Feedback() {
+    }
+
+    public List<String> getReviewImages() {
+        return reviewImages;
+    }
+
+    public void setReviewImages(List<String> reviewImages) {
+        this.reviewImages = reviewImages;
+    }
+
+    public Feedback(String comment, Date createDate, int ratingRank, String status, String nameProduct, String userName, Date birthDate, String phoneNumber, List<String> reviewImages) {
+        this.comment = comment;
+        this.createDate = createDate;
+        this.ratingRank = ratingRank;
+        this.status = status;
+        this.nameProduct = nameProduct;
+        this.userName = userName;
+        this.birthDate = birthDate;
+        this.phoneNumber = phoneNumber;
+        this.reviewImages = reviewImages;
+    }
 
     // Getter và Setter cho comment
     public String getComment() {
@@ -83,5 +108,19 @@ public class Feedback {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "comment='" + comment + '\'' +
+                ", createDate=" + createDate +
+                ", ratingRank=" + ratingRank +
+                ", status='" + status + '\'' +
+                ", nameProduct='" + nameProduct + '\'' +
+                ", userName='" + userName + '\'' +
+                ", birthDate=" + birthDate +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", reviewImages=" + reviewImages +
+                '}';
+    }
 }

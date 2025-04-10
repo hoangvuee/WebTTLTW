@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="Models.Products.Products" %>
 <%@ page import="Models.Feedback.Feedback" %>
 <%@ page import="java.util.List" %><%--
@@ -615,7 +616,38 @@
     .btn-outline-dark:hover::before {
         left: 100%;
     }
+    .review-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+    }
 
+    .review-thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .review-thumbnail:hover {
+        transform: scale(1.05);
+    }
+
+    .more-images {
+        width: 80px;
+        height: 80px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #666;
+        cursor: pointer;
+    }
 </style>
 <body>
 <%@include file="header.jsp"%>
@@ -1068,18 +1100,32 @@
                             </p>
 
                             <p class="text-warning">
-                               
                                 <c:forEach begin="1" end="${item.ratingRank}">
                                     <i class="fas fa-star"></i>
                                 </c:forEach>
-
-
                                 <c:forEach begin="${item.ratingRank + 1}" end="5">
                                     <i class="far fa-star"></i>
                                 </c:forEach>
                             </p>
 
                             <p class="review-text">${item.status}</p>
+
+                            <!-- Phần hiển thị ảnh đánh giá -->
+                            <c:if test="${not empty item.reviewImages}">
+                                <div class="review-images">
+                                   <c:forEach items="${item.reviewImages}" var="image" varStatus="loop">
+                                       <c:if test="${loop.index < 5}"> <!-- Giới hạn hiển thị tối đa 5 ảnh -->
+                                            <img src="img/${image}" alt="Ảnh đánh giá ${loop.index + 1}"
+                                                 class="review-thumbnail"
+                                                 onclick="openImageModal('img/${image}')">
+                                       </c:if>
+                                   </c:forEach>
+                                   <c:if test="${fn:length(item.reviewImages) > 5}">5
+                                        <div class="more-images">+${fn:length(item.reviewImages) - 5}</div>
+                                 </c:if>
+                                </div>
+                          </c:if>
+
                             <div class="review-tags">
                                 <span>${item.comment}</span>
                             </div>
@@ -1092,16 +1138,17 @@
                                 <span>• ${item.createDate}</span>
                             </div>
                         </div>
+
+                        <!-- Modal hiển thị ảnh lớn -->
+                        <div id="imageModal" class="modal">
+                            <span class="close" onclick="closeImageModal()">&times;</span>
+                            <img class="modal-content" id="modalImage">
+                            <div class="modal-caption"></div>
+                        </div>
+
                     </c:forEach>
-
-
-
-
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- Tab Vận Chuyển -->
@@ -1189,6 +1236,8 @@
 
                 </ul>
             </div>
+
+            </div>
         </div>
     </div>
 </section>
@@ -1252,9 +1301,28 @@ updateWeight1(weight);
             document.getElementById('collapseExample3').classList.add('show');
         }
     }
+
     function updateWeight1(weightValue) {
         // Cập nhật giá trị weight trong form
         document.getElementById('selectedWeight').value = weightValue;
+    }
+    function openImageModal(imageSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        modal.style.display = "block";
+        modalImg.src = imageSrc;
+    }
+
+    function closeImageModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
+
+    // Đóng modal khi click bên ngoài ảnh
+    window.onclick = function(event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 </script>
 <script src="js/bootstrap.bundle.min.js"></script>
