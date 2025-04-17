@@ -1,5 +1,6 @@
 package Controller.Account;
 
+import Dao.ActivityLogDAO;
 import Models.User.User;
 import Sercurity.JwtUtil;
 import Services.ServiceRole;
@@ -27,7 +28,11 @@ import java.sql.SQLException;
 public class SignIn extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceRole serviceRole = new ServiceRole();
+    private ActivityLogDAO logDAO;
 
+    public void init() {
+        logDAO = new ActivityLogDAO();
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -96,6 +101,7 @@ public class SignIn extends HttpServlet {
                 if (user != null) {
                     session.setAttribute("userInfor", user);
                     String token = JwtUtil.generateToken(email, nameRole);
+                    System.out.println(token);
                     session.setAttribute("authToken", token);
                     resp.setHeader("Authorization", "Bearer " + token);
                 }
@@ -160,4 +166,7 @@ public class SignIn extends HttpServlet {
         }
     }
 
+    public static void main(String[] args) {
+
+    }
 }
