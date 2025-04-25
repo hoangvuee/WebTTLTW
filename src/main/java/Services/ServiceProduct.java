@@ -3,20 +3,12 @@ package Services;
 import Dao.ConnDB;
 import Dao.ProductDao;
 import Models.ManageProduct.ListProductManage;
-import Models.ManageProduct.Product;
 import Models.Product.ListProduct;
 import Models.TopProductBuy.TopProduct;
-import Models.cart.Productt;
 import Models.cart.CartProduct;
-import Models.cart.Cart;
-import Models.inforTransaction.Transaction;
-import Models.inforTransaction.TransactionHistory;
 import Models.Products.Products;
-import Sercurity.ProductFilter;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,94 +102,6 @@ public ListProduct getListProduct() throws SQLException {
         productDao.updateProductAndVariant(idProduct, weight, price, quantity, productDescription, idCategory, idSupplier, isActive);
 
     }
-    public ListProduct filterProducts(ProductFilter filter) {
-        ListProduct listProduct = new ListProduct();
-        StringBuilder sql = new StringBuilder("SELECT DISTINCT p.* FROM Products p WHERE 1=1");
-        List<Object> params = new ArrayList<>();
-
-        if (filter.getSearchQuery() != null && !filter.getSearchQuery().trim().isEmpty()) {
-            sql.append(" AND p.productName LIKE ?");  // Sửa từ p.name thành p.productName
-            params.add("%" + filter.getSearchQuery() + "%");
-        }
-
-        if (filter.getCategory() != null && !filter.getCategory().trim().isEmpty()) {
-            sql.append(" AND p.idCategory = ?");
-            params.add(filter.getCategory());
-        }
-
-        if (filter.getMinPrice() != null) {
-            sql.append(" AND EXISTS (SELECT 1 FROM product_variants pv WHERE pv.idProduct = p.id AND pv.price >= ?)");
-            params.add(filter.getMinPrice());
-        }
-
-        if (filter.getMaxPrice() != null) {
-            sql.append(" AND EXISTS (SELECT 1 FROM product_variants pv WHERE pv.idProduct = p.id AND pv.price <= ?)");
-            params.add(filter.getMaxPrice());
-        }
-
-        // Add sorting
-        if (filter.getSortBy() != null && !filter.getSortBy().isEmpty()) {
-            String sortColumn = switch (filter.getSortBy().toLowerCase()) {
-                case "name" -> "p.productName";
-                case "price" -> "(SELECT MIN(price) FROM product_variants WHERE idProduct = p.id)";
-                default -> "p.id";
-            };
-
-            sql.append(" ORDER BY ").append(sortColumn);
-            if (filter.getSortOrder() != null && filter.getSortOrder().equalsIgnoreCase("DESC")) {
-                sql.append(" DESC");
-            } else {
-                sql.append(" ASC");
-            }
-        }
-
-        try (PreparedStatement stmt = dao.conn.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                // Lấy thông tin giá từ product_variants
-                String priceQuery = "SELECT MIN(price) as minPrice, MAX(price) as maxPrice FROM product_variants WHERE idProduct = ?";
-                PreparedStatement priceStmt = dao.conn.prepareStatement(priceQuery);
-                priceStmt.setInt(1, rs.getInt("id"));
-                ResultSet priceRs = priceStmt.executeQuery();
-                double minPrice = 0, maxPrice = 0;
-                if (priceRs.next()) {
-                    minPrice = priceRs.getDouble("minPrice");
-                    maxPrice = priceRs.getDouble("maxPrice");
-                }
-
-                // Lấy thông tin hình ảnh
-                String imageQuery = "SELECT imageData FROM Images WHERE idProduct = ? ORDER BY id LIMIT 2";
-                PreparedStatement imageStmt = dao.conn.prepareStatement(imageQuery);
-                imageStmt.setInt(1, rs.getInt("id"));
-                ResultSet imageRs = imageStmt.executeQuery();
-                String image1 = null, image2 = null;
-                if (imageRs.next()) {
-                    image1 = imageRs.getString("imageData");
-                    if (imageRs.next()) {
-                        image2 = imageRs.getString("imageData");
-                    }
-                }
-
-                listProduct.addProduct(
-                        rs.getInt("id"),
-                        rs.getString("productName"),
-                        image1,
-                        image2,
-                        minPrice,
-                        maxPrice
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return listProduct;
-    }
-
     }
 
 

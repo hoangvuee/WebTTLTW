@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: java-web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - mysql
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=dataweb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=Passnhutren1
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=dataweb
+      - MYSQL_ROOT_PASSWORD=Passnhutren1
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  redis-data:
+  mysql-data:

@@ -3,7 +3,7 @@ package Dao;
 import java.sql.*;
 
 public class ConnDB {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/DataWeb";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/dataweb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Passnhutren1";
     public  Connection conn;

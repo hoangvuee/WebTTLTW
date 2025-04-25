@@ -5,6 +5,8 @@ import Models.User.User;
 import Sercurity.JwtUtil;
 import Services.ServiceRole;
 import Services.ServiceUser;
+import Utils.LogActions;
+import Utils.LogConfig;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
@@ -24,15 +26,13 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
+
 @WebServlet("/checkLogin")
 public class SignIn extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceRole serviceRole = new ServiceRole();
-    private ActivityLogDAO logDAO;
+    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
 
-    public void init() {
-        logDAO = new ActivityLogDAO();
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,6 +42,11 @@ public class SignIn extends HttpServlet {
         session.removeAttribute("redirectPage");
         session.removeAttribute("redirectDelay");
         Integer idUser = (Integer) session.getAttribute("idUser");
+
+
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
+
 
         // Nếu đã đăng nhập thì chuyển hướng
         if (idUser != null) {
@@ -89,19 +94,29 @@ public class SignIn extends HttpServlet {
                 session.removeAttribute("errorType");
                 session.removeAttribute("errorMessage");
 
+
+
                 int id = serviceUser.check(email, hashedPassword);
                 int idRole = serviceUser.checkRole(email, hashedPassword);
                 String nameRole = serviceRole.getRoleNameById(idRole);
 
-                session.setAttribute("idUser", id);
-                session.setAttribute("idRole", idRole);
-                session.setAttribute("nameRole", nameRole);
-
                 User user = serviceUser.getUserByEmail(email);
                 if (user != null) {
+                    activityLogDAO.logUserActivity(
+                            user.getEmail(),
+                            nameRole,
+                            LogActions.USER_LOGIN,
+                            "Successful login with role: " + nameRole,
+                            ipAddress,
+                            userAgent
+                    );
+
                     session.setAttribute("userInfor", user);
+                    session.setAttribute("idUser", id);
+                    session.setAttribute("idRole", idRole);
+                    session.setAttribute("nameRole", nameRole);
+                    
                     String token = JwtUtil.generateToken(email, nameRole);
-                    System.out.println(token);
                     session.setAttribute("authToken", token);
                     resp.setHeader("Authorization", "Bearer " + token);
                 }
@@ -110,6 +125,15 @@ public class SignIn extends HttpServlet {
             } else {
                 // Sai thông tin đăng nhập
                 failedAttempts++;
+
+                activityLogDAO.logUserActivity(
+                        "Unknown",
+                        "Guest",
+                        LogActions.LOGIN_FAILED,
+                        "Failed login attempt #" + failedAttempts + " for email: " + email,
+                        ipAddress,
+                        userAgent
+                );
                 session.setAttribute("errorType", "login");
                 session.setAttribute("errorMessage", "Sai tài khoản hoặc mật khẩu!");
                 session.setAttribute("failedAttempts", failedAttempts);
