@@ -581,7 +581,7 @@
                                     <!-- Hình ảnh sản phẩm -->
                                     <div class="img_product position-relative">
                                         <a href="product_detail?id=${item.id}" style="text-decoration: none; color: inherit;">
-                                            <img src="img/${item.fileName1}" class="default-img " alt="Product Image" style="width: 100%; height: 200px; border-bottom: 1px solid #eee;">
+                                            <img src="img/${item.fileName1}" class="default-img " id="image" alt="Product Image" style="width: 100%; height: 200px; border-bottom: 1px solid #eee;">
                                             <img src="img/${item.fileName2}" class="hover-img position-absolute" alt="Hover Image" style="width: 100%; height: auto; top: 0; left: 0; transition: opacity 0.3s ease;">
                                         </a>
                                         <!-- Icons hiển thị khi hover -->
@@ -590,6 +590,8 @@
                                             <form id="cart-form-${item.id}" action="product_deIcon" method="GET" style="display: none;">
                                                 <input type="hidden" name="productID" value="${item.id}">
                                                 <input type="hidden" name="weight" class="selected-weight" value="">
+                                                <input type="hidden" name="imageURL" class="image-url" value="">
+
                                             </form>
 
                                             <!-- Icon giỏ hàng -->
@@ -768,9 +770,19 @@
             return;
         }
 
+        // Tìm ảnh hover trong cùng card sản phẩm
+        var productCard = form.closest('.product-card');
+        var hoverImg = productCard.querySelector('.hover-img');
+        var url = hoverImg ? hoverImg.getAttribute('src') : 'Không có ảnh';
+        form.querySelector('.image-url').value = url;
+
+
+        console.log(url + " -> ảnh hover");
+
         // Gửi form đến servlet
         form.submit();
     }
+
 </script>
 
 <script src="js/bootstrap.bundle.min.js"></script>

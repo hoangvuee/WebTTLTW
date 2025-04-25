@@ -1,5 +1,6 @@
 package Controller.Account;
 
+import Services.ServiceResetToken;
 import Services.ServiceUser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 )
 public class ChangePassword  extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
+    ServiceResetToken serviceResetToken = new ServiceResetToken();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);

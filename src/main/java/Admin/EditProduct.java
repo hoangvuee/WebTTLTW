@@ -1,6 +1,8 @@
 package Admin;
 
+import DTO.ProductDTO;
 import Services.ServiceProduct;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,42 +13,47 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(
-        value = "/admin/editProduct"
-)
+@WebServlet("/admin/editProduct")
 public class EditProduct extends HttpServlet {
-    ServiceProduct serviceProduct = new ServiceProduct();
+    private ServiceProduct serviceProduct = new ServiceProduct();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy id và weight từ request
+        String id = req.getParameter("id");
+        String weight = req.getParameter("weight");
+        ProductDTO productDTO = new ProductDTO();
+
+        // Gọi service để lấy thông tin sản phẩm dựa trên id và weight
+        productDTO = serviceProduct.getProductByIDandWeight(id, Float.parseFloat(weight));
+
+        // Chuyển dữ liệu sản phẩm thành JSON để trả về cho client
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(productDTO);
+
+        // Cấu hình response trả về cho client
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(jsonResponse);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các tham số từ form (ví dụ: thông tin sản phẩm đã được sửa)
+//        String id = req.getParameter("id");
+//        String name = req.getParameter("name");
+//        String weight = req.getParameter("weight");
+//
+//        // Cập nhật thông tin sản phẩm
+//        ProductDTO productDTO = new ProductDTO();
+//        productDTO.setId(id);
+//        productDTO.setName(name);
+//        productDTO.setWeight( Integer.parseInt(weight));
 
-        int productId = Integer.parseInt(req.getParameter("productId"));
-        String productName = req.getParameter("productName");
-        double productPrice = Double.parseDouble(req.getParameter("productPrice"));
-        int productQuantity = Integer.parseInt(req.getParameter("productQuantity"));
-        double productWeight = Double.parseDouble(req.getParameter("productWeight"));
-        String productDescription = req.getParameter("productDescription");
-        int idSupplier = Integer.parseInt(req.getParameter("productSupplier"));
-        int idCategory = Integer.parseInt(req.getParameter("productCategory"));
-        int  productStatus = Integer.parseInt(req.getParameter("productStatus"));
-        System.out.println("productId: " + productId);
-        System.out.println("productName: " + productName);
-        System.out.println("productPrice: " + productPrice);
-        System.out.println("productQuantity: " + productQuantity);
-        System.out.println("productWeight: " + productWeight);
-        System.out.println("productDescription: " + productDescription);
-        System.out.println("productSupplier: " + idSupplier);
-        System.out.println("productCategory: " + idCategory);
-        System.out.println("productStatus: " + productStatus);
+        // Giả sử ServiceProduct có một phương thức để cập nhật sản phẩm
+        //serviceProduct.updateProduct(productDTO);
 
-
-       // serviceProduct.updateProduct(productId,productPrice,productQuantity,productDescription,productWeight, Boolean.parseBoolean(productStatus));
-        try {
-            serviceProduct.updateProductAndVariant(productId,productWeight,productPrice,productQuantity,productDescription,idCategory,idSupplier,productStatus);
-            resp.sendRedirect("admin/getAllProduct");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-
+        // Trả về phản hồi nếu cần
+        resp.getWriter().write("Product updated successfully");
     }
 }

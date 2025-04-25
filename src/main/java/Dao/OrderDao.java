@@ -41,7 +41,7 @@ public class OrderDao {
 
     public void saveOrderDetails(int orderId, Cart cart) throws SQLException {
         System.out.println(cart.getItems());
-        String sql = "INSERT INTO order_details (idOrder, idProduct, quantity, price,nameProduct) VALUES (?, ?, ?, ?,?)";
+        String sql = "INSERT INTO order_details (idOrder, idProduct, quantity, price,nameProduct,weight,imageURL) VALUES (?, ?, ?, ?,?,?,?)";
         try (PreparedStatement stmt = dao.conn.prepareStatement(sql)) {
             for (CartProduct item : cart.getItems()) {
                 stmt.setInt(1, orderId);
@@ -49,6 +49,9 @@ public class OrderDao {
                 stmt.setInt(3, item.getQuantity());
                 stmt.setDouble(4, item.getPrice());
                 stmt.setString(5, item.getName());
+                stmt.setDouble(6,item.getWeight());
+                stmt.setString(7, item.getImg());
+
                 stmt.addBatch(); // Thêm vào batch
             }
             stmt.executeBatch(); // Thực hiện batch
@@ -58,7 +61,18 @@ public class OrderDao {
     public List<Product> getOrderDetailsByIdOrder(int idOrder) throws SQLException {
         List<Product> products = new ArrayList<>();
 
-        String query = "SELECT * FROM order_details WHERE idOrder = ?";
+        String query = "SELECT \n" +
+                "    order_details.*, \n" +
+                "    orders.*, \n" +
+                "    products.*, \n" +
+                "    MIN(Images.imageData) AS image_url\n" +
+                 ""+
+                "FROM order_details\n" +
+                "INNER JOIN orders ON orders.id = order_details.idOrder\n" +
+                "INNER JOIN products ON order_details.idProduct = products.id\n" +
+                "INNER JOIN Images ON Images.idProduct = products.id\n" +
+                "WHERE order_details.idOrder = ?\n" +
+                "GROUP BY order_details.id, orders.id, products.id;\n";
 
 
         PreparedStatement preparedStatement = dao.conn.prepareStatement(query);
@@ -74,9 +88,15 @@ public class OrderDao {
                 int quantity = resultSet.getInt("quantity");
                 int price = resultSet.getInt("price");
                 String nameProduct = resultSet.getString("nameProduct");
+                double weight = resultSet.getDouble("weight");
+                String image = resultSet.getString("image_url");
+                boolean isRated = resultSet.getBoolean("isRated");
 
                 // Tạo đối tượng Product và thêm vào danh sách
-                products.add(new Product(id, idOrder, idProduct, quantity, price, nameProduct));
+                products.add(new Product(id, idOrder, idProduct, quantity, price, nameProduct,image,weight,isRated));
+
+                System.out.println(weight);
+                System.out.println(isRated);
             }
         }
         return products;
@@ -321,8 +341,8 @@ public class OrderDao {
 
     public static void main(String[] args) throws SQLException {
         OrderDao s = new OrderDao();
-        s.getAllOrders();
-    }
+        //s.getAllOrders();
+        System.out.println(s.getOrderDetailsByIdOrder(86).toString());    }
 }
 
 

@@ -1,5 +1,6 @@
 package Services;
 
+import DTO.ProductDTO;
 import Dao.ConnDB;
 import Dao.ProductDao;
 import Models.ManageProduct.ListProductManage;
@@ -59,7 +60,10 @@ public class ServiceProduct {
         return userId;
     }
 
+    public void getAllProductIds(List<ProductDTO> variants){
 
+        productDao.getAllProductIds(variants);
+    }
 
 public ListProduct getListProduct() throws SQLException {
 
@@ -109,9 +113,13 @@ public ListProduct getListProduct() throws SQLException {
         productDao.updateProductAndVariant(idProduct, weight, price, quantity, productDescription, idCategory, idSupplier, isActive);
 
     }
+    public ProductDTO getProductByIDandWeight(String idProduct, float weight) {
+        return productDao.getProductByIDandWeight(idProduct, weight);
+    }
+
     public static void main(String[] args) throws Exception {
         ServiceProduct s = new ServiceProduct();
-        Transaction tr = new Transaction();
+      //  Transaction tr = new Transaction();
       //  System.out.println(s.getProductVariantCountByIdAndWeight(1,200));
         //System.out.println(s.getProductList(22));
        // System.out.println(s.getById("1",200));
@@ -120,7 +128,9 @@ public ListProduct getListProduct() throws SQLException {
 
 //s.getListProduct();
 //s.getProductDetail("44");
-        System.out.println(s.getAllProducts().getItems().size());
+      //  System.out.println(s.getAllProducts().getItems().size());
+        List<ProductDTO> list = new ArrayList<>();
+      s.getAllProductIds(list);
 
     }
 }

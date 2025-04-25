@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -31,10 +32,14 @@ public class SignIn extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Integer id = (Integer) session.getAttribute("idUser");
+        session.removeAttribute("errorType");
+        session.removeAttribute("errorMessage");
+        session.removeAttribute("redirectPage");
+        session.removeAttribute("redirectDelay");
+        Integer idUser = (Integer) session.getAttribute("idUser");
 
-        // Nếu đã đăng nhập, chuyển hướng luôn
-        if (id != null) {
+        // Nếu đã đăng nhập thì chuyển hướng
+        if (idUser != null) {
             resp.sendRedirect("setupData");
             return;
         }
@@ -42,86 +47,79 @@ public class SignIn extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        // Đếm số lần đăng nhập sai trong session
+        // Đếm số lần đăng nhập sai
         Integer failedAttempts = (Integer) session.getAttribute("failedAttempts");
-        if (failedAttempts == null) {
-            failedAttempts = 0;
-        }
+        failedAttempts = (failedAttempts == null) ? 0 : failedAttempts;
 
-        // Kiểm tra reCAPTCHA nếu nhập sai >= 3 lần
-        String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
-        System.out.println("gRecaptchaResponse: " + gRecaptchaResponse);
-
+        // Kiểm tra reCAPTCHA nếu sai từ 3 lần trở lên
         if (failedAttempts >= 3) {
-            if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty()) {
+            String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
+            if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty() || !verifyCaptcha(gRecaptchaResponse)) {
+                session.setAttribute("errorType", "captcha");
                 session.setAttribute("errorMessage", "Vui lòng xác minh CAPTCHA!");
-                resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
-                return;
-            }
-
-            boolean captchaVerified = verifyCaptcha(gRecaptchaResponse);
-            if (!captchaVerified) {
-                session.setAttribute("errorMessage", "CAPTCHA không hợp lệ. Vui lòng thử lại!");
+                session.setAttribute("failedAttempts", failedAttempts);
                 resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
                 return;
             }
         }
 
-
-        // Hash password
-        String hashedPassword;
         try {
-            hashedPassword = serviceUser.hashPassword(password);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Kiểm tra tài khoản có hợp lệ không
-        if (serviceUser.checkCredentials(email, hashedPassword)) {
-            try {
-                if (serviceUser.checkIsAvtive(email, hashedPassword) == 0) {
-                    session.setAttribute("errorMessage", "Tài khoản bị khóa!");
+            String hashedPassword = serviceUser.hashPassword(password);
+            if (serviceUser.checkCredentials(email, hashedPassword)) {
+                // Kiểm tra trạng thái tài khoản
+                if (!serviceUser.isUserActiveByEmail(email)) {
+                    // Tài khoản chưa xác thực
+                    session.setAttribute("errorType", "unverified");
+                    session.setAttribute("errorMessage", "Tài khoản chưa được xác thực! Vui lòng kiểm tra email để kích hoạt tài khoản.");
+                    session.setAttribute("redirectPage", req.getContextPath() + "/Account/activeAccount.jsp?email=" + URLEncoder.encode(email, "UTF-8"));
+                    session.setAttribute("redirectDelay", 5);
+                    session.setAttribute("unverifiedEmail", email);
                     resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
                     return;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+
+                // Tài khoản đã xác thực - tiến hành đăng nhập
+                session.removeAttribute("failedAttempts");
+                session.removeAttribute("unverifiedEmail");
+                session.removeAttribute("errorType");
+                session.removeAttribute("errorMessage");
+
+                int id = serviceUser.check(email, hashedPassword);
+                int idRole = serviceUser.checkRole(email, hashedPassword);
+                String nameRole = serviceRole.getRoleNameById(idRole);
+
+                session.setAttribute("idUser", id);
+                session.setAttribute("idRole", idRole);
+                session.setAttribute("nameRole", nameRole);
+
+                User user = serviceUser.getUserByEmail(email);
+                if (user != null) {
+                    session.setAttribute("userInfor", user);
+                    String token = JwtUtil.generateToken(email, nameRole);
+                    session.setAttribute("authToken", token);
+                    resp.setHeader("Authorization", "Bearer " + token);
+                }
+
+                resp.sendRedirect("setupData");
+            } else {
+                // Sai thông tin đăng nhập
+                failedAttempts++;
+                session.setAttribute("errorType", "login");
+                session.setAttribute("errorMessage", "Sai tài khoản hoặc mật khẩu!");
+                session.setAttribute("failedAttempts", failedAttempts);
+                resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
             }
-
-            // Đăng nhập thành công, reset failedAttempts
-            session.removeAttribute("failedAttempts");
-
-            // Lấy thông tin user
-            int idUser, idRole;
-            String nameRole;
-            try {
-                idUser = serviceUser.check(email, hashedPassword);
-                idRole = serviceUser.checkRole(email, hashedPassword);
-                nameRole = serviceRole.getRoleNameById(idRole);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            // Lưu thông tin user vào session
-            session.setAttribute("idUser", idUser);
-            session.setAttribute("idRole", idRole);
-            session.setAttribute("nameRole", nameRole);
-
-            // Tạo JWT token
-            User user = serviceUser.getUserByEmail(email);
-            if (user != null) {
-                session.setAttribute("userInfor", user);
-                String token = JwtUtil.generateToken(email, serviceRole.getRoleNameById(user.getIdRole()));
-                session.setAttribute("authToken", token);
-                resp.setHeader("Authorization", "Bearer " + token);
-            }
-
-            resp.sendRedirect("setupData");
-        } else {
-            failedAttempts++;
-            System.out.println(failedAttempts + "Capcha");
-            session.setAttribute("failedAttempts", failedAttempts);
-            session.setAttribute("errorMessage", "Sai tài khoản hoặc mật khẩu!");
+        } catch (NoSuchAlgorithmException e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống khi xử lý mật khẩu");
+            resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+        } catch (SQLException e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống khi truy vấn dữ liệu");
+            resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+        } catch (Exception e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống không xác định");
             resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
         }
     }

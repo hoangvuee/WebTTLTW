@@ -6,7 +6,7 @@ public class ConnDB {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/DataWeb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
- public  Connection conn;
+    public  Connection conn;
 
     public Connection getConn() {
         try {
@@ -21,17 +21,17 @@ public class ConnDB {
     }
 
     public ConnDB(){
-    try {
-        // Kết nối đến cơ sở dữ liệu
-        Class.forName("com.mysql.cj.jdbc.Driver");
-       conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try {
+            // Kết nối đến cơ sở dữ liệu
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
 
-    } catch (ClassNotFoundException | SQLException e) {
-        e.printStackTrace();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
     }
-
-}
 //public void addProduct(int id, String name, double price, int quantity, String image) throws SQLException {
 //        String sql  = "INSERT INTO products (id, nameProduct,price, quantity,imgProduct) VALUES (?, ?, ?, ?, ?)";
 //     stmt = conn.prepareStatement(sql);

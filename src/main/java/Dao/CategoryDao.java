@@ -46,4 +46,33 @@ public class CategoryDao {
         }
         return item;
     }
+    public String getNameCategoriesByIdProduct(String idProduct) throws SQLException {
+        String categoryName = null;
+
+        String query = "SELECT categories.name " +
+                "FROM categories " +
+                "JOIN products ON products.idCategory = categories.id " +
+                "WHERE products.id = ?";
+
+        PreparedStatement preparedStatement = dao.conn.prepareStatement(query);
+        preparedStatement.setString(1, idProduct); // ⚠️ Gán giá trị cho placeholder ?
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            categoryName = resultSet.getString("name");
+        }
+
+        // Đóng tài nguyên nếu không dùng try-with-resources
+        resultSet.close();
+        preparedStatement.close();
+
+        return categoryName;
+    }
+
+    public static void main(String[] args) throws SQLException {
+        CategoryDao categoryDao = new CategoryDao();
+        System.out.println(categoryDao.getNameCategoriesByIdProduct("44"));
+    }
+
 }

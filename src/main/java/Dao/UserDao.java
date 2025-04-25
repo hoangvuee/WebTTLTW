@@ -343,7 +343,7 @@ ConnDB dao = new ConnDB();
 
     public boolean registerUser(User user) {
         ConnDB dao = new ConnDB();
-        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber) VALUES (?, ?, ?, NOW(), false,?,?)";
+        String sql = "INSERT INTO users (email, userPassword, userName, createDate, isActive,idRole,phoneNumber,isGoogle) VALUES (?, ?, ?, NOW(), false,?,?,false)";
         try (Connection conn = dao.getConn();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
@@ -561,15 +561,55 @@ ConnDB dao = new ConnDB();
 
         return avatar; // Trả về URL ảnh hoặc null nếu không có ảnh
     }
+    public boolean isUserActiveByEmail(String email){
+        String query = "SELECT isActive FROM users WHERE email = ?";
+        ConnDB dao = new ConnDB();
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int active = rs.getInt("isActive"); // Lấy kiểu int thay vì boolean
+                return active == 1; // hoặc return active != 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false; // Trả về false nếu không tìm thấy người dùng hoặc có lỗi
+    }
+
+
+    public boolean updateUserActive(String email, boolean isActive) {
+        String query = "UPDATE users SET isActive = ? WHERE email = ?";
+        ConnDB dao = new ConnDB();
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, isActive ? 1 : 0); // Chuyển boolean thành 1 (true) hoặc 0 (false)
+            stmt.setString(2, email);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // Nếu có ít nhất 1 hàng bị ảnh hưởng thì thành công
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Trả về false nếu có lỗi hoặc không cập nhật được
+    }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
        UserDao s = new UserDao();
-       User user = new User("hvunguyen@icloud.com","Hoàng Vũ","https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3715900748708113&height=200&width=200&ext=1745670652&hash=AbZfIjyUQdW-oHmSgXN6CKYq",2);
-       s.addUserFb(user);
+//       User user = new User("hvunguyen@icloud.com","Hoàng Vũ","https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3715900748708113&height=200&width=200&ext=1745670652&hash=AbZfIjyUQdW-oHmSgXN6CKYq",2);
+//       s.addUserFb(user);
 //        System.out.println(s.updateUser(4,2,"YAUSO",false));
        // boolean ui = Boolean.parseBoolean("1");
       //  System.out.println(ui);
         //System.out.println(s.checkIsAvtive("user@gmail.com",h));
+        System.out.println(s.isUserActiveByEmail("vue@gmail.com"));
 
     }
 

@@ -21,7 +21,7 @@ import java.sql.SQLException;
 @WebServlet(
         value = "/forgotPassword"
 )
-public class ForgotPasswordServlet extends HttpServlet  {
+public class ForgotPasswordServlet extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceResetToken serviceResetToken = new ServiceResetToken();
 
@@ -33,11 +33,11 @@ public class ForgotPasswordServlet extends HttpServlet  {
         System.out.println(user.getEmail());
         String hashedPassword = null;
         String newPassword = null;
-        if(user != null){
+        if (user != null) {
             String token = serviceResetToken.generateRandomToken();
             try {
                 boolean isTokenSaved = serviceResetToken.saveResetToken(user.getId(), token);
-                if(isTokenSaved){
+                if (isTokenSaved) {
                     // Tạo link chứa token
                     String resetPasswordLink = "http://localhost:8080/WebFinall/Account/resetPassword.jsp?token=" + token;
 
@@ -64,44 +64,6 @@ public class ForgotPasswordServlet extends HttpServlet  {
             }
 
 
-            try {
-
-                hashedPassword = serviceUser.hashPassword(newPassword);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-
         }
-        boolean isUpdated = serviceUser.updatePassword(user.getId(), hashedPassword);
-        if(isUpdated){
-            String subject = "Thông Báo Đổi Mật Khẩu Tài Khoản Của Bạn";
-            String messageContent = "Kính gửi " + user.getUserName() + ",\n" +
-                    "\n" +
-                    "Chúng tôi xin thông báo rằng mật khẩu tài khoản của bạn đã được thay đổi thành công. Mật khẩu mới của bạn là: " + newPassword + ". Nếu bạn không yêu cầu thay đổi mật khẩu này, vui lòng liên hệ với chúng tôi ngay lập tức qua [ vufit2004@icloud.com ] để được hỗ trợ.\n" +
-                    "\n" +
-                    "Để bảo mật tài khoản của bạn, chúng tôi khuyên bạn nên thay đổi mật khẩu ngay khi có thể. Nếu bạn quên mật khẩu, vui lòng sử dụng tính năng \"Quên mật khẩu\" trên trang đăng nhập của chúng tôi.\n" +
-                    "\n" +
-                    "Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!\n" +
-                    "\n" +
-                    "Trân trọng,\n" +
-                    "[Đội ngũ hỗ trợ]\n" +
-                    "[Thông tin liên hệ]\n" +
-                    "0868032463";
-
-            try {
-                serviceUser.sendEmail(email,subject,messageContent);
-                resp.sendRedirect("Account/login.jsp");
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-
-
-
     }
-
-
-
 }

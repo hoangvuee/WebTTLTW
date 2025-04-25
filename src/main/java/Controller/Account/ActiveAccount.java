@@ -15,6 +15,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+
 @WebServlet("/activeAccount")
 public class ActiveAccount extends HttpServlet {
     private RedisOTPService redisOTPService = new RedisOTPService();
@@ -28,6 +29,7 @@ public class ActiveAccount extends HttpServlet {
         String email = req.getParameter("email");
         PrintWriter out = resp.getWriter();
         JsonObject jsonResponse = new JsonObject();
+
 
         try {
             if (email == null || email.isEmpty()) {

@@ -28,36 +28,45 @@ public class CheckQuantityProductSub extends HttpServlet {
             HttpSession session = req.getSession(true);
             Cart cart = (Cart) session.getAttribute("cr7");
 
-            if (cart == null || cart.getItems() == null) {
-                System.out.println("Giỏ hàng hoặc danh sách sản phẩm bị null.");
+            // Kiểm tra giỏ hàng hợp lệ
+            if (cart == null) {
+                cart = new Cart(); // Tạo giỏ hàng mới nếu chưa có
+                session.setAttribute("cr7", cart);
+            }
+
+            if (cart.getItems() == null || cart.getItems().isEmpty()) {
+                System.out.println("Giỏ hàng chưa có sản phẩm.");
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Giỏ hàng chưa được khởi tạo.");
                 return;
             }
 
-            int checkQuantity = serviceProduct.getProductVariantCountByIdAndWeight(idProduct, weight);
-
+            // Tìm sản phẩm trong giỏ và cập nhật số lượng
+            CartProduct productToRemove = null;
             for (CartProduct pro : cart.getItems()) {
                 if (pro.getId().equals(String.valueOf(idProduct)) && pro.weight == weight) {
                     pro.quantity--;
 
-                    // Cập nhật giá trị tổng
-                    double rawProductPrice = pro.price;
-                    double discountedPrice = pro.price - (pro.price * pro.getSale() / 100);
-                    double totalProductPrice = discountedPrice;
+                    // Cập nhật giá trị tổng của sản phẩm
+                    pro.rawTotal = pro.price * pro.quantity;
+                    pro.total = (pro.price - (pro.price * pro.getSale() / 100)) * pro.quantity;
 
-                    pro.rawTotal -= rawProductPrice;
-                    pro.total -= totalProductPrice;
-                    cart.rawTotalPrice -= rawProductPrice;
-                    cart.totalPrice -= totalProductPrice;
-
-                    // Nếu số lượng bằng 0, xóa sản phẩm khỏi giỏ
+                    // Nếu số lượng bằng 0, đánh dấu sản phẩm để xóa
                     if (pro.quantity <= 0) {
-                        cart.getItems().remove(pro);
+                        productToRemove = pro;
                     }
                     break;
                 }
             }
 
+            // Xóa sản phẩm ngoài vòng lặp để tránh ConcurrentModificationException
+            if (productToRemove != null) {
+                cart.getItems().remove(productToRemove);
+            }
+
+            // Cập nhật lại toàn bộ giỏ hàng
+            recalculateCart(cart);
+
+            // Lưu lại giỏ hàng vào session
             session.setAttribute("cr7", cart);
             resp.sendRedirect("shoppingCart.jsp");
 
@@ -68,6 +77,18 @@ public class CheckQuantityProductSub extends HttpServlet {
             e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Đã xảy ra lỗi không mong muốn.");
         }
+    }
+    private void recalculateCart(Cart cart) {
+        cart.rawTotalPrice = 0;
+        cart.totalPrice = 0;
+
+        for (CartProduct item : cart.getItems()) {
+            cart.rawTotalPrice += item.rawTotal;
+            cart.totalPrice += item.total;
+        }
+
+        cart.saveMoney = cart.rawTotalPrice - cart.totalPrice;
 
     }
+
 }

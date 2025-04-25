@@ -1,5 +1,9 @@
 package Dao;
 
+import DTO.DescriptionDTO;
+import DTO.ProductDTO;
+import DTO.PromotionDTO;
+import DTO.SaleDTO;
 import Models.ManageProduct.ListProductManage;
 import Models.ManageProduct.Product;
 import Models.Product.ListProduct;
@@ -12,10 +16,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductDao {
     ConnDB dao = new ConnDB();
+    private CategoryDao categoryDao = new CategoryDao();
+    private SaleDao saleDao = new SaleDao();
+    private InventoryDao inventoryDao = new InventoryDao();
+    private DescriptionDao descriptionDao = new DescriptionDao();
     public List<CartProduct> getProductList(double weight) throws SQLException {
         List<CartProduct> productList = new ArrayList<>(); // Khởi tạo danh sách sản phẩm
 
@@ -697,14 +707,168 @@ String temp = checkState(isActive)  ;
             }
         }
     }
+    public void getAllProductIds(List<ProductDTO> variants) {
+        ConnDB dao = new ConnDB();
+        String query = "SELECT id, productName, image FROM products";
+
+        // ✅ Tạo cache để dùng lại trong vòng lặp
+        Map<Integer, String> categoryCache = new HashMap<>();
+
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("productName");
+                String url = rs.getString("image");
+
+                getVariantsByProductId(id, variants, name, url, categoryCache);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<ProductDTO> getVariantsByProductId(
+            int idProduct,
+            List<ProductDTO> variants,
+            String name,
+            String image,
+            Map<Integer, String> categoryCache) {
+
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT * FROM product_variants WHERE idProduct = ?";
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idProduct);
+
+            // 🔍 Cache category name
+            String cate = categoryCache.computeIfAbsent(idProduct, k -> {
+                try {
+                    return categoryDao.getNameCategoriesByIdProduct(String.valueOf(k));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return "Unknown";
+                }
+            });
+
+            Map<String, Double> saleMap = saleDao.getSalesByProductId(idProduct);
+            Map<String, Integer> soldMap = inventoryDao.getAllSoldQuantities();
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ProductDTO variant = new ProductDTO();
+                    String idVariant = rs.getString("id");
+
+                    variant.setId(idVariant);
+                    variant.setSale(saleMap.getOrDefault(idVariant, 0.0)); // Set sale
+                    variant.setImage(image);
+                    variant.setCategory(cate);
+                    variant.setName(name);
+                    variant.setIdProduct(rs.getString("idProduct"));
+                    variant.setWeight((int) rs.getFloat("weight"));
+                    String key = rs.getInt("idProduct") + "_" + (int) rs.getFloat("weight");
+                    int sold = soldMap.getOrDefault(key, 0);
+                    int imported = rs.getInt("quantity");
+                    variant.setInventory(imported - sold);
+                    variant.setPrice(rs.getInt("price"));
+                    variant.setIsActive(rs.getString("isActive"));
+                    variant.setImportDate(rs.getString("importDate"));
+                    variant.setQuantity(rs.getInt("quantity"));
+
+                    variants.add(variant);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return variants;
+    }
+
+    public ProductDTO getProductByIDandWeight(String idProduct, float weight) {
+        ProductDTO productDTO = new ProductDTO();
+        String sql = "SELECT \n" +
+                "    p.id AS id,\n" +
+                "    p.productName AS name,\n" +
+                "    p.image,\n" +
+                "    c.name AS category,\n" +
+                "    pv.price,\n" +
+                "    pv.weight,\n" +
+                "    pv.quantity AS inventory,\n" +
+                "    IF(pv.isActive = 1, 'Active', 'Inactive') AS status,\n" +
+                "    pv.quantity,\n" +
+                "    IF(pv.isActive = 1, 'Active', 'Inactive') AS isActive,\n" +
+                "    pv.id AS idVariant,\n" +
+                "    pv.importDate\n" + // Add importDate here
+                "FROM \n" +
+                "    products p\n" +
+                "JOIN \n" +
+                "    categories c ON p.idCategory = c.id\n" +
+                "JOIN \n" +
+                "    product_variants pv ON p.id = pv.idProduct\n" +
+                "WHERE \n" +
+                "    pv.idProduct = ?  \n" +
+                "    AND pv.weight = ?;\n";
+
+        ConnDB dao = new ConnDB();
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, idProduct);
+            stmt.setDouble(2, weight);
+            Map<String, Integer> soldMap = inventoryDao.getAllSoldQuantities();
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    // Set information for ProductDTO
+                    productDTO.setId(rs.getString("idVariant"));
+                    productDTO.setName(rs.getString("name"));
+                    productDTO.setImage(rs.getString("image"));
+                    productDTO.setCategory(rs.getString("category"));
+                    productDTO.setPrice(rs.getDouble("price"));
+                    productDTO.setWeight(rs.getInt("weight"));
+                    productDTO.setStatus(rs.getString("status"));
+                    productDTO.setQuantity(rs.getInt("quantity"));
+                    productDTO.setIsActive(rs.getString("isActive"));
+                    productDTO.setIdProduct(idProduct);
+                    productDTO.setImportDate(String.valueOf(rs.getTimestamp("importDate")));
+                    String key = idProduct + "_" + (int) rs.getFloat("weight");
+                    int sold = soldMap.getOrDefault(key, 0);
+                    int imported = rs.getInt("quantity");
+                    productDTO.setInventory(imported - sold);
+                  SaleDTO sale = saleDao.getFullSaleByIdVariant(rs.getString("idVariant"));
+                  List<DescriptionDTO> descriptionDTOS = descriptionDao.getAllDescriptionByIdProduct(idProduct);
+                  List<PromotionDTO> promotionDTOS = saleDao.getFullPromotionByIdVariant(rs.getString("idVariant"));
+                    productDTO.setSaleDTO(sale);
+                    productDTO.setPromotionDTOS(promotionDTOS);
+                    productDTO.setDescriptionDTOS(descriptionDTOS);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productDTO;
+    }
+
+
 
 
     public static void main(String[] args) throws SQLException {
         ProductDao s = new ProductDao();
-      //  System.out.println(s.getCategoryProductCounts("Nấm Khô"));
-      //  System.out.println(s.getAllProducts().getItems());
-       // s.deleteProductVariant(64,200);
+        //  System.out.println(s.getCategoryProductCounts("Nấm Khô"));
+        //  System.out.println(s.getAllProducts().getItems());
+        // s.deleteProductVariant(64,200);
         //  System.out.println(s.getProductDetail(String.valueOf(60)));
-        System.out.println(s.getAllProducts().getItems());
+//        System.out.println(s.getAllProducts().getItems());
+//        List<ProductDTO> variants = new ArrayList<>();
+//        s.getAllProductIds(variants);
+//    }
+        System.out.println(s.getProductByIDandWeight(String.valueOf(44),500));
     }
 }
