@@ -30,7 +30,6 @@ public class ActiveAccount extends HttpServlet {
         PrintWriter out = resp.getWriter();
         JsonObject jsonResponse = new JsonObject();
 
-
         try {
             if (email == null || email.isEmpty()) {
                 jsonResponse.addProperty("success", false);
