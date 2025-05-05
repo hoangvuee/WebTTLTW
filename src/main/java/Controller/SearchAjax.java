@@ -19,11 +19,9 @@ import java.util.List;
 public class SearchAjax extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html; charset=UTF-8");
-        req.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
 
         String search = req.getParameter("productName");
-        PrintWriter out = resp.getWriter();
 
         // Debug log
         System.out.println("Search term received: " + search);
@@ -49,7 +47,6 @@ public class SearchAjax extends HttpServlet {
             for (Product o : listProduct.getItems()) {
                 String html =
                         "<div class=\"h-30 d-inline-block border rounded product-item shadow-sm\" style=\"height: auto; position: relative; overflow: hidden; background: #fff; border-radius: 10px;\">" +
-
                                 "<!-- Hình ảnh sản phẩm -->" +
                                 "<div class=\"img_product position-relative\">" +
                                 "<a href=\"product_detail?id=" + o.getId() + "\" style=\"text-decoration: none; color: inherit;\">" +
@@ -89,7 +86,7 @@ public class SearchAjax extends HttpServlet {
                                 "<div class=\"product_name text-dark fw-bold mb-2\">" + o.getName() + "</div>" +
                                 "<div class=\"price text-danger fw-bold\" style=\"font-size: 1.2rem;\">" + o.getPriceMin() + " đ - " + o.getPriceMax() + " đ</div>" +
                                 "</div>" +
-                                "</div>" ;
+                                "</div>";
                 out.println(html);
             }
 

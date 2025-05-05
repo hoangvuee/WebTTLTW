@@ -15,201 +15,126 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</head>
-<style>
-    body{
-        background-color: rgb(242, 242, 242);
-    }
-    .login-container{
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .login-box{
-        background-color: #fff;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .illustration {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .form-title {
-        font-size: 1.25rem;
-        font-weight: bold;
-    }
-
-    .terms {
-        font-size: 0.875rem;
-    }
-
-    .social-buttons img {
-        width: 40px;
-        margin: 0 0.5rem;
-        cursor: pointer;
-    }
-
-    .social-buttons img:hover {
-        transform: scale(1.1);
-        transition: transform 0.2s;
-    }
-    .g-recaptcha {
-        display: block !important;
-        visibility: visible !important;
-    }
-    :root {
-        --primary-color: #4361ee;
-        --error-color: #f72585;
-        --success-color: #4cc9f0;
-        --text-color: #2b2d42;
-        --light-gray: #f8f9fa;
-        --border-radius: 12px;
-        --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        --transition: all 0.3s ease;
-    }
-
-    .verification-alert {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        padding: 30px;
-        max-width: 500px;
-        width: 90%;
-        text-align: center;
-        z-index: 1000;
-        animation: fadeInUp 0.5s ease;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translate(-50%, -40%);
+    <style>
+        body{
+            background-color: rgb(242, 242, 242);
         }
-        to {
-            opacity: 1;
+        .login-container{
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box{
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .illustration {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .terms {
+            font-size: 0.875rem;
+        }
+
+        .social-buttons img {
+            width: 40px;
+            margin: 0 0.5rem;
+            cursor: pointer;
+        }
+
+        .social-buttons img:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+        .g-recaptcha {
+            display: block !important;
+            visibility: visible !important;
+        }
+        :root {
+            --primary-color: #4361ee;
+            --error-color: #f72585;
+            --success-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .verification-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1001;
+            display: none;
+            min-width: 300px;
         }
-    }
 
-    .verification-alert-icon {
-        font-size: 3.5rem;
-        color: var(--error-color);
-        margin-bottom: 15px;
-    }
+        .verification-alert-icon {
+            font-size: 48px;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
 
-    .verification-alert h3 {
-        color: var(--text-color);
-        margin-bottom: 10px;
-        font-size: 1.5rem;
-    }
+        .verification-actions {
+            margin-top: 20px;
+        }
 
-    .verification-alert p {
-        color: #6c757d;
-        margin-bottom: 20px;
-        line-height: 1.6;
-    }
+        /* Các loại thông báo khác nhau */
+        .verification-alert-icon .fa-exclamation-circle {
+            color: #FFC107; /* Màu vàng cho cảnh báo */
+        }
 
-    .countdown-display {
-        display: inline-block;
-        background: var(--light-gray);
-        padding: 8px 15px;
-        border-radius: 50px;
-        font-weight: 600;
-        color: var(--text-color);
-        margin: 10px 0;
-    }
+        .verification-alert-icon .fa-times-circle {
+            color: #DC3545; /* Màu đỏ cho lỗi */
+        }
 
-    .countdown-number {
-        color: var(--error-color);
-        font-size: 1.2em;
-    }
+        .verification-alert-icon .fa-check-circle {
+            color: #28A745; /* Màu xanh cho thành công */
+        }
 
-    .verification-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-    }
+        /* Nút đóng cho thông báo thường */
+        #closeAlert {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-    .btn {
-        padding: 12px 25px;
-        border: none;
-        border-radius: var(--border-radius);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .btn-primary {
-        background: var(--primary-color);
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #3a56d4;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-    }
-
-    .btn-outline {
-        background: transparent;
-        color: var(--primary-color);
-        border: 2px solid var(--primary-color);
-    }
-
-    .btn-outline:hover {
-        background: rgba(67, 97, 238, 0.1);
-    }
-
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-    }
-    /* Các loại thông báo khác nhau */
-    .verification-alert-icon .fa-exclamation-circle {
-        color: #FFC107; /* Màu vàng cho cảnh báo */
-    }
-
-    .verification-alert-icon .fa-times-circle {
-        color: #DC3545; /* Màu đỏ cho lỗi */
-    }
-
-    .verification-alert-icon .fa-check-circle {
-        color: #28A745; /* Màu xanh cho thành công */
-    }
-
-    /* Nút đóng cho thông báo thường */
-    #closeAlert {
-        background: var(--primary-color);
-        color: white;
-        padding: 10px 20px;
-        border-radius: var(--border-radius);
-        border: none;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    #closeAlert:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
-    }
-</style>
+        #closeAlert:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
 <body>
 
 
@@ -268,7 +193,7 @@
             <button type="submit" class="btn btn-dark w-100">Đăng nhập</button>
 
 
-            <div class="alert alert-danger text-center" role="alert">
+            <div class="alert alert-danger text-center" role="alert" style="display: none;">
                 <%
                     String errorType = (String) session.getAttribute("errorType");
                     String errorMessage = (String) session.getAttribute("errorMessage");
@@ -379,6 +304,22 @@
         </div>
     </div>
 </div>
+
+<!-- Alert Container -->
+<div class="overlay"></div>
+<div class="verification-alert">
+    <div class="verification-alert-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h3>Thông báo</h3>
+    <p id="alert-message"></p>
+    <div class="verification-actions">
+        <button class="btn btn-primary" id="closeAlert">
+            <i class="fas fa-check"></i> Đã hiểu
+        </button>
+    </div>
+</div>
+
 </body>
 <script>
     const client_id = "673781377779-7p6kijl6vllmrrmc3jeocqia7d2jojjv.apps.googleusercontent.com";
@@ -442,7 +383,38 @@
 
 </script>
 <script>
+    function showAlert(message) {
+        document.getElementById('alert-message').textContent = message;
+        document.querySelector('.overlay').style.display = 'block';
+        document.querySelector('.verification-alert').style.display = 'block';
+    }
 
+    function hideAlert() {
+        document.querySelector('.overlay').style.display = 'none';
+        document.querySelector('.verification-alert').style.display = 'none';
+    }
+
+    document.getElementById('closeAlert').addEventListener('click', hideAlert);
+
+    function sendOTP() {
+        fetch('../getOTP', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                showAlert('Mã OTP đã được gửi đến email của bạn');
+            } else {
+                showAlert('Có lỗi xảy ra khi gửi mã OTP');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Có lỗi xảy ra khi gửi mã OTP');
+        });
+    }
 </script>
 <script>
     console.log("Loading reCAPTCHA...");
