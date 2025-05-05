@@ -10,8 +10,8 @@ public class ServiceAddProduct {
      ConnDB dao = new ConnDB();
      AddOrUpdateProductDao addOrUpdateProductDao = new AddOrUpdateProductDao();
 
-    public int addOrUpdateProduct(String productName, String productCategory, String productSupplier, String productStatus) throws SQLException, SQLException {
-      return   addOrUpdateProductDao.addOrUpdateProduct(dao.getConn(), productName, productCategory, productSupplier, productStatus);
+    public int addOrUpdateProduct(String productName, String productCategory, String productSupplier, String productStatus,String image) throws SQLException, SQLException {
+      return   addOrUpdateProductDao.addOrUpdateProduct(dao.getConn(), productName, productCategory, productSupplier, productStatus,image);
     }
 
     public int addProductVariant(int productId, float weight, double price, String description, int quantity) throws SQLException {
