@@ -15,6 +15,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+
 @WebServlet("/activeAccount")
 public class ActiveAccount extends HttpServlet {
     private RedisOTPService redisOTPService = new RedisOTPService();

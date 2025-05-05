@@ -29,6 +29,29 @@
     <link rel="stylesheet" href="css/templatemo-space-dynamic.css">
     <link rel="stylesheet" href="css/animated.css">
     <link rel="stylesheet" href="css/owl.css">
+    <style>
+        .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+
+    </style>
 </head>
 <body>
 <section class="header">
@@ -101,8 +124,9 @@
                             </li>
                             <li class="nav-item">
                                 <a href="${pageContext.request.contextPath}/shoppingCart.jsp">
-                                    <button type="button" class="btn">
+                                    <button type="button" class="btn cart-icon">
                                         <i class="fa-solid fa-cart-shopping"></i>
+                                        <span class="cart-badge" id="cart-badge" style="margin: 0">3</span>
                                     </button>
                                 </a>
                             </li>

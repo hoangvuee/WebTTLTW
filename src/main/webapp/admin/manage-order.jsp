@@ -59,7 +59,7 @@
                             <td>${item.state}</td>
                             <td>${item.createDate}</td>
                             <td>
-                                <a href="../getOrderDetailManage?idOrder=${item.id}"> <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewOrderModal">Xem</button></a>
+                                <a href="${re}/getOrderDetailManage?idOrder=${item.id}"> <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewOrderModal">Xem</button></a>
                                 <button class="btn btn-warning btn-sm btn-update-status"
                                         data-order-id="${item.id}"
                                         data-bs-toggle="modal"

@@ -1,10 +1,12 @@
 package Admin;
 
+
 import DTO.ProductDTO;
 import Models.Description.Description;
 import Models.Sale.Sale;
 import Services.*;
 import com.google.gson.Gson;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +27,7 @@ import java.util.List;
 )
 
 public class EditProduct extends HttpServlet {
+
     private static final Gson gson = new Gson();
     private final ServiceAddProduct productService = new ServiceAddProduct();
     private ServiceSale serviceSale = new ServiceSale();
@@ -143,3 +146,4 @@ public class EditProduct extends HttpServlet {
     }
 }
 }
+

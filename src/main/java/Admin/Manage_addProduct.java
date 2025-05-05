@@ -1,8 +1,12 @@
 package Admin;
 
 
+import Dao.ActivityLogDAO;
+import Models.User.User;
 import Services.ServiceAddProduct;
 import Services.ServiceProduct;
+import Services.ServiceRole;
+import Utils.LogActions;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,10 +30,15 @@ import java.sql.SQLException;
 public class Manage_addProduct extends HttpServlet {
 
     private final ServiceAddProduct productService = new ServiceAddProduct();
+    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("userInfor");
+        ServiceRole serviceRole = new ServiceRole();
         try {
             // 1. Lấy dữ liệu từ form
             String productName = req.getParameter("product_Name");
@@ -46,6 +55,15 @@ public class Manage_addProduct extends HttpServlet {
 
             // 2. Xử lý logic
             int productId = productService.addOrUpdateProduct(productName, productCategory, productSupplier, productStatus);
+
+            activityLogDAO.logUserActivity(
+                user.getUserName(),
+                serviceRole.getRoleNameById(user.getIdRole()),
+                LogActions.PRODUCT_ADD,
+                "Added product: " + productName + " (ID: " + productId + ")",
+                ipAddress,
+                userAgent
+            );
 
             // 3. Xử lý upload ảnh
             processImages(req, productId);
@@ -64,6 +82,14 @@ public class Manage_addProduct extends HttpServlet {
             // Chuyển hướng sau khi thành công
             resp.sendRedirect("../getCategory");
         } catch (Exception e) {
+            activityLogDAO.logUserActivity(
+                user.getUserName(),
+                serviceRole.getRoleNameById(user.getIdRole()),
+                LogActions.PRODUCT_ADD_FAILED,
+                "Failed to add product: " + e.getMessage(),
+                ipAddress,
+                userAgent
+            );
             e.printStackTrace();
             resp.getWriter().println("Có lỗi xảy ra: " + e.getMessage());
         }

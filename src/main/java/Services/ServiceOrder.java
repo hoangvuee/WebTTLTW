@@ -70,4 +70,7 @@ public class ServiceOrder {
     public boolean updateOrderStatus(int id, int isActive) {
     return orderDao.updateOrderStatus(id, isActive);
     }
-}
+
+        }
+
+

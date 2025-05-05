@@ -43,6 +43,7 @@ public class TransactionHistoryDao {
             System.out.println("Total Price: " + totalPrice);
             System.out.println("Payment Method: " + paymentMethod);
             System.out.println("Shipping Address: " + shippingAddress);
+            System.out.println(products.toString());
 
         }
 
@@ -94,5 +95,10 @@ public class TransactionHistoryDao {
             }
         }
         return null; // Trả về null nếu không tìm thấy dữ liệu
+    }
+
+    public static void main(String[] args) throws SQLException {
+        TransactionHistoryDao s = new TransactionHistoryDao();
+        s.selectTransactionHistory(31, new Transaction());
     }
 }
