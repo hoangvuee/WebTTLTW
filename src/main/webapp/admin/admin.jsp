@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="css/admin.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+
 </head>
 <body>
 
@@ -459,6 +461,7 @@
     </div>
   </div>
 
+
   <!-- Manage Products Section -->
   <div id="manage-products" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -528,168 +531,15 @@
             <th>Product</th>
             <th>Category</th>
             <th>Price</th>
+
             <th>Inventory</th>
             <th>Sales</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td>
-              <input type="checkbox" class="form-check-input">
-            </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="product-thumbnail me-3">
-                  <img src="https://via.placeholder.com/60" alt="Wireless Headphones">
-                </div>
-                <div>
-                  <h6 class="mb-0">AirPods Pro (2nd Gen)</h6>
-                  <small class="text-muted">SKU: AP-2023</small>
-                </div>
-              </div>
-            </td>
-            <td>Electronics</td>
-            <td>
-              <span class="text-primary fw-bold">$249.00</span>
-              <div class="text-decoration-line-through text-muted small">$279.00</div>
-            </td>
-            <td>
-              <div class="inventory-status">
-                <div class="progress" style="height: 6px;">
-                  <div class="progress-bar bg-success" style="width: 75%"></div>
-                </div>
-                <small>45/60 in stock</small>
-              </div>
-            </td>
-            <td>
-              <div class="sales-info">
-                <span class="fw-bold">128</span>
-                <span class="text-success small"><i class="fas fa-arrow-up"></i> 12%</span>
-              </div>
-            </td>
-            <td>
-              <span class="badge bg-success bg-opacity-10 text-success">Active</span>
-            </td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" class="form-check-input">
-            </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="product-thumbnail me-3">
-                  <img src="https://via.placeholder.com/60" alt="Smart Watch">
-                </div>
-                <div>
-                  <h6 class="mb-0">Apple Watch Series 8</h6>
-                  <small class="text-muted">SKU: AW-S8</small>
-                </div>
-              </div>
-            </td>
-            <td>Electronics</td>
-            <td>
-              <span class="text-primary fw-bold">$399.00</span>
-            </td>
-            <td>
-              <div class="inventory-status">
-                <div class="progress" style="height: 6px;">
-                  <div class="progress-bar bg-warning" style="width: 25%"></div>
-                </div>
-                <small>5/20 in stock</small>
-              </div>
-            </td>
-            <td>
-              <div class="sales-info">
-                <span class="fw-bold">86</span>
-                <span class="text-success small"><i class="fas fa-arrow-up"></i> 8%</span>
-              </div>
-            </td>
-            <td>
-              <span class="badge bg-warning bg-opacity-10 text-warning">Low Stock</span>
-            </td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" class="form-check-input">
-            </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="product-thumbnail me-3">
-                  <img src="https://via.placeholder.com/60" alt="Leather Wallet">
-                </div>
-                <div>
-                  <h6 class="mb-0">Premium Leather Wallet</h6>
-                  <small class="text-muted">SKU: LW-PRM</small>
-                </div>
-              </div>
-            </td>
-            <td>Fashion</td>
-            <td>
-              <span class="text-primary fw-bold">$59.99</span>
-              <div class="text-decoration-line-through text-muted small">$79.99</div>
-            </td>
-            <td>
-              <div class="inventory-status">
-                <div class="progress" style="height: 6px;">
-                  <div class="progress-bar bg-danger" style="width: 0%"></div>
-                </div>
-                <small>0/15 in stock</small>
-              </div>
-            </td>
-            <td>
-              <div class="sales-info">
-                <span class="fw-bold">42</span>
-                <span class="text-danger small"><i class="fas fa-arrow-down"></i> 5%</span>
-              </div>
-            </td>
-            <td>
-              <span class="badge bg-danger bg-opacity-10 text-danger">Out of Stock</span>
-            </td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+          <tbody id="product-table-body">
+
           </tbody>
         </table>
       </div>
@@ -806,10 +656,10 @@
                   <i class="fas fa-cloud-upload-alt fa-3x text-muted"></i>
                   <p>Drag & drop product images here</p>
                   <small class="text-muted">or click to browse (max 10 images)</small>
-                  <input type="file" id="productImages" name="images" multiple accept="image/*">
+                  <input type="file" id="productImages" name="images" multiple accept="image/*" style="display: none;">
                 </div>
 
-                <div class="image-preview-container" id="imagePreviewContainer">
+                <div class="image-preview-container d-flex flex-wrap mt-3" id="imageUpdate">
                   <!-- Preview images will appear here -->
                 </div>
               </div>
@@ -931,8 +781,441 @@
     </div>
   </div>
 
+
   <!-- Other sections would follow the same pattern -->
 </div>
+<!-- Modal Edit Product -->
+<div class="modal fade" id="editProductModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Modal Header -->
+      <div class="modal-header bg-gradient-primary p-4">
+        <div>
+          <h5 class="modal-title text-white">
+            <i class="fas fa-edit me-2"></i>Edit Product
+          </h5>
+          <p class="text-white-50 mb-0 small">Update product details and inventory</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-0">
+        <form id="editProductForm" class="needs-validation" novalidate>
+          <div class="row g-0">
+            <!-- Left Column - Main Content -->
+            <div class="col-lg-8 p-4 border-end">
+              <!-- Current Product Preview -->
+              <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                      <i class="fas fa-eye text-primary fs-5"></i>
+                    </div>
+                    <h6 class="mb-0">Current Product Preview</h6>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <div class="current-image-container border rounded p-2 text-center">
+                        <img src="img/1735387762942_nam-bao-ngu-xam-tuoi-ngon-01.jpg" id="currentProductImage" class="img-fluid rounded" alt="Current Product Image">
+                        <div class="mt-2 small text-muted">Main Image</div>
+                      </div>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="product-preview-info">
+                        <h5 id="currentProductName">Product Name</h5>
+                        <div class="d-flex align-items-center mb-2">
+                          <span class="text-primary fw-bold fs-4 me-2" id="currentProductPrice">$0.00</span>
+                          <span class="text-decoration-line-through text-muted" id="currentProductComparePrice"></span>
+                        </div>
+                        <div class="mb-2">
+                          <span class="badge bg-success" id="currentProductStatus">Active</span>
+                          <span class="badge bg-secondary ms-2" id="currentProductSKU">SKU: N/A</span>
+                        </div>
+                        <div class="text-muted small mb-2" id="currentProductStock">In stock: 0</div>
+
+                        <!-- New: Specification Preview -->
+                        <div class="bg-light border rounded p-3 mt-3">
+                          <h6 class="text-muted mb-2"><i class="fas fa-clipboard-list me-2 text-primary"></i>Specifications</h6>
+                          <ul class="list-unstyled mb-0 small text-dark" id="currentProductSpecs">
+                            <li>Category: Nấm Tươi</li>
+                            <li>Weight: 500g</li>
+                            <!-- Add dynamic lines here -->
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Basic Information Section -->
+              <section class="mb-5">
+                <div class="d-flex align-items-center mb-4">
+                  <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                    <i class="fas fa-info-circle text-primary fs-5"></i>
+                  </div>
+                  <h6 class="mb-0">Basic Information</h6>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="editProductName" class="form-label fw-bold">Product Name <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="fas fa-cube text-muted"></i></span>
+                      <input type="text" class="form-control" id="editProductName" placeholder="e.g. Wireless Headphones" required>
+                      <div class="invalid-feedback">Please provide a product name.</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editProductSKU" class="form-label fw-bold">SKU Code</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="fas fa-barcode text-muted"></i></span>
+                      <input type="text" class="form-control" id="editProductSKU1" placeholder="e.g. WH-2023">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="editProductSpec" class="form-label fw-bold">Specification <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="fas fa-ruler-combined text-muted"></i></span>
+                      <input type="text" class="form-control" id="editProductSpec" placeholder="e.g. 200g bag" required>
+                      <div class="invalid-feedback">Please enter product specification.</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editProductStock" class="form-label fw-bold">Quantity in Stock <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="fas fa-boxes text-muted"></i></span>
+                      <input type="number" class="form-control" id="editProductStock" placeholder="e.g. 50" min="0" required>
+                      <div class="invalid-feedback">Please enter available quantity.</div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-12 mb-4">
+                    <label class="form-label fw-bold">Descriptions</label>
+                    <div id="descriptionList">
+                      <!-- Các dòng mô tả sẽ nằm ở đây -->
+                      <div class="row g-2 align-items-start mb-2 description-item">
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" placeholder="Title (e.g. Usage)" value="Cách dùng">
+                        </div>
+                        <div class="col-md-7">
+                          <textarea class="form-control" rows="2" placeholder="Content">Dùng pha với nước ấm, không quá 80°C.</textarea>
+                        </div>
+                        <div class="col-md-1 text-end">
+                          <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.description-item').remove()">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row g-2 align-items-start mb-2 description-item">
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" placeholder="Title (e.g. Usage)" value="Cách dùng">
+                        </div>
+                        <div class="col-md-7">
+                          <textarea class="form-control" rows="2" placeholder="Content">Dùng pha với nước ấm, không quá 80°C.</textarea>
+                        </div>
+                        <div class="col-md-1 text-end">
+                          <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.description-item').remove()">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- Có thể lặp nhiều dòng như vậy -->
+                    </div>
+                    <div class="col-12 mb-2">
+                      <button type="button" class="btn btn-primary btn-sm" onclick="addDescriptionItem()">
+                        <i class="fas fa-plus"></i> AddDescription
+                      </button>
+                    </div>
+                  </div>
+                  <section class="mb-5">
+                    <div class="d-flex align-items-center mb-4">
+                      <div class="bg-danger bg-opacity-10 p-2 rounded me-3">
+                        <i class="fas fa-percent text-danger fs-5"></i>
+                      </div>
+                      <h6 class="mb-0">Current Discount</h6>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="editDiscountPrice" class="form-label fw-bold">Sale Price</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-light">$</span>
+                          <input type="number" class="form-control" id="editDiscountPrice" placeholder="Enter sale price..." min="0" step="0.01">
+                        </div>
+                        <small class="text-muted">If set, this price overrides the main price during the discount period.</small>
+                      </div>
+
+                      <div class="col-md-6">
+                        <label for="editDiscountEnd" class="form-label fw-bold">Discount End Date</label>
+                        <input type="date" class="form-control" id="editDiscountEnd">
+                        <small class="text-muted">Discount ends at 11:59 PM of the selected date.</small>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Thêm trường Quy cách -->
+                  <div class="col-12 mb-4">
+                    <label class="form-label fw-bold">Sales Applied</label>
+                    <div id="saleList">
+                      <!-- Mỗi dòng sale sẽ nằm ở đây -->
+                      <div class="row g-2 align-items-center mb-2 sale-item">
+                        <div class="col-md-3">
+                          <input type="number" class="form-control" placeholder="Sale Price" value="199.99" min="0" step="0.01">
+                        </div>
+                        <div class="col-md-3">
+                          <input type="date" class="form-control" value="2025-04-01">
+                        </div>
+                        <div class="col-md-3">
+                          <input type="date" class="form-control" value="2025-04-30">
+                        </div>
+                        <div class="col-md-2">
+                          <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.sale-item').remove()">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- Có thể lặp nhiều dòng như vậy -->
+                    </div>
+                  </div>
+                  <div class="col-12 mb-2">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="addSaleItem()">
+                      <i class="fas fa-plus"></i> Add Sale
+                    </button>
+                  </div>
+                </div>
+
+              </section>
+
+              <!-- Pricing Section -->
+              <section class="mb-5">
+                <div class="d-flex align-items-center mb-4">
+                  <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                    <i class="fas fa-tag text-primary fs-5"></i>
+                  </div>
+                  <h6 class="mb-0">Pricing</h6>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label for="editProductPrice" class="form-label fw-bold">Price <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">$</span>
+                      <input type="number" class="form-control" id="editProductPrice" placeholder="0.00" min="0" step="0.01" required>
+                      <div class="invalid-feedback">Please set a valid price.</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="editProductComparePrice" class="form-label fw-bold">Compare Price</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">$</span>
+                      <input type="number" class="form-control" id="editProductComparePrice" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <small class="text-muted">Original price to show as discount</small>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="editProductCost" class="form-label fw-bold">Cost per item</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">$</span>
+                      <input type="number" class="form-control" id="editProductCost" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <small class="text-muted">For profit calculation</small>
+                  </div>
+                </div>
+              </section>
+              <!-- Discount Section -->
+
+
+              <!-- Inventory Section -->
+              <section class="mb-5">
+                <div class="d-flex align-items-center mb-4">
+                  <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                    <i class="fas fa-warehouse text-primary fs-5"></i>
+                  </div>
+                  <h6 class="mb-0">Inventory</h6>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="editProductSKU" class="form-label fw-bold">SKU</label>
+                    <input type="text" class="form-control" id="editProductSKU" placeholder="Stock keeping unit">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editProductQuantity" class="form-label fw-bold">Quantity <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="editProductQuantity" placeholder="0" min="0" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editProductBarcode" class="form-label fw-bold">Barcode</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="fas fa-qrcode text-muted"></i></span>
+                      <input type="text" class="form-control" id="editProductBarcode" placeholder="ISBN, UPC, etc.">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editProductInventoryPolicy" class="form-label fw-bold">Inventory Policy</label>
+                    <select class="form-select" id="editProductInventoryPolicy">
+                      <option value="continue">Continue selling when out of stock</option>
+                      <option value="deny">Stop selling when out of stock</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+              <!-- Specifications Details -->
+
+            </div>
+
+            <!-- Right Column - Sidebar -->
+            <div class="col-lg-4 p-4">
+              <!-- Status Card -->
+              <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                      <i class="fas fa-toggle-on text-primary fs-5"></i>
+                    </div>
+                    <h6 class="mb-0">Status</h6>
+                  </div>
+
+                  <div class="form-check form-switch mb-4">
+                    <input class="form-check-input" type="checkbox" id="editProductStatus" checked>
+                    <label class="form-check-label fw-bold" for="editProductStatus">Active Product</label>
+                    <small class="text-muted d-block">Visible in storefront</small>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="editProductURL" class="form-label fw-bold">Product URL</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">/product/</span>
+                      <input type="text" class="form-control" id="editProductURL" placeholder="custom-url">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Organization Card -->
+              <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                      <i class="fas fa-sitemap text-primary fs-5"></i>
+                    </div>
+                    <h6 class="mb-0">Organization</h6>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="editProductCategory" class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+                    <select class="form-select" id="editProductCategory" required>
+                      <option value="" disabled selected>Select category</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="editProductSupplier" class="form-label fw-bold">Supplier</label>
+                    <select class="form-select" id="editProductSupplier">
+                      <option value="" selected>Select supplier</option>
+                      <option value="1">Apple</option>
+                      <option value="2">Samsung</option>
+                      <option value="3">Nike</option>
+                    </select>
+                  </div>
+
+
+                  <div class="mb-3">
+                    <label for="editProductTags" class="form-label fw-bold">Tags</label>
+                    <input type="text" class="form-control" id="editProductTags" placeholder="Add tags...">
+                    <small class="text-muted">Separate with commas (e.g. wireless, audio, premium)</small>
+                    <div class="tag-container mt-2 d-flex flex-wrap gap-2" id="tagContainer"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Upload Card -->
+              <div class="form-section mt-4">
+                <h5 class="section-title">
+                  <i class="fas fa-images me-2 text-primary"></i>Product Images
+                </h5>
+
+                <div class="image-upload-container1">
+                  <div class="dropzone" id="productImageDropzone1">
+                    <label for="productImages1" style="cursor: pointer;">
+                      <i class="fas fa-cloud-upload-alt fa-3x text-muted"></i>
+                      <p>Drag & drop product images here</p>
+                      <small class="text-muted">or click to browse (max 1 image)</small>
+                    </label>
+                    <input type="file" id="productImages1" name="images" multiple accept="image/*" style="display: none;">
+                  </div>
+
+                  <div class="image-preview-container d-flex flex-wrap mt-3" id="imageUpdate1">
+                    <!-- Preview images will appear here -->
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Current Gallery Images -->
+<%--              <div class="card mt-4 border-0 shadow-sm">--%>
+<%--                <div class="card-body">--%>
+<%--                  <div class="d-flex align-items-center mb-3">--%>
+<%--                    <div class="bg-primary bg-opacity-10 p-2 rounded me-3">--%>
+<%--                      <i class="fas fa-images text-primary fs-5"></i>--%>
+<%--                    </div>--%>
+<%--                    <h6 class="mb-0">Current Gallery</h6>--%>
+<%--                  </div>--%>
+
+<%--                  <div class="current-gallery-images d-flex flex-wrap gap-2">--%>
+<%--                    <div class="position-relative">--%>
+<%--                      <img src="https://via.placeholder.com/100" class="img-thumbnail" width="80" height="80">--%>
+<%--                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">--%>
+<%--                        <i class="fas fa-times"></i>--%>
+<%--                      </span>--%>
+<%--                    </div>--%>
+<%--                    <div class="position-relative">--%>
+<%--                      <img src="https://via.placeholder.com/100" class="img-thumbnail" width="80" height="80">--%>
+<%--                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">--%>
+<%--                        <i class="fas fa-times"></i>--%>
+<%--                      </span>--%>
+<%--                    </div>--%>
+<%--                    <div class="position-relative">--%>
+<%--                      <img src="https://via.placeholder.com/100" class="img-thumbnail" width="80" height="80">--%>
+<%--                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">--%>
+<%--                        <i class="fas fa-times"></i>--%>
+<%--                      </span>--%>
+<%--                    </div>--%>
+<%--                  </div>--%>
+<%--                </div>--%>
+<%--              </div>--%>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-light p-4 border-top">
+        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="button" id="saveChangesBtn" class="btn btn-primary px-4">
+          <i class="fas fa-save me-2"></i>Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%--  //modal edit--%>
+
+
 <script src="js/admin.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -1053,7 +1336,7 @@
     // Xử lý upload ảnh
     const imageInput = document.getElementById('productImages');
     const dropzone = document.getElementById('productImageDropzone');
-    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewContainer = document.getElementById('imageUpdate');
 
     // Drag and drop functionality
     dropzone.addEventListener('click', () => imageInput.click());
@@ -1174,7 +1457,7 @@
       formData.append('descriptions', JSON.stringify(descriptions));
 
       // Gửi dữ liệu lên server
-      fetch('http://localhost:8080/WebFinall/addProduc', {
+      fetch('http://localhost:8080/WebFinall/admin/addProduct', {
         method: 'POST',
         body: formData
       })
@@ -1216,9 +1499,522 @@
     });
   });
 
+</script>
+<script>
+  $(document).ready(function () {
+    console.log("Script is running...");
+
+    $.ajax({
+      url: '/WebFinall/allProduct',
+      method: "GET",
+
+      success: function (data) {
+        data.forEach(product => {
+          const status = getStatus(product.isActive);
+          const imageUrl = product.image || "https://via.placeholder.com/60";
+          const oldPrice = product.sale > 0 ? `<div class="text-decoration-line-through text-muted small">\${formatCurrency(product.price)}</div>` : "";
+          const finalPrice = product.sale > 0
+                  ? product.price * (1 - product.sale / 100)
+                  : product.price;
+          const progress = getInventoryProgress(product.inventory, product.quantity);
+          const cate = product.category;
+          const row = `
+  <tr>
+    <td><input type="checkbox" class="form-check-input"></td>
+    <td>
+      <div class="d-flex align-items-center">
+        <div class="product-thumbnail me-3">
+          <img src="img/\${imageUrl}" alt="\${product.name}" width="60">
+        </div>
+        <div>
+          <h6 class="mb-0">\${product.name}</h6>
+          <small class="text-muted">SKU: \${product.idProduct}</small><br>
+          <small class="text-muted">Weight: \${product.weight} kg</small>
+        </div>
+      </div>
+    </td>
+    <td>\${cate}</td>
+    <td>
+      <span class="text-primary fw-bold">\${formatCurrency(finalPrice)}</span>
+      \${oldPrice}
+    </td>
+    <td>
+      <div class="inventory-status">
+        <div class="progress" style="height: 6px;">
+          <div class="progress-bar \${progress.color}" style="width: \${progress.percent}%"></div>
+        </div>
+        <small>\${product.inventory}/\${product.quantity} in stock</small>
+      </div>
+    </td>
+    <td>
+      <div class="sales-info">
+        <span class="fw-bold">\${product.sale || 0} %</span>
+        <span class="text-muted small"><i class="fas fa-chart-line"></i></span>
+      </div>
+    </td>
+    <td>
+      <span class="badge \${status.class}">\${status.text}</span>
+    </td>
+    <td>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+<li>
+<button type="button" class="dropdown-item edit-product-btn" data-id="\${product.idProduct}" data-weight="\${product.weight}">
+    <i class="fas fa-edit me-1"></i> Edit
+  </button>
+</li>
+       <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+`;
+
+          $("#product-table-body").append(eval("`" + row + "`")); // Dùng eval để parse lại string có template
+        });
+      }
+    });
+
+    function formatCurrency(number) {
+      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(number);
+    }
+
+    function getStatus(statusCode) {
+      switch (statusCode) {
+        case "1":
+          return { text: "Active", class: "badge bg-success bg-opacity-10 text-success" };
+        case "2":
+          return { text: "Low Stock", class: "badge bg-warning bg-opacity-10 text-warning" };
+        case "3":
+        default:
+          return { text: "Out of Stock", class: "badge bg-danger bg-opacity-10 text-danger" };
+      }
+    }
+
+    function getInventoryProgress(inventory, quantity) {
+      const percent = quantity > 0 ? (inventory / quantity) * 100 : 0;
+      let color = "bg-success";
+      if (percent < 25) color = "bg-danger";
+      else if (percent < 50) color = "bg-warning";
+      return { percent: percent.toFixed(0), color };
+    }
+  });
 
 </script>
+<script>
 
-<script  src="js/admin.js"></script>
+  $(document).on('click', '.edit-product-btn', function() {
+    // Lấy id và weight từ data attributes của nút
+    const productId = $(this).data('id');
+    const productWeight = $(this).data('weight');
+    console.log(productId + "id");
+
+    // Cập nhật modal với thông tin sản phẩm
+    $('#currentProductSKU').val(productId);  // Hiển thị ID sản phẩm trong modal
+    $('#productWeight').val(productWeight);  // Hiển thị weight sản phẩm trong modal
+
+    // Mở modal
+    $('#editProductModal').modal('show');
+
+    // Gửi AJAX để lấy dữ liệu sản phẩm từ server
+    $.ajax({
+      url: '/WebFinall/admin/editProduct',  // Endpoint của bạn
+      method: 'GET',
+      data: {
+        id: productId,
+        weight: productWeight
+      },
+      success: function(response) {
+        console.log('Product data received:', response);
+        console.log(response.saleDTO.salePersent
+        )
+        const saleListContainer = $('#saleList');
+        saleListContainer.empty();
+
+        // Cập nhật các trường trong modal từ dữ liệu sản phẩm
+        $('#editProductName').val(response.name);  // Tên sản phẩm
+        $('#editProductSKU1').val(response.id);    // SKU (id sản phẩm)
+        $('#editProductSpec').val(response.category);  // Mô tả sản phẩm (hoặc bạn có thể thêm một trường cho mô tả nếu cần)
+        $('#editProductStock').val(response.inventory);  // Số lượng trong kho
+        $('#currentProductName').text(response.name);  // Set the product name
+        $('#currentProductPrice').text('VNĐ ' + response.price.toFixed(2));  // Set the price (formatted as a currency)
+        $('#currentProductSKU').text('SKU: ' + response.id);  // Set the SKU (id)
+        $('#currentProductStock').text('In stock: ' + response.inventory);  // Set the stock quantity
+        const specsContainer = $('#currentProductSpecs');
+        specsContainer.empty(); // Xoá nội dung cũ trước
+        specsContainer.append(`<li>Category: \${response.category}</li>`);
+        specsContainer.append(`<li>Weight: \${response.weight}g</li>`);
+        specsContainer.append(`<li>Import Date: \${new Date(response.importDate).toLocaleDateString()}</li>`);
+        $('#editProductQuantity').val(response.quantity); // Tổng nhập vào (có thể sửa)
+        $('#editProductSKU').val("SP-" + response.idProduct); // Gợi ý tạo SKU từ ID
+        $('#editProductBarcode').val("BC-" + response.idProduct); // Gợi ý tạo Barcode
+
+// Tùy chính sách bạn đang dùng
+        $('#editProductInventoryPolicy').val(response.inventory > 0 ? 'continue' : 'deny');
+        // Update the image
+        $('#currentProductImage').attr('src', 'img/' + response.image);  // Assuming the image URL is relative
+        console.log(response.saleDTO)
+
+        // Update product status (if the product is active or not)
+        const statusBadge = response.isActive === 'Active' ? 'bg-success' : 'bg-danger';
+        $('#currentProductStatus').text(response.isActive).removeClass('bg-success bg-danger').addClass(statusBadge);
+        // Giá gốc
+        const originalPrice = response.price;
+
+// Kiểm tra có sale không
+        if (response.saleDTO && response.saleDTO.salePersent > 0) {
+          const discount = originalPrice * response.saleDTO.salePersent / 100;
+          const salePrice = originalPrice - discount;
+
+          $('#editProductPrice').val(salePrice.toFixed(2));
+          $('#editProductComparePrice').val(originalPrice.toFixed(2));
+        } else {
+          // Không có khuyến mãi, cả hai giá giống nhau
+          $('#editProductPrice').val(originalPrice.toFixed(2));
+          $('#editProductComparePrice').val(originalPrice.toFixed(2));
+        }
+
+        if (response.descriptionDTOS && Array.isArray(response.descriptionDTOS)) {
+          const descriptionListContainer = $('#descriptionList');
+          descriptionListContainer.empty(); // Xóa các dòng cũ
+
+          response.descriptionDTOS.forEach(desc => {
+            const title = desc.title || '';
+            const content = desc.content || '';
+
+            const html = `
+      <div class="row g-2 align-items-start mb-2 description-item">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Title (e.g. Usage)" value="\${title}">
+        </div>
+        <div class="col-md-7">
+          <textarea class="form-control" rows="2" placeholder="Content">\${content}</textarea>
+        </div>
+        <div class="col-md-1 text-end">
+          <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.description-item').remove()">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+            descriptionListContainer.append(html);
+          });
+        }
+
+
+
+        if (response.saleDTO) {
+          // Tính toán giá sau khi giảm
+          const salePrice = response.price - (response.price * response.saleDTO.salePersent / 100);
+          console.log(salePrice)
+          $('#editDiscountPrice').val(salePrice.toFixed(2));  // Set discount price
+
+          // Format và set ngày kết thúc giảm giá
+          const saleEndDate = new Date(response.saleDTO.saleEndDate);
+          const formattedEndDate = saleEndDate.toISOString().split('T')[0];
+          $('#editDiscountEnd').val(formattedEndDate);
+
+          // Format và set ngày bắt đầu giảm giá
+          const saleStartDate = new Date(response.saleDTO.saleStartDate);
+          const formattedStartDate = saleStartDate.toISOString().split('T')[0];
+          $('#editDiscountStart').val(formattedStartDate);
+
+          // Hiển thị phần trăm giảm giá
+          $('#currentProductSalePercent').text(response.saleDTO.salePersent + '%');
+        }
+        if (Array.isArray(response.promotionDTOS) && response.promotionDTOS.length > 0) {
+
+          const saleListContainer = $('#saleList');
+          saleListContainer.empty();
+
+          response.promotionDTOS.forEach(promo => {
+            const startDate = new Date(promo.startDate).toISOString().split('T')[0];
+            const endDate = new Date(promo.endDate).toISOString().split('T')[0];
+
+            const promoItem = `
+      <div class="row g-2 align-items-center mb-2 sale-item">
+        <div class="col-md-3">
+          <div class="input-group">
+            <input type="number" class="form-control" placeholder="Sale %" value="\${promo.salePercent}" min="0" max="100" step="1">
+            <span class="input-group-text">%</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <input type="date" class="form-control" value="\${startDate}">
+        </div>
+        <div class="col-md-3">
+          <input type="date" class="form-control" value="\${endDate}">
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.sale-item').remove()">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+            saleListContainer.append(promoItem);
+          });
+        } else {
+          $('#saleList').empty(); // Xoá hết nếu không có khuyến mãi
+        }
+
+      },
+      error: function(xhr, status, error) {
+        console.log('Error:', error);
+      }
+    });
+  });
+
+
+
+  // Khi click vào nút "Save changes", bạn có thể lấy thông tin đã chỉnh sửa và gửi lại tới server
+  //   $('#saveChangesBtn').on('click', function() {
+  //     const updatedProductId = $('#productId').val();
+  //     const updatedWeight = $('#productWeight').val();
+  //
+  //     // Gửi dữ liệu đã chỉnh sửa đến server
+  //     $.ajax({
+  //       url: '/update-product',  // Thay thế URL bằng URL cập nhật sản phẩm của bạn
+  //       method: 'POST',
+  //       data: {
+  //         id: updatedProductId,
+  //         weight: updatedWeight
+  //       },
+  //       success: function(response) {
+  //         console.log('Product updated successfully:', response);
+  //         // Đóng modal sau khi lưu thay đổi
+  //         $('#editProductModal').modal('hide');
+  //       },
+  //       error: function(xhr, status, error) {
+  //         console.log('Error:', error);
+  //       }
+  //     });
+  //   });
+  $(document).ready(function () {
+      $.ajax({
+          url: '/WebFinall/getCategories',
+          method: 'GET',
+          success: function (response) {
+              console.log(response + "cau truc");  // Kiểm tra cấu trúc của response
+
+              // Populate the productCategory select
+              const $editSelectCategory = $('#editProductCategory');
+              $editSelectCategory.empty(); // Clear previous options
+              $editSelectCategory.append('<option value="" disabled selected>Select category</option>');
+
+              response.items.forEach(function (category) {
+                  console.log(category);  // Log each category
+                  $editSelectCategory.append(`<option value="\${category.id}">\${category.name}</option>`);
+              });
+          },
+          error: function () {
+              alert("Không thể tải danh sách danh mục.");
+          }
+      });
+  });
+  $(document).ready(function () {
+    $.ajax({
+      url: '/WebFinall/getSuppliers',
+      method: 'GET',
+      success: function (response) {
+        console.log("Dữ liệu trả về: ", response);
+
+        const $supplierSelect = $('#editProductSupplier');
+        $supplierSelect.empty(); // Xóa các option cũ (nếu có)
+        $supplierSelect.append('<option value="" selected>Select supplier</option>');
+
+        if (Array.isArray(response.items)) {
+          console.log("Dữ liệu nhà cung cấp: ", response.items);
+          response.items.forEach(function (supplier) {
+            console.log("Supplier: ", supplier);
+            $supplierSelect.append(`<option value="\${supplier.idSupplier}">\${supplier.nameSupplier}</option>`);
+          });
+        } else {
+          console.error("Dữ liệu không phải là mảng: ", response.items);
+          alert("Có lỗi xảy ra khi tải danh sách nhà cung cấp.");
+        }
+      },
+      error: function () {
+        alert("Không thể tải danh sách nhà cung cấp.");
+      }
+    });
+  });
+    // Hàm để mở modal và điền thông tin vào form\
+</script>
+<script>
+  function addDescriptionItem() {
+    const container = document.getElementById('descriptionList');
+
+    const newItem = document.createElement('div');
+    newItem.className = 'row g-2 align-items-start mb-2 description-item';
+    newItem.innerHTML = `
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Title (e.g. Usage)">
+      </div>
+      <div class="col-md-7">
+        <textarea class="form-control" rows="2" placeholder="Content"></textarea>
+      </div>
+      <div class="col-md-1 text-end">
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.description-item').remove()">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(newItem);
+  }
+</script>
+<script>
+  function addSaleItem() {
+    const container = document.getElementById('saleList');
+    const newItem = document.createElement('div');
+    newItem.className = 'row g-2 align-items-center mb-2 sale-item';
+    newItem.innerHTML = `
+      <div class="col-md-3">
+        <div class="input-group">
+            <input type="number" class="form-control" placeholder="Sale %"  min="0" max="100" step="1">
+            <span class="input-group-text">%</span>
+          </div>
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.sale-item').remove()">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(newItem);
+  }
+</script>
+<script>
+  $(document).ready(function () {
+    const $input = $('#productImages1');
+    const $previewContainer = $('#imageUpdate1');
+
+    $input.on('change', function () {
+      const files = this.files;
+      $previewContainer.empty(); // Xóa ảnh cũ
+
+      if (files.length > 10) {
+        alert("Chỉ được chọn tối đa 1 ảnh!");
+        $input.val(""); // Reset input
+        return;
+      }
+
+      Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = $('<img>').attr('src', e.target.result).css({
+            width: '120px',
+            height: '120px',
+            objectFit: 'cover',
+            margin: '5px',
+            border: '1px solid #ccc',
+            borderRadius: '8px'
+          });
+          $previewContainer.append(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  });
+  function getEditProductFormData() {
+    const descriptions = [];
+    $('#descriptionList .description-item').each(function () {
+      const title = $(this).find('input').val();
+      const content = $(this).find('textarea').val();
+      descriptions.push({ title, content });
+    });
+
+    const promotions = [];
+    $('#saleList .sale-item').each(function () {
+      const salePercent = $(this).find('input[type="number"]').val();
+      const startDate = $(this).find('input[type="date"]').eq(0).val();
+      const endDate = $(this).find('input[type="date"]').eq(1).val();
+      promotions.push({
+        salePercent: parseFloat(salePercent),
+        startDate,
+        endDate
+      });
+    });
+
+    return {
+      id: $('#editProductSKU1').val(), // ID thực tế của sản phẩm
+      productId: $('#currentProductSKU').val(), // ID cập nhật (có thể giống id)
+      active: $('#editProductStatus').prop('checked'),
+      weight: $('#productWeight').val(),
+      name: $('#editProductName').val(),
+      sku: $('#editProductSKU').val(),
+      barcode: $('#editProductBarcode').val(),
+      stock: parseInt($('#editProductStock').val()),
+      quantity: parseInt($('#editProductQuantity').val()),
+      category: $('#editProductCategory').val(),
+      supplier: $('#editProductSupplier').val(),
+      spec: $('#editProductSpec').val(),
+      price: parseFloat($('#editProductPrice').val()),
+      comparePrice: parseFloat($('#editProductComparePrice').val()),
+      inventoryPolicy: $('#editProductInventoryPolicy').val(),
+      salePercent: $('#currentProductSalePercent').text().replace('%', '').trim(),
+      discountPrice: $('#editDiscountPrice').val(),
+      discountStart: $('#editDiscountStart').val(),
+      discountEnd: $('#editDiscountEnd').val(),
+      descriptions: descriptions,
+      promotions: promotions
+    };
+  }
+
+  $('#saveChangesBtn').on('click', function () {
+    const formDataObj = getEditProductFormData();
+
+    const formData = new FormData();
+
+    // Gán các field vào FormData
+    Object.keys(formDataObj).forEach(key => {
+      if (key === 'descriptions' || key === 'promotions') {
+        formData.append(key, JSON.stringify(formDataObj[key]));
+      } else {
+        formData.append(key, formDataObj[key]);
+      }
+    });
+
+    // Gán ảnh vào FormData
+    const fileInput = $('#productImages1')[0];
+    if (fileInput.files.length > 0) {
+      formData.append('image', fileInput.files[0]);
+    }
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ':', pair[1]);
+    }
+
+    $.ajax({
+      url: '/WebFinall/admin/editProduct',
+      method: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        console.log("Cập nhật thành công", res);
+        $('#editProductModal').modal('hide');
+      },
+      error: function (err) {
+        console.error("Lỗi cập nhật", err);
+      }
+    });
+  });
+</script>
+<script  src="${pageContext.request.contextPath}/js/admin.js"></script>
 </body>
 </html>
