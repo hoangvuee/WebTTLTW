@@ -47,12 +47,5 @@ HttpSession session = req.getSession(true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
-
-
-
-
-
     }
 }

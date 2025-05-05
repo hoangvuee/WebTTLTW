@@ -1,6 +1,10 @@
 package Admin;
 
+import Dao.ActivityLogDAO;
+import Models.User.User;
 import Services.ServiceProduct;
+import Services.ServiceRole;
+import Utils.LogActions;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,8 +20,15 @@ import java.sql.SQLException;
 )
 public class EditProduct extends HttpServlet {
     ServiceProduct serviceProduct = new ServiceProduct();
+    ServiceRole serviceRole = new ServiceRole();
+    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("userInfor");
 
         int productId = Integer.parseInt(req.getParameter("productId"));
         String productName = req.getParameter("productName");
@@ -38,15 +49,27 @@ public class EditProduct extends HttpServlet {
         System.out.println("productCategory: " + idCategory);
         System.out.println("productStatus: " + productStatus);
 
-
-       // serviceProduct.updateProduct(productId,productPrice,productQuantity,productDescription,productWeight, Boolean.parseBoolean(productStatus));
         try {
             serviceProduct.updateProductAndVariant(productId,productWeight,productPrice,productQuantity,productDescription,idCategory,idSupplier,productStatus);
+            activityLogDAO.logUserActivity(
+                user.getUserName(),
+                serviceRole.getRoleNameById(user.getIdRole()),
+                LogActions.PRODUCT_UPDATE,
+                "Updated product ID: " + productId,
+                ipAddress,
+                userAgent
+            );
             resp.sendRedirect("admin/getAllProduct");
         } catch (SQLException e) {
+            activityLogDAO.logUserActivity(
+                user.getUserName(),
+                serviceRole.getRoleNameById(user.getIdRole()),
+                LogActions.PRODUCT_UPDATE_FAILED,
+                "Failed to update product: " + e.getMessage(),
+                ipAddress,
+                userAgent
+            );
             throw new RuntimeException(e);
         }
-
-
     }
 }

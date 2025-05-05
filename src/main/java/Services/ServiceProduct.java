@@ -3,19 +3,12 @@ package Services;
 import Dao.ConnDB;
 import Dao.ProductDao;
 import Models.ManageProduct.ListProductManage;
-import Models.ManageProduct.Product;
 import Models.Product.ListProduct;
 import Models.TopProductBuy.TopProduct;
-import Models.cart.Productt;
 import Models.cart.CartProduct;
-import Models.cart.Cart;
-import Models.inforTransaction.Transaction;
-import Models.inforTransaction.TransactionHistory;
 import Models.Products.Products;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,21 +102,7 @@ public ListProduct getListProduct() throws SQLException {
         productDao.updateProductAndVariant(idProduct, weight, price, quantity, productDescription, idCategory, idSupplier, isActive);
 
     }
-    public static void main(String[] args) throws Exception {
-        ServiceProduct s = new ServiceProduct();
-        Transaction tr = new Transaction();
-      //  System.out.println(s.getProductVariantCountByIdAndWeight(1,200));
-        //System.out.println(s.getProductList(22));
-       // System.out.println(s.getById("1",200));
-      //  System.out.println(s.getUserIdByPhoneNumber("0912345678"));
-      // System.out.println(s.insertPayment(Integer.parseInt("2"),Integer.parseInt("17"),"COD"));
-
-//s.getListProduct();
-//s.getProductDetail("44");
-        System.out.println(s.getAllProducts().getItems().size());
-
     }
-}
 
 
 

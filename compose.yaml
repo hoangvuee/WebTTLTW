@@ -14,10 +14,10 @@ services:
       - REDIS_PORT=6379
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
+
       - MYSQL_DATABASE=javadb
       - MYSQL_USER=javauser
       - MYSQL_PASSWORD=javapass
-
   redis:
     image: redis:7
     container_name: redis
@@ -51,7 +51,6 @@ services:
       - PMA_PORT=3306
     depends_on:
       - mysql
-
 volumes:
   redis-data:
   mysql-data:

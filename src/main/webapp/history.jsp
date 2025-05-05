@@ -302,6 +302,7 @@
                 font-size: 14px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -477,6 +478,7 @@
             </div>
         </div>
     </div>
+
 </div>
 <div id="ratingModal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -553,12 +555,15 @@
                 if (selectedTransaction && selectedTransaction.products) {
                     // Kiểm tra từng sản phẩm và in ra console
                     selectedTransaction.products.forEach(product => {
-                        console.log(product.price); // In giá sản phẩm ra console
+                        console.log(product); // In giá sản phẩm ra console
                     });
 
                     // Hiển thị danh sách sản phẩm
                     detailList.innerHTML = selectedTransaction.products.map(product => {
                         console.log(product.id); // In id sản phẩm ra console
+                        console.log(product.weight)
+                        console.log(product.imageURL)
+                        console.log(product.id + "danh gia " + product.rated)
 
                         return '<li class="product-item">' +
                             '<div class="product-details">' +
@@ -566,14 +571,28 @@
                             '<span class="product-price"><strong>Giá sản phẩm:</strong> ' + product.price + ' đ</span>' +
                             '<span class="product-name"><strong>Tên sản phẩm:</strong> ' + product.nameProduct + '</span>' +
                             '<span class="product-quantity"><strong>Số lượng:</strong> ' + product.quantity + '</span>' +
+                            '<span class="product-weight"><strong>Trọng lượng:</strong> ' + product.weight + 'gr </span>' +
+                            '<span class="product-image"><strong>Ảnh:</strong><br><img src="img/' + product.imageURL + '" style="width: 100px;"></span>' +
+
+                            // Trạng thái đánh giá
+                            '<div class="rating-status ' + (product.rated ? 'rated' : 'not-rated') + '">' +
+                            (product.rated ? '✅ Đã đánh giá' : '❌ Chưa đánh giá') +
+                            '</div>' +
+
+                            // Nút Đánh giá
+                            '<button class="rating-btn" onclick="openRatingModal(' +
+                            product.idProduct + ', \'' +
+                            idOrder + '\', \'' +
+                            escapeQuotes(product.nameProduct) + '\', \'' +
+                            escapeQuotes("img/" + product.imageURL) + '\', \'' +
+                            escapeQuotes(product.idProduct || '') + '\'' +
+                            ')">' +
+                            '📝 Đánh giá' +
+                            '</button>' +
                             // Thêm phần đánh giá với nút để mở modal
                             '<button onclick="openRatingForm(' + product.idProduct + ', \'' + idOrder + '\')">Đánh giá</button>' +  // Đảm bảo orderId là giá trị, không phải đối tượng
                             '</div>' +
                             '</li>';
-
-
-
-
                     }).join('');  // join() để gộp các phần tử mảng thành một chuỗi
 
                     detailSection.classList.add('active');
@@ -608,11 +627,99 @@
         document.getElementById("check").style.display = "block";
         document.getElementById("ls").style.display="none";
 
+    // Xử lý rating stars
+    document.querySelectorAll('.star-rating input').forEach(star => {
+        star.addEventListener('change', function() {
+            const rating = this.value;
+            document.getElementById('stars').value = rating;
+
+            // Cập nhật text đánh giá
+            const ratingTexts = {
+                1: "Rất không hài lòng",
+                2: "Không hài lòng",
+                3: "Bình thường",
+                4: "Hài lòng",
+                5: "Rất hài lòng"
+            };
+
+            const emojis = {
+                1: "😠",
+                2: "😞",
+                3: "😐",
+                4: "😊",
+                5: "😍"
+            };
+
+            document.getElementById('ratingText').textContent = ratingTexts[rating];
+            document.querySelector('.rating-emoji').textContent = emojis[rating];
+        });
+    });
+
+    // Xử lý đếm ký tự textarea
+    document.getElementById('comment').addEventListener('input', function() {
+        const charCount = this.value.length;
+        document.getElementById('charCount').textContent = charCount;
+
+        if (charCount > 500) {
+            this.value = this.value.substring(0, 500);
+        }
+    });
+
+    // Xử lý upload ảnh
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const previewContainer = document.getElementById('imagePreview');
+        previewContainer.innerHTML = '';
+
+        if (this.files.length > 3) {
+            alert('Bạn chỉ có thể tải lên tối đa 3 ảnh');
+            this.value = '';
+            return;
+        }
+
+        Array.from(this.files).forEach((file, index) => {
+            if (index >= 3) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'preview-image';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-image';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = function() {
+                    previewDiv.remove();
+                    // Cần thêm logic xóa file khỏi danh sách files nếu cần
+                };
+
+                previewDiv.appendChild(img);
+                previewDiv.appendChild(removeBtn);
+                previewContainer.appendChild(previewDiv);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    function openRatingModal(productId, orderId, productName, productImage, productSku) {
+        document.getElementById('productId').value = productId;
+        document.getElementById('orderId').value = orderId;
+        document.getElementById('productReviewName').textContent = productName;
+        document.getElementById('productReviewImage').src = productImage;
+        document.getElementById('productReviewSku').textContent = productSku;
+        document.body.classList.add('modal-open');
+
+        document.getElementById('ratingModal').classList.add('active');
     }
-    function checkBlock(){
-        document.getElementById("check").style.display = "none";
-        document.getElementById("ls").style.display="block";
+
+    function closeModal() {
+        document.getElementById('ratingModal').classList.remove('active');
+        document.body.classList.remove('modal-open');
     }
+
+
     document.addEventListener('DOMContentLoaded', () => {
         // Lấy tất cả các phần tử <li> trong danh sách
         const listItems = document.querySelectorAll('#menuList .list-group-item');
