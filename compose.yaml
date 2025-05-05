@@ -14,10 +14,10 @@ services:
       - REDIS_PORT=6379
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
-      - MYSQL_DATABASE=dataweb
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=Passnhutren1
 
+      - MYSQL_DATABASE=javadb
+      - MYSQL_USER=javauser
+      - MYSQL_PASSWORD=javapass
   redis:
     image: redis:7
     container_name: redis
@@ -31,12 +31,26 @@ services:
     container_name: mysql
     restart: always
     environment:
-      - MYSQL_DATABASE=dataweb
-      - MYSQL_ROOT_PASSWORD=Passnhutren1
+      - MYSQL_DATABASE=javadb
+      - MYSQL_USER=javauser
+      - MYSQL_PASSWORD=javapass
+      - MYSQL_ROOT_PASSWORD=rootpassword
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
 volumes:
   redis-data:
   mysql-data:

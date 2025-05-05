@@ -8,11 +8,12 @@ import io.lettuce.core.api.sync.RedisCommands;
 public class RedisOTPService {
     private static final String REDIS_HOST = "localhost";
     private static final int REDIS_PORT = 6379;
-    private static final String REDIS_PASSWORD = ""; // Thay bằng mật khẩu Redis của bạn
+
 
     private static final RedisURI redisURI = RedisURI.builder()
             .withHost(REDIS_HOST)
             .withPort(REDIS_PORT)
+            .withPassword(REDIS_PASSWORD.toCharArray())
             .build();
 
     private static final RedisClient redisClient = RedisClient.create(redisURI);
