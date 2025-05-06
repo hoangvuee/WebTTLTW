@@ -1,5 +1,6 @@
 package Services;
 
+import DTO.ProductDTO;
 import Dao.ConnDB;
 import Dao.ProductDao;
 import Models.ManageProduct.ListProductManage;
@@ -52,7 +53,10 @@ public class ServiceProduct {
         return userId;
     }
 
+    public void getAllProductIds(List<ProductDTO> variants){
 
+        productDao.getAllProductIds(variants);
+    }
 
 public ListProduct getListProduct() throws SQLException {
 
@@ -102,6 +106,36 @@ public ListProduct getListProduct() throws SQLException {
         productDao.updateProductAndVariant(idProduct, weight, price, quantity, productDescription, idCategory, idSupplier, isActive);
 
     }
+
+    public ProductDTO getProductByIDandWeight(String idProduct, float weight) {
+        return productDao.getProductByIDandWeight(idProduct, weight);
+    }
+    public boolean updateProduct( int id, String productName, int idCategory, int idSupplier,  String imagePath) {
+    return productDao.updateProduct(id,productName,idCategory,idSupplier,imagePath);
+    }
+
+    public boolean updateProductDetail( int id, int idProduct, int weight, int price, boolean isActive, int quantity) {
+        return productDao.updateProductDetail( id,  idProduct,  weight,  price,  isActive,   quantity);
+    }
+    public boolean updateProduct( int id, String productName, int idCategory, int idSupplier) {
+        return productDao.updateProduct(id,productName,idCategory,idSupplier);
+    }
+
+        public static void main(String[] args) throws Exception {
+        ServiceProduct s = new ServiceProduct();
+      //  Transaction tr = new Transaction();
+      //  System.out.println(s.getProductVariantCountByIdAndWeight(1,200));
+        //System.out.println(s.getProductList(22));
+       // System.out.println(s.getById("1",200));
+      //  System.out.println(s.getUserIdByPhoneNumber("0912345678"));
+      // System.out.println(s.insertPayment(Integer.parseInt("2"),Integer.parseInt("17"),"COD"));
+
+//s.getListProduct();
+//s.getProductDetail("44");
+      //  System.out.println(s.getAllProducts().getItems().size());
+        List<ProductDTO> list = new ArrayList<>();
+      s.getAllProductIds(list);
+
     }
 
 

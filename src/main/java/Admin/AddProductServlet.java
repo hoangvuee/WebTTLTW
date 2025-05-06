@@ -81,9 +81,10 @@ public class AddProductServlet extends HttpServlet {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm")
                     .create();
+            List<String> imagePaths = ServiceFile.saveImages(request, "img", "images", this);
             int idProduct;
             if (id.equals("") || id.trim().isEmpty()) {
-                idProduct = productService.addOrUpdateProduct(name, idCategory, idSupplier, isActive);
+                idProduct = productService.addOrUpdateProduct(name, idCategory, idSupplier, isActive,imagePaths.get(1));
                 System.out.println("==> Thêm mới sản phẩm, id: " + idProduct);
             } else {
 
@@ -103,7 +104,7 @@ public class AddProductServlet extends HttpServlet {
                     serviceSale.insertSales(variantId,sales);
             }
 
-            List<String> imagePaths = ServiceFile.saveImages(request, "img", "images", this);
+
             serviceImage.insertProductImages(idProduct,imagePaths);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {

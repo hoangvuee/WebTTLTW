@@ -4,7 +4,7 @@ import java.sql.*;
 import java.time.LocalDate;
 
 public class AddOrUpdateProductDao {
-    public int addOrUpdateProduct(Connection conn, String productName, String productCategory, String productSupplier, String productStatus) throws SQLException {
+    public int addOrUpdateProduct(Connection conn, String productName, String productCategory, String productSupplier, String productStatus,String image) throws SQLException {
         String sqlCheckProduct = "SELECT id FROM products WHERE productName = ?";
         try (PreparedStatement psCheck = conn.prepareStatement(sqlCheckProduct)) {
             psCheck.setString(1, productName);
@@ -15,13 +15,13 @@ public class AddOrUpdateProductDao {
             }
         }
 
-        String sqlProduct = "INSERT INTO products (productName, idCategory, idSupplier, isActive, image) VALUES (?, ?, ?, ?, ?)";
+        String sqlProduct = "INSERT INTO products (productName, idCategory, idSupplier, isActive,image) VALUES (?, ?, ?, ?,?)";
         try (PreparedStatement psProduct = conn.prepareStatement(sqlProduct, PreparedStatement.RETURN_GENERATED_KEYS)) {
             psProduct.setString(1, productName);
             psProduct.setString(2, productCategory);
             psProduct.setString(3, productSupplier);
-            psProduct.setBoolean(4, "Còn hàng".equals(productStatus));
-            psProduct.setString(5, "");
+            psProduct.setBoolean(4, "on".equals(productStatus));
+            psProduct.setString(5,image);
             psProduct.executeUpdate();
 
             try (ResultSet rsProduct = psProduct.getGeneratedKeys()) {
@@ -75,4 +75,5 @@ public class AddOrUpdateProductDao {
             psImage.executeUpdate();
         }
     }
+
 }

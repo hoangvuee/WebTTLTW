@@ -1,5 +1,6 @@
 package Services;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,4 +48,24 @@ public class ServiceFile {
         }
         return "file_" + System.currentTimeMillis();
     }
+    public static String saveFileToImgFolder(Part filePart, ServletContext context) throws IOException {
+        // Lấy tên file
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+        // Xác định đường dẫn lưu trong thư mục "img"
+        String uploadPath = context.getRealPath("/") + "img";
+
+        // Tạo thư mục nếu chưa tồn tại
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdir();
+
+        // Đường dẫn đầy đủ để lưu file
+        String filePath = uploadPath + File.separator + fileName;
+
+        // Ghi file vào hệ thống
+        filePart.write(filePath);
+
+        return filePath;
+    }
+
 }
