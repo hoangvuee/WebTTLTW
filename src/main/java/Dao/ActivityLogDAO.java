@@ -13,7 +13,7 @@ public class ActivityLogDAO {
     }
 
     public void log(ActivityLog activityLog) {
-        String sql = "INSERT INTO activity_logs1 (username, role_name, action, details, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO activity_logs (username, role_name, action, details, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dao.getConn();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
