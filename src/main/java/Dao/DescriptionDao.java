@@ -1,6 +1,7 @@
 package Dao;
 
 import DTO.DescriptionDTO;
+
 import Models.Description.Description;
 
 import java.sql.Connection;
@@ -53,5 +54,33 @@ public class DescriptionDao {
 
         return descriptionDTOS;
     }
+
+    public List<DescriptionDTO> getAllDescriptionByIdProduct(String idProduct) {
+        ConnDB dao = new ConnDB();
+        List<DescriptionDTO> descriptionDTOS = new ArrayList<>();
+        String sql = "SELECT id, title, content FROM product_descriptions WHERE id_product = ?";
+
+        try (Connection conn = dao.getConn();  // Đảm bảo bạn có class DatabaseUtil
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, idProduct);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    DescriptionDTO dto = new DescriptionDTO();
+                    dto.setId(rs.getLong("id"));
+                    dto.setTitle(rs.getString("title"));
+                    dto.setContent(rs.getString("content"));
+                    descriptionDTOS.add(dto);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return descriptionDTOS;
+    }
+
 
 }
