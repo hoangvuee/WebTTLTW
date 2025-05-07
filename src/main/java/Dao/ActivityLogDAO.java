@@ -1,6 +1,6 @@
 package Dao;
 
-import Models.log.ActivityLog;
+import log.ActivityLog;
 import Utils.LogConfig;
 
 import java.sql.*;

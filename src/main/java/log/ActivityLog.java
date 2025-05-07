@@ -1,4 +1,4 @@
-package Models.log;
+package log;
 
 import java.sql.Timestamp;
 
