@@ -1,12 +1,10 @@
 package Controller.Account;
 
-import Dao.ActivityLogDAO;
 import Dao.UserDao;
 import Models.User.User;
 import Sercurity.JwtUtil;
 import Services.ServiceRole;
 import Services.ServiceUser;
-import Utils.LogActions;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,13 +23,11 @@ import java.net.URL;
 public class GoogleLoginServlet extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceRole serviceRole = new ServiceRole();
-    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
+
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accessToken = request.getParameter("access_token");
         System.out.println("Received access_token: " + accessToken);
-        String ipAddress = request.getRemoteAddr();
-        String userAgent = request.getHeader("User-Agent");
 
         if (accessToken == null || accessToken.isEmpty()) {
             response.sendRedirect("Account/login.jsp?error=Login failed");
@@ -64,14 +60,6 @@ public class GoogleLoginServlet extends HttpServlet {
         if (user == null) {
             user = new User(email, name, picture, 2);
             userDAO.addUserGG(user);
-            activityLogDAO.logUserActivity(
-                    "Unknown",
-                    "Guest",
-                    LogActions.GOOGLE_REGISTER,
-                    "New user registration via Google: " + email,
-                    ipAddress,
-                    userAgent
-            );
         }
 
         HttpSession session = request.getSession();
@@ -84,14 +72,6 @@ public class GoogleLoginServlet extends HttpServlet {
         String jwtToken = JwtUtil.generateToken(email,serviceRole.getRoleNameById(user.getIdRole()));
         session.setAttribute("authToken", jwtToken);
         System.out.println(jwtToken);
-        activityLogDAO.logUserActivity(
-                user.getUserName(),
-                serviceRole.getRoleNameById(user.getIdRole()),
-                LogActions.GOOGLE_LOGIN_SUCCESS,
-                "Successful Google login with role: " + serviceRole.getRoleNameById(user.getIdRole()),
-                ipAddress,
-                userAgent
-        );
 
 
 

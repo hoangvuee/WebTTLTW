@@ -67,6 +67,15 @@
                                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Thay đổi mật khẩu</button>
 
                                 </div>
+                                <form action="../getOTP" method="GET">
+                                    <div class="mb-3">
+                                        <label for="otp1" class="form-label">Mã OTP</label>
+
+                                    </div>
+
+                                    <!-- Button gửi mã OTP -->
+                                    <button type="submit" class="btn btn-secondary" id="sendOtpBtn">Gửi mã OTP</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -159,11 +168,9 @@
                         <!-- Trường OTP -->
                         <div class="mb-3">
                             <label for="otp1" class="form-label">Mã OTP</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="text" class="form-control" id="otp1" name="otp" required style="width: 20%">
-                                <button type="button" class="btn btn-secondary" id="sendOtpBtn" onclick="sendOTP()">Gửi mã OTP</button>
-                            </div>
+                            <input type="text" class="form-control" id="otp1" name="otp" required style="width: 20%">
                         </div>
+
 
                         <!-- Button lưu thay đổi -->
                         <button type="submit" class="btn btn-primary" id="saveChangesBtn">Lưu thay đổi</button>
@@ -181,27 +188,5 @@
 <!-- Script-->
 <script src="/js/guest-info.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function sendOTP() {
-        fetch('../getOTP', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Mã OTP đã được gửi đến email của bạn');
-                } else {
-                    alert('Có lỗi xảy ra khi gửi mã OTP');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi gửi mã OTP');
-            });
-    }
-</script>
 </body>
 </html>
-

@@ -20,4 +20,7 @@ public class ServiceAddCategories {
 
     return categoryDao.getCategories();
     }
+    public String getNameCategoriesByIdProduct(String idProduct) throws SQLException {
+      return   categoryDao.getNameCategoriesByIdProduct(idProduct);
+    }
 }

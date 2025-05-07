@@ -22,44 +22,49 @@ public class AddShipping extends HttpServlet {
     private final ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     private final ServiceRole serviceRole = new ServiceRole();
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String ipAddress = req.getRemoteAddr();
         String userAgent = req.getHeader("User-Agent");
         HttpSession session = req.getSession(false);
-        
+
+
+        String nameShipping = req.getParameter("deliveryService");
+        double price = Double.parseDouble(req.getParameter("price"));
+
         try {
             User user = (User) session.getAttribute("userInfor");
-            String nameShipping = req.getParameter("deliveryService");
-            double price = Double.parseDouble(req.getParameter("price"));
-
             serviceShipping.addShipping(nameShipping, price);
-            
             activityLogDAO.logUserActivity(
-                user.getUserName(),
-                serviceRole.getRoleNameById(user.getIdRole()),
-                LogActions.SHIPPING_ADD,
-                "Added new shipping method: " + nameShipping + " with price: " + price,
-                ipAddress,
-                userAgent
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.SHIPPING_ADD,
+                    "Added new shipping method: " + nameShipping + " with price: " + price,
+                    ipAddress,
+                    userAgent
             );
+            // Thêm thông báo thành công vào request attribute
+            req.setAttribute("successMessage", "Shipping method added successfully!");
 
-            req.setAttribute("successMessage", "Thêm phương thức vận chuyển thành công!");
+            // Chuyển hướng về trang giao diện thêm dịch vụ
             RequestDispatcher dispatcher = req.getRequestDispatcher("dilivery.jsp");
             dispatcher.forward(req, resp);
 
         } catch (SQLException e) {
             User user = (User) session.getAttribute("userInfor");
             activityLogDAO.logUserActivity(
-                user.getUserName(),
-                serviceRole.getRoleNameById(user.getIdRole()),
-                LogActions.SHIPPING_ADD_FAILED,
-                "Failed to add shipping method: " + e.getMessage(),
-                ipAddress,
-                userAgent
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.SHIPPING_ADD_FAILED,
+                    "Failed to add shipping method: " + e.getMessage(),
+                    ipAddress,
+                    userAgent
             );
-            
-            req.setAttribute("errorMessage", "Lỗi khi thêm phương thức vận chuyển!");
+            // Thêm thông báo lỗi vào request attribute
+            req.setAttribute("errorMessage", "Error adding shipping method. Please try again.");
+
+            // Chuyển hướng lại về trang giao diện thêm dịch vụ
             RequestDispatcher dispatcher = req.getRequestDispatcher("dilivery.jsp");
             dispatcher.forward(req, resp);
         }
