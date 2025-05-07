@@ -13,7 +13,7 @@
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="../css/admin.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
@@ -24,7 +24,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white px-3">
   <a class="navbar-brand d-flex align-items-center" href="#">
-    <img src="img/google-admin-logo-png_seeklogo-504247.png" alt="Logo" height="30">
+    <img src="../img/google-admin-logo-png_seeklogo-504247.png" alt="Logo" height="30">
     <span class="ms-2">Adminator</span>
   </a>
 
@@ -818,7 +818,8 @@
                   <div class="row">
                     <div class="col-md-4 mb-3">
                       <div class="current-image-container border rounded p-2 text-center">
-                        <img src="img/1735387762942_nam-bao-ngu-xam-tuoi-ngon-01.jpg" id="currentProductImage" class="img-fluid rounded" alt="Current Product Image">
+                        <img src="../img/1735387762942_nam-bao-ngu-xam-tuoi-ngon-01.jpg" id="currentProductImage" class="img-fluid rounded" alt="Current Product Image">
+
                         <div class="mt-2 small text-muted">Main Image</div>
                       </div>
                     </div>
@@ -1216,7 +1217,9 @@
 <%--  //modal edit--%>
 
 
-<script src="js/admin.js"></script>
+<script src="../js/admin.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>

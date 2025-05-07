@@ -59,7 +59,9 @@ public class FacebookCallbackServlet extends HttpServlet {
         String userName = userJson.getString("name");
         String userEmail = userJson.has("email") ? userJson.getString("email") : "Không có email";
         String profilePicUrl = "https://graph.facebook.com/"+ userId + "/picture?type=large&redirect=0&access_token=" + accessToken ;
-      String urlImage = renderURLFacebook.returnURL(profilePicUrl);
+        System.out.println(profilePicUrl);
+
+        String urlImage = renderURLFacebook.returnURL(profilePicUrl);
         System.out.println(urlImage);
 
         System.out.println(userId);

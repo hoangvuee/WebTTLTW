@@ -1,10 +1,13 @@
 package Admin;
 
+import Dao.ActivityLogDAO;
 import Models.AddProduct;
 import Models.Description.Description;
 import Models.ProductDescription;
 import Models.Sale.Sale;
+import Models.User.User;
 import Services.*;
+import Utils.LogActions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -13,10 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,12 +41,17 @@ public class AddProductServlet extends HttpServlet {
     private ServiceSale serviceSale = new ServiceSale();
     private ServiceDescription serviceDescription = new ServiceDescription();
     private ServiceImage serviceImage  = new ServiceImage();
+    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-
+        String ipAddress = request.getRemoteAddr();
+        String userAgent = request.getHeader("User-Agent");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("userInfor");
+        ServiceRole serviceRole = new ServiceRole();
         try {
             // 1. Lấy các tham số cơ bản
             String id = ServiceParameter.getParameter(request, "id");
@@ -106,6 +111,14 @@ public class AddProductServlet extends HttpServlet {
 
 
             serviceImage.insertProductImages(idProduct,imagePaths);
+            activityLogDAO.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.PRODUCT_ADD,
+                    "Added product: " + name + " (ID: " + idProduct + ")",
+                    ipAddress,
+                    userAgent
+            );
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             e.printStackTrace();

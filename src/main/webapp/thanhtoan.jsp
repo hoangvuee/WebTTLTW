@@ -21,6 +21,7 @@
   <title>Thanhtoan</title>
   <link rel="stylesheet" href="css/styleThanhtoan.css">
   <link rel="stylesheet" href="css/shoppingcart.css">
+  <link rel="stylesheet" href="css/pay.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -1231,151 +1232,9 @@
     display: block;
     animation: fadeIn 0.2s ease-out;
   }
-  .shipping-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Khoảng cách giữa các ô */
-  }
 
-  .shipping-option {
-    display: flex;
-    align-items: center;
-    background: #f9f9f9; /* Màu nền nhạt */
-    border: 2px solid #ddd; /* Viền nhẹ */
-    border-radius: 12px; /* Bo góc */
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .shipping-option:hover {
-    background: #ececec; /* Hiệu ứng hover */
-    border-color: #8a2be2; /* Viền tím nhẹ */
-  }
-
-  .shipping-option input {
-    margin-right: 10px;
-    transform: scale(1.2);
-    accent-color: #8a8a8a; /* Màu radio */
-  }
-
-  .shipping-text {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-  }
-  .shipping-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .shipping-option {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border: 2px solid #ccc;
-    border-radius: 16px;
-    padding: 14px 18px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-  }
-  select {
-    max-height: 300px; /* Giới hạn chiều cao */
-    overflow-y: auto;  /* Hiện thanh cuộn khi dài quá */
-  }
-  .shipping-option:hover {
-    background: #f3e5ff; /* Màu nhạt tím */
-    border-color: #616161;
-  }
-
-  .shipping-option input {
-    display: none; /* Ẩn radio mặc định */
-  }
-
-  .shipping-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-  }
-
-  .shipping-title {
-    font-size: 17px;
-    font-weight: bold;
-  }
-
-  .shipping-price {
-    font-size: 14px;
-    color: #666;
-  }
-
-  /* Khi được chọn, đổi màu viền và thêm hiệu ứng */
-  .shipping-option input:checked + .shipping-content {
-    color: #da4338;
-    font-weight: bold;
-  }
-
-  /* Hiệu ứng bo tròn cho radio button */
-  .shipping-option::before {
-    content: "";
-    position: absolute;
-    left: 10px;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #7a7a7a;
-    border-radius: 50%;
-    background: #fff;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .shipping-option input:checked + .shipping-content::before {
-    background: #6e6d6e;
-  }
-  /* Container cho ô nhập mã giảm giá */
-  .shipping-discount {
-    display: flex;
-    align-items: center;
-    margin-top: 15px;
-    gap: 10px;
-  }
-
-  /* Ô nhập mã giảm giá */
-  .shipping-discount input {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 12px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s ease-in-out;
-  }
-
-  /* Khi focus vào ô nhập */
-  .shipping-discount input:focus {
-    border-color: #868686;
-    box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
-  }
-
-  /* Nút Áp dụng */
-  .shipping-discount button {
-    padding: 10px 15px;
-    background: linear-gradient(135deg, #f46868, #f75932);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-  }
-
-  /* Hiệu ứng khi hover vào nút */
-  .shipping-discount button:hover {
-    background: linear-gradient(135deg, #6a0dad, #4b0082);
+  .selector-arrow-modern.rotate svg {
+    transform: rotate(180deg);
   }
 </style>
 
@@ -1515,14 +1374,7 @@
                       <p>Địa chỉ cửa hàng mua: Tp.Cần thơ</p>
                     </div>
 
-                    <!-- Ô nhập mã giảm giá vận chuyển -->
-                    <div class="shipping-discount">
-                      <input type="text" id="shippingCoupon" placeholder="Nhập mã giảm giá vận chuyển">
-                      <button id="applyShippingCoupon">Áp dụng</button>
-                    </div>
-                    </form>
                   </div>
-
                   <div id="cod-info" class="payment-inf">
                     <form id="shippingForm">
                     <h4 ><i class="fa-solid fa-truck"></i> <span>Chọn phương thức giao hàng</span></h4>
@@ -1559,7 +1411,6 @@
                     </div>
                     </form>
                   </div>
-
 
                 </div>
 
@@ -1603,7 +1454,6 @@
                             </div>
                           </div>
 
-
                           <!-- Input số lượng -->
                           <td class="text-center">
                             <div class="quantity-control">
@@ -1618,38 +1468,11 @@
                         </div>
                       </c:forEach>
                       <!-- Tổng cộng -->
-
-                    </div>
-                    <div class="total-section d-flex justify-content-between mt-4" style="height: 50px">
-                      <span>Tổng cộng:</span>
-                      <c:set var="sum" value="${sessionScope.cr7.totalPrice}" />
-
-                      <span id="totalAmount" class="text-danger" style="font-size: 25px">
-                      <fmt:formatNumber value="${sum}" type="number" groupingUsed="true" /> đ
-                        </span>
-                    </div>
-
-
-                          <!-- Input số lượng -->
-                          <td class="text-center">
-                            <div class="quantity-control">
-
-                              <input type="text" id="quantity-${item.id}" class="form-control form-control-sm text-center mx-1" value="${item.quantity}" style="width: 50px;" readonly data-price="${item.price}">
-
-
-
-
-                          <!-- Nút xóa -->
-                          <td><a href="remove?productID=${item.id}&weight=${item.weight}"><button class="remove-btn ms-3"><i class="fas fa-trash-alt"></i></button></a></td>
-                        </div>
-                      </c:forEach>
-                      <!-- Tổng cộng -->
                   </div>
                 </div>
                   <c:set var="sum" value="${sessionScope.cr7.totalPrice}" />
                   <c:set var="saveMoney" value="${sessionScope.cr7.saveMoney}" />
                   <c:set var="totalPrice" value="${sessionScope.cr7.rawTotalPrice}" />
-
 
                   <div class="cart-summary">
                     <h5 class="mb-3 box">📦 Cộng giỏ hàng</h5>
@@ -1754,23 +1577,7 @@
                                   </svg>
                                 </button>
                               </div>
-
-                   <div class="accordion mt-4" id="paymentAccordion">
-
-
-                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
-                      <h2 class="accordion-header" id="codHeader">
-                        <input type="radio" name="paymentMethod" id="cod" class="me-2" onchange="handlePaymentSelection(this)" >
-                        <label for="cod" class="accordion-button collapsed">
-                          <i class="fa-solid fa-truck me-2"></i>COD - Thanh toán khi nhận hàng
-                        </label>
-                      </h2>
-                      <div id="codCollapse" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                          <p>Thanh toán cho shipper khi nhận hàng.</p>
-                        </div>
-                      </div>
-
+                            </div>
 
                           </div>
 
@@ -1958,6 +1765,8 @@
           .then(response => response.json())
           .then(data => console.log(data));
 
+
+
   let productTotal = parseFloat(<%= cart.getTotalPrice() %>); // Tổng tiền sản phẩm
 
   function updateShippingCost(radio) {
@@ -1976,7 +1785,6 @@
       currency: "VND",
     }).format(total);
   }
-
 
 
 
@@ -2118,7 +1926,6 @@
     });
   }
 </script>
-
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
