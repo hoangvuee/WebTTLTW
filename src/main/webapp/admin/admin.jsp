@@ -819,6 +819,7 @@
                     <div class="col-md-4 mb-3">
                       <div class="current-image-container border rounded p-2 text-center">
                         <img src="../img/1735387762942_nam-bao-ngu-xam-tuoi-ngon-01.jpg" id="currentProductImage" class="img-fluid rounded" alt="Current Product Image">
+
                         <div class="mt-2 small text-muted">Main Image</div>
                       </div>
                     </div>
@@ -1217,6 +1218,8 @@
 
 
 <script src="../js/admin.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
