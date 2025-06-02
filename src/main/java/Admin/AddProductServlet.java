@@ -1,6 +1,5 @@
 package Admin;
 
-import Dao.ActivityLogDAO;
 import Models.AddProduct;
 import Models.Description.Description;
 import Models.ProductDescription;
@@ -41,7 +40,6 @@ public class AddProductServlet extends HttpServlet {
     private ServiceSale serviceSale = new ServiceSale();
     private ServiceDescription serviceDescription = new ServiceDescription();
     private ServiceImage serviceImage  = new ServiceImage();
-    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -111,7 +109,7 @@ public class AddProductServlet extends HttpServlet {
 
 
             serviceImage.insertProductImages(idProduct,imagePaths);
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.PRODUCT_ADD,

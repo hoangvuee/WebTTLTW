@@ -1,8 +1,9 @@
 package Controller.Account;
 
-import Dao.ActivityLogDAO;
+
 import Models.User.User;
 import Sercurity.JwtUtil;
+import Services.LogService;
 import Services.ServiceRole;
 import Services.ServiceUser;
 import Utils.LogActions;
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 public class SignIn extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceRole serviceRole = new ServiceRole();
-    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -97,11 +98,11 @@ public class SignIn extends HttpServlet {
 
                 User user = serviceUser.getUserByEmail(email);
                 if (user != null) {
-                    activityLogDAO.logUserActivity(
+                    LogService.logUserActivity(
                             user.getEmail(),
                             nameRole,
                             LogActions.USER_LOGIN,
-                            "Successful login with role: " + nameRole,
+                            "Successful login",
                             ipAddress,
                             userAgent
                     );
@@ -115,7 +116,7 @@ public class SignIn extends HttpServlet {
             } else {
                 // Sai thông tin đăng nhập
                 failedAttempts++;
-                activityLogDAO.logUserActivity(
+                LogService.logUserActivity(
                         "Unknown",
                         "Guest",
                         LogActions.LOGIN_FAILED,
