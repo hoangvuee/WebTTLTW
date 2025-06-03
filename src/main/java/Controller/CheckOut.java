@@ -1,5 +1,7 @@
 package Controller;
 
+import Models.Item;
+import Models.OrderInfo;
 import Services.ServiceOrder;
 import Services.ServiceProduct;
 import Services.ServiceTransactionHistory;
@@ -15,12 +17,14 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 @WebServlet(
         value = "/CheckoutServlet"
 )
 public class CheckOut extends HttpServlet {
-    ServiceOrder saveOrder = new ServiceOrder();
+    ServiceOrder serviceOrder = new ServiceOrder();
     //THuc hien chuc nang luu cac san pham khi chuan bi thanh toan;
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,11 +46,29 @@ public class CheckOut extends HttpServlet {
         String city = req.getParameter("province_name");
         System.out.println(city + "dia chi thanh pho");
         String district = req.getParameter("district_name");
+        String district_id = req.getParameter("districtId");
+        String ward_id = req.getParameter("toWardCode");
+        System.out.println(district_id);
+        System.out.println(ward_id);
+        String service_id = req.getParameter("service_id");
+        System.out.println(service_id);
+        String ward  = req.getParameter("ward_name");
         String address = req.getParameter("address");
         String notes = req.getParameter("notes");
         String payment = req.getParameter("paymentMethod");
         double shippingfee = Double.parseDouble(req.getParameter("shippingPrice"));
         System.out.println(payment);
+        // In ra console để kiểm tra
+        System.out.println("Full Name: " + fullName);
+        System.out.println("Phone Number: " + phoneNumber);
+        System.out.println("Email: " + email);
+        System.out.println("City (province_name): " + city);
+        System.out.println("District (district_name): " + district);
+        System.out.println(ward);
+        System.out.println("Address: " + address);
+        System.out.println("Notes: " + notes);
+        System.out.println("Payment Method: " + payment);
+        System.out.println("Shipping Fee: " + shippingfee);
         if (fullName == null || fullName.trim().isEmpty()) {
             throw new IllegalArgumentException("Họ và tên không được để trống.");
         }
@@ -93,6 +115,7 @@ public class CheckOut extends HttpServlet {
             receiveAddress.append(email).append(", ");
         }
         receiveAddress.append(address).append(", ");
+        receiveAddress.append(ward).append(", ");
         receiveAddress.append(district).append(", ");
         receiveAddress.append(city);
 
@@ -103,50 +126,76 @@ public class CheckOut extends HttpServlet {
         String receiveAddressUser= String.valueOf(receiveAddress.toString());
        // int shippingId = Integer.parseInt(req.getParameter("shippingId"));
         double totalPrice = cart.getTotalPrice();
+        System.out.println(cart.getItems().toString());
+      List<Item> items =   cart.getItems().stream().map(v -> new Item(v.getName(),v.getId(), Double.valueOf(v.getQuantity()),v.getPrice(),v.getWeight())).toList();
+        System.out.println(Arrays.toString(items.toArray()));
+
+        OrderInfo orderInfo = new OrderInfo(
+                fullName,
+                phoneNumber,
+                email,
+                city,
+                district,
+                ward,
+                address,
+                notes,
+                payment,
+                shippingfee,
+                idUser,
+                cart.getTotalPrice(),
+                receiveAddressUser,
+                items,
+                city,
+                district_id,
+                ward_id,
+                service_id
+
+        );
 
         try {
-            // Lưu thông tin đơn hàng
-            int idShipping = Integer.parseInt(req.getParameter("shippingMethod"));
-            int orderId = saveOrder.saveOrder(idUser, totalPrice + shippingfee, receiveAddressUser, idShipping);
-            System.out.println(orderId);
-            orderDAO.insertPayment(idUser,orderId,payment);
-            String paymentMethod = orderDAO.paymentMethod(String.valueOf(idUser),orderId);
-
-            // Lưu chi tiết đơn hàng
-            saveOrder.saveOrderDetails(orderId, cart);
-            serviceTransactionHistory.saveTransactionHistory(idUser,orderId,totalPrice+ shippingfee,paymentMethod,receiveAddressUser);
-            session.setAttribute("IDOrder",orderId);
-            session.setAttribute("totalPrice",totalPrice);
-            LocalDate today = LocalDate.now();
-            LocalDate expectedDate = today.plusDays(4);
-
-            // Lấy thứ của ngày
-            DayOfWeek dayOfWeek = expectedDate.getDayOfWeek();
-            String dayOfWeekString = dayOfWeek.name(); // Ví dụ: MONDAY, TUESDAY, ...
-
-            // Chuyển đổi tên ngày sang tiếng Việt (nếu cần)
-            String vietnameseDayOfWeek = "";
-            switch (dayOfWeek) {
-                case MONDAY: vietnameseDayOfWeek = "Thứ Hai"; break;
-                case TUESDAY: vietnameseDayOfWeek = "Thứ Ba"; break;
-                case WEDNESDAY: vietnameseDayOfWeek = "Thứ Tư"; break;
-                case THURSDAY: vietnameseDayOfWeek = "Thứ Năm"; break;
-                case FRIDAY: vietnameseDayOfWeek = "Thứ Sáu"; break;
-                case SATURDAY: vietnameseDayOfWeek = "Thứ Bảy"; break;
-                case SUNDAY: vietnameseDayOfWeek = "Chủ Nhật"; break;
-            }
-
-            // Lưu ngày và thứ vào session
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            String formattedDate = expectedDate.format(formatter);
-            session.setAttribute("expectedDeliveryDate", formattedDate);
-            session.setAttribute("expectedDeliveryDay", vietnameseDayOfWeek);
+//            // Lưu thông tin đơn hàng
+//            int idShipping = Integer.parseInt(req.getParameter("shippingMethod"));
+//            int orderId = saveOrder.saveOrder(idUser, totalPrice + shippingfee, receiveAddressUser, idShipping);
+//            System.out.println(orderId);
+         // orderDAO.insertPayment(idUser,orderId,payment);
+         //  String paymentMethod = orderDAO.paymentMethod(String.valueOf(idUser),orderId);
+//
+//            // Lưu chi tiết đơn hàng
+//            saveOrder.saveOrderDetails(orderId, cart);
+//            serviceTransactionHistory.saveTransactionHistory(idUser,orderId,totalPrice+ shippingfee,paymentMethod,receiveAddressUser);
+//            session.setAttribute("IDOrder",orderId);
+//            session.setAttribute("totalPrice",totalPrice);
+//            LocalDate today = LocalDate.now();
+//            LocalDate expectedDate = today.plusDays(4);
+//
+//            // Lấy thứ của ngày
+//            DayOfWeek dayOfWeek = expectedDate.getDayOfWeek();
+//            String dayOfWeekString = dayOfWeek.name(); // Ví dụ: MONDAY, TUESDAY, ...
+//
+//            // Chuyển đổi tên ngày sang tiếng Việt (nếu cần)
+//            String vietnameseDayOfWeek = "";
+//            switch (dayOfWeek) {
+//                case MONDAY: vietnameseDayOfWeek = "Thứ Hai"; break;
+//                case TUESDAY: vietnameseDayOfWeek = "Thứ Ba"; break;
+//                case WEDNESDAY: vietnameseDayOfWeek = "Thứ Tư"; break;
+//                case THURSDAY: vietnameseDayOfWeek = "Thứ Năm"; break;
+//                case FRIDAY: vietnameseDayOfWeek = "Thứ Sáu"; break;
+//                case SATURDAY: vietnameseDayOfWeek = "Thứ Bảy"; break;
+//                case SUNDAY: vietnameseDayOfWeek = "Chủ Nhật"; break;
+//            }
+//
+//            // Lưu ngày và thứ vào session
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//            String formattedDate = expectedDate.format(formatter);
+//            session.setAttribute("expectedDeliveryDate", formattedDate);
+//            session.setAttribute("expectedDeliveryDay", vietnameseDayOfWeek);
 
 
             // Xóa giỏ hàng khỏi session sau khi hoàn tất
-            session.removeAttribute("cr7");
+            session.setAttribute("orderInfo",orderInfo);
+         //   session.removeAttribute("cr7");
 
-            resp.sendRedirect("hoantat.jsp");
+           resp.sendRedirect("payment1.jsp");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"Failed to place order\"}");

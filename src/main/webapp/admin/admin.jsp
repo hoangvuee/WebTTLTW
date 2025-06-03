@@ -15,9 +15,13 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
+
+  <link rel="stylesheet" href="../css/user.css">
+
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
+  
 
 </head>
 <body>
@@ -87,11 +91,14 @@
     <li class="menu-title">PRODUCTS</li>
     <li><a href="#" class="menu-item" data-section="manage-products"><i class="fas fa-boxes"></i> Manage Products</a></li>
     <li><a href="#" class="menu-item" data-section="add-product"><i class="fas fa-plus-circle"></i> Add Product</a></li>
+    <li class="menu-divider"></li>
+    <li class="menu-title">ORDERS</li>
+    <li><a href="#" class="menu-item" data-section="orders"><i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
 
     <li class="menu-divider"></li>
     <li class="menu-title">SYSTEM</li>
     <li><a href="#" class="menu-item" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
-    <li><a href="#" class="menu-item" data-section="users"><i class="fas fa-users"></i> Users</a></li>
+    <li><a href="#" class="menu-item" data-section="users"><i class="fas fa-users"></i> Users</a></li>User
   </ul>
 </div>
 
@@ -149,6 +156,240 @@
       </div>
     </div>
   </div>
+  <div id="orders" class="content-section">
+    <div class="container-fluid">
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="stat-card total">
+            <div class="stat-number" id="totalOrders">0</div>
+            <div class="stat-label">Tổng số đơn hàng</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card active">
+            <div class="stat-number" id="pendingOrders">0</div>
+            <div class="stat-label">Chờ xử lý</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card inactive">
+            <div class="stat-number" id="processingOrders">0</div>
+            <div class="stat-label">Đang xử lý</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card pending">
+            <div class="stat-number" id="completedOrders">0</div>
+            <div class="stat-label">Hoàn thành</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Controls -->
+      <div class="order-controls mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="orderSearchInput" placeholder="Tìm kiếm theo ID, tên, email...">
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <select class="form-select d-inline-block w-auto me-2">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="pending">Chờ xử lý</option>
+              <option value="processing">Đang xử lý</option>
+              <option value="completed">Hoàn thành</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-file-export me-2"></i>Xuất Excel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Khách hàng</th>
+                  <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>Địa chỉ</th>
+                  <th>Ngày đặt</th>
+                  <th>Sản phẩm</th>
+                  <th>Ngày giao</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <!-- Dynamic content will be inserted here -->
+                <tr>
+                  <td>#ORD001</td>
+                  <td>Nguyễn Văn A</td>
+                  <td>nguyenvana@gmail.com</td>
+                  <td>0123456789</td>
+                  <td>123 Đường ABC, Phường 1, Quận 1, TP.HCM</td>
+                  <td>2024-03-20 10:30</td>
+                  <td>Áo thun nam (x2), Quần jean (x1)</td>
+                  <td>2024-03-21 15:00</td>
+                  <td><span class="badge bg-warning">Chờ xử lý</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1" onclick="viewOrder('ORD001')"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary me-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#ORD002</td>
+                  <td>Trần Thị B</td>
+                  <td>tranthib@gmail.com</td>
+                  <td>0987654321</td>
+                  <td>456 Đường XYZ, Phường 2, Quận 2, TP.HCM</td>
+                  <td>2024-03-20 11:15</td>
+                  <td>Váy liền thân (x1), Giày cao gót (x1)</td>
+                  <td>2024-03-21 14:00</td>
+                  <td><span class="badge bg-success">Hoàn thành</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1" onclick="viewOrder('ORD002')"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary me-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#ORD003</td>
+                  <td>Lê Văn C</td>
+                  <td>levanc@gmail.com</td>
+                  <td>0369852147</td>
+                  <td>789 Đường DEF, Phường 3, Quận 3, TP.HCM</td>
+                  <td>2024-03-20 13:45</td>
+                  <td>Laptop Dell (x1), Chuột không dây (x1)</td>
+                  <td>2024-03-21 16:30</td>
+                  <td><span class="badge bg-info">Đang xử lý</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary me-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#ORD004</td>
+                  <td>Phạm Thị D</td>
+                  <td>phamthid@gmail.com</td>
+                  <td>0123456789</td>
+                  <td>321 Đường GHI, Phường 4, Quận 4, TP.HCM</td>
+                  <td>2024-03-20 15:20</td>
+                  <td>Đồng hồ thông minh (x1), Tai nghe (x1)</td>
+                  <td>2024-03-21 17:00</td>
+                  <td><span class="badge bg-danger">Đã hủy</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary me-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#ORD005</td>
+                  <td>Hoàng Văn E</td>
+                  <td>hoangvane@gmail.com</td>
+                  <td>0987654321</td>
+                  <td>654 Đường JKL, Phường 5, Quận 5, TP.HCM</td>
+                  <td>2024-03-20 16:30</td>
+                  <td>Máy ảnh Canon (x1), Ống kính (x2)</td>
+                  <td>2024-03-21 18:00</td>
+                  <td><span class="badge bg-warning">Chờ xử lý</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary me-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="users" class="content-section">
+    <div class="container-fluid">
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="stat-card total">
+            <div class="stat-number" id="totalUsers">0</div>
+            <div class="stat-label">Tổng số người dùng</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card active">
+            <div class="stat-number" id="activeUsers">0</div>
+            <div class="stat-label">Đang hoạt động</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card inactive">
+            <div class="stat-number" id="inactiveUsers">0</div>
+            <div class="stat-label">Không hoạt động</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card pending">
+            <div class="stat-number" id="pendingUsers">0</div>
+            <div class="stat-label">Chờ duyệt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Controls -->
+      <div class="user-controls mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên, email...">
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-primary" onclick="openModal('add')">
+              <i class="fas fa-plus"></i> Thêm người dùng
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Người dùng</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <!-- Dynamic content will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Email Section -->
   <div id="email" class="content-section">
@@ -1208,7 +1449,6 @@
 
 <script src="../js/admin.js"></script>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
@@ -1516,7 +1756,7 @@
     <td>
       <div class="d-flex align-items-center">
         <div class="product-thumbnail me-3">
-          <img src="img/\${imageUrl}" alt="\${product.name}" width="60">
+          <img src="../img/\${imageUrl}" alt="\${product.name}" width="60">
         </div>
         <div>
           <h6 class="mb-0">\${product.name}</h6>
@@ -1650,7 +1890,7 @@
 // Tùy chính sách bạn đang dùng
         $('#editProductInventoryPolicy').val(response.inventory > 0 ? 'continue' : 'deny');
         // Update the image
-        $('#currentProductImage').attr('src', 'img/' + response.image);  // Assuming the image URL is relative
+        $('#currentProductImage').attr('src', '../img/' + response.image);  // Assuming the image URL is relative
         console.log(response.saleDTO)
 
         // Update product status (if the product is active or not)
@@ -2008,6 +2248,698 @@
   });
 </script>
 <script  src="${pageContext.request.contextPath}/js/admin.js"></script>
+
+
+<!-- Modal Quản lý User -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="userModalLabel">Quản lý người dùng</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="userForm">
+          <div class="mb-3">
+            <label for="userId" class="form-label">ID</label>
+            <input type="text" class="form-control" id="userId" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="userName" class="form-label">Tên người dùng</label>
+            <input type="text" class="form-control" id="userName" required>
+          </div>
+          <div class="mb-3">
+            <label for="userEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="userEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="userPhone" class="form-label">Số điện thoại</label>
+            <input type="tel" class="form-control" id="userPhone">
+          </div>
+          <div class="mb-3">
+            <label for="userRole" class="form-label">Vai trò</label>
+            <select class="form-select" id="userRole" required>
+              <option value="admin">Admin</option>
+              <option value="customer">Khách hàng</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="userStatus" class="form-label">Trạng thái</label>
+            <select class="form-select" id="userStatus" required>
+              <option value="active">Đang hoạt động</option>
+              <option value="inactive">Bị khóa</option>
+              <option value="pending">Chờ duyệt</option>
+            </select>
+          </div>
+          <div class="mb-3" id="passwordField">
+            <label for="userPassword" class="form-label">Mật khẩu mới</label>
+            <input type="password" class="form-control" id="userPassword">
+            <div class="form-text">Để trống nếu không muốn đổi mật khẩu</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger me-auto" id="deleteUserBtn" style="display:none">
+              <i class="fas fa-trash"></i> Xóa
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary" id="saveUserBtn">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+<!-- Dữ liệu mẫu, bạn thay bằng fetch từ server nếu có API -->
+let users = [
+  {id: 1, name: "Nguyễn Văn A", email: "a@gmail.com", role: "admin", status: "active", created: "2024-06-01"},
+  {id: 2, name: "Trần Thị B", email: "b@gmail.com", role: "customer", status: "inactive", created: "2024-05-20"},
+];
+
+// Hiển thị danh sách user
+function renderUsersTable() {
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = '';
+  users.forEach(user => {
+    tbody.innerHTML += `
+      <tr>
+        <td>\${user.name}</td>
+        <td>\${user.email}</td>
+        <td>\${user.role === 'admin' ? 'Admin' : 'Khách hàng'}</td>
+        <td>
+          <span class="badge \${user.status === 'active' ? 'bg-success' : user.status === 'pending' ? 'bg-warning' : 'bg-danger'}">
+            \${user.status === 'active' ? 'Đang hoạt động' : user.status === 'pending' ? 'Chờ duyệt' : 'Bị khóa'}
+          </span>
+        </td>
+        <td>\${user.created}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="openModal('edit', \${user.id})"><i class="fas fa-edit"></i></button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// Mở modal (thêm/sửa)
+function openModal(mode, userId = null) {
+  const modal = new bootstrap.Modal(document.getElementById('userModal'));
+  document.getElementById('userForm').reset();
+  document.getElementById('userId').value = '';
+  document.getElementById('deleteUserBtn').style.display = 'none';
+  document.getElementById('passwordField').style.display = 'block';
+  
+  if (mode === 'add') {
+    document.getElementById('userModalLabel').innerText = 'Thêm người dùng';
+    document.getElementById('saveUserBtn').innerText = 'Thêm';
+  } else if (mode === 'edit') {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    
+    document.getElementById('userModalLabel').innerText = 'Chỉnh sửa người dùng';
+    document.getElementById('saveUserBtn').innerText = 'Lưu';
+    document.getElementById('userId').value = user.id;
+    document.getElementById('userName').value = user.name;
+    document.getElementById('userEmail').value = user.email;
+    document.getElementById('userPhone').value = user.phoneNumber || '';
+    document.getElementById('userRole').value = user.role === 1 ? 'admin' : 'customer';
+    document.getElementById('userStatus').value = user.status;
+    document.getElementById('passwordField').style.display = 'block';
+    document.getElementById('deleteUserBtn').style.display = '';
+    
+    // Gán sự kiện xóa
+    document.getElementById('deleteUserBtn').onclick = function() {
+      if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
+        deleteUser(userId);
+      }
+    };
+  }
+  modal.show();
+}
+
+// Xóa user
+function deleteUser(userId) {
+  console.log('Attempting to delete user with ID:', userId); // Debug log
+  
+  if (!userId || userId === '') {
+    console.error('Invalid user ID provided for deletion:', userId);
+    alert('Không thể xóa: ID người dùng không hợp lệ');
+    return;
+  }
+
+  // Ensure userId is a number
+  const numericId = parseInt(userId);
+  if (isNaN(numericId)) {
+    console.error('Invalid user ID format:', userId);
+    alert('Không thể xóa: ID người dùng không hợp lệ');
+    return;
+  }
+
+  const deleteUrl = `/WebFinall/users/\${numericId}`;
+  console.log('Sending DELETE request to:', deleteUrl); // Debug log
+
+  fetch(deleteUrl, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    console.log('Delete response status:', response.status); // Debug log
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(text || 'Không thể xóa người dùng');
+      });
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('User deleted successfully:', data);
+    users = users.filter(u => u.id !== numericId);
+    renderUsersTable();
+    updateStats(users);
+    bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    alert('Xóa người dùng thành công!');
+  })
+  .catch(error => {
+    console.error('Error during deletion:', error);
+    alert('Lỗi: ' + error.message);
+  });
+}
+
+// Lưu user (thêm/sửa)
+document.getElementById('userForm').onsubmit = function(e) {
+  e.preventDefault();
+  const id = document.getElementById('userId').value;
+  const userData = {
+    id: id ? parseInt(id) : 0,
+    email: document.getElementById('userEmail').value,
+    userName: document.getElementById('userName').value,
+    phoneNumber: document.getElementById('userPhone').value || null,
+    role: document.getElementById('userRole').value === 'admin' ? 1 : 2,
+    isActive: document.getElementById('userStatus').value === 'active',
+    createAt: new Date().toISOString()
+  };
+
+  console.log('Sending user data:', userData);
+
+  const method = id ? 'PUT' : 'POST';
+  const url = '/WebFinall/users';
+
+  fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(text || 'Lỗi khi lưu người dùng');
+      });
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    fetchUsers(); // Refresh the user list
+    bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    alert(id ? 'Cập nhật người dùng thành công!' : 'Thêm người dùng thành công!');
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Lỗi: ' + error.message);
+  });
+};
+
+// Tìm kiếm user
+document.getElementById('searchInput').oninput = function() {
+  const keyword = this.value.toLowerCase();
+  const filtered = users.filter(u =>
+    u.name.toLowerCase().includes(keyword) ||
+    u.email.toLowerCase().includes(keyword)
+  );
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = '';
+  filtered.forEach(user => {
+    tbody.innerHTML += `
+      <tr>
+        <td>\${user.name}</td>
+        <td>\${user.email}</td>
+        <td>\${user.role === 'admin' ? 'Admin' : 'Khách hàng'}</td>
+        <td>
+          <span class="badge \${user.status === 'active' ? 'bg-success' : user.status === 'pending' ? 'bg-warning' : 'bg-danger'}">
+            \${user.status === 'active' ? 'Đang hoạt động' : user.status === 'pending' ? 'Chờ duyệt' : 'Bị khóa'}
+          </span>
+        </td>
+        <td>\${user.created}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="openModal('edit', \${user.id})"><i class="fas fa-edit"></i></button>
+        </td>
+      </tr>
+    `;
+  });
+};
+
+// Khởi tạo bảng khi load trang
+document.addEventListener('DOMContentLoaded', function() {
+  fetchUsers();
+});
+
+// Fetch users from server
+function fetchUsers() {
+  fetch('/WebFinall/users')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Dữ liệu từ server:', data);
+
+      users = data.map(user => {
+        console.log('User createAt:', user.createAt); // Debug log
+        let formattedDate = 'df';
+        if (user.createAt) {
+          try {
+            // Convert to number if it's a string
+            const timestamp = typeof user.createAt === 'string' ? 
+              parseInt(user.createAt) : user.createAt;
+            formattedDate = formatDate(timestamp);
+            console.log('Formatted date:', formattedDate);
+          } catch (error) {
+            console.error('Error formatting date:', error);
+          }
+        }
+        
+        return {
+          id: user.id,
+          name: user.userName,
+          email: user.email,
+          role: user.role === 1 ? 'admin' : 'customer',
+          status: user.active ? 'active' : 'inactive',
+          created: formattedDate
+        };
+      });
+
+      updateStats(users);
+      renderUsersTable();
+    })
+    .catch(error => {
+      console.error('Error fetching users:', error);
+      alert('Không thể tải danh sách người dùng');
+    });
+}
+
+// Format timestamp to readable date
+function formatDate(timestamp) {
+  try {
+    // Ensure timestamp is a number
+    const date = new Date(Number(timestamp));
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', timestamp);
+      return 'N/A';
+    }
+
+    return date.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    console.error('Error in formatDate:', error);
+    return 'N/A';
+  }
+}
+
+// Update statistics when users are loaded
+function updateStats(users) {
+  document.getElementById('totalUsers').textContent = users.length;
+  document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
+  document.getElementById('inactiveUsers').textContent = users.filter(u => u.status === 'inactive').length;
+  document.getElementById('pendingUsers').textContent = users.filter(u => u.status === 'pending').length;
+}
+
+// Modify the existing fetchUsers function to update stats
+
+
+</script>
+<!-- Modal View Order Details -->
+<div class="modal fade" id="viewOrderModal" tabindex="-1" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Chi tiết đơn hàng</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="mb-3">Thông tin khách hàng</h6>
+            <p><strong>Họ tên:</strong> <span id="viewCustomerName"></span></p>
+            <p><strong>Email:</strong> <span id="viewCustomerEmail"></span></p>
+            <p><strong>Số điện thoại:</strong> <span id="viewCustomerPhone"></span></p>
+            <p><strong>Địa chỉ:</strong> <span id="viewCustomerAddress"></span></p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="mb-3">Thông tin đơn hàng</h6>
+            <p><strong>Mã đơn hàng:</strong> <span id="viewOrderId"></span></p>
+            <p><strong>Ngày đặt:</strong> <span id="viewOrderDate"></span></p>
+            <p><strong>Trạng thái:</strong> <span id="viewOrderStatus"></span></p>
+            <p><strong>Ngày giao dự kiến:</strong> <span id="viewExpectedDelivery"></span></p>
+            <p><strong>Tổng cân nặng:</strong> <span id="viewOrderWeight"></span></p>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <h6 class="mb-3">Sản phẩm đã đặt</h6>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Cân nặng</th>
+                <th>Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody id="viewOrderItems">
+              <!-- Order items will be inserted here -->
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="text-end"><strong>Tổng tiền:</strong></td>
+                <td><strong id="viewOrderTotal"></strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Khai báo biến orders ở global scope
+let orders = [];
+
+// Hàm fetch dữ liệu từ API
+async function fetchOrders() {
+    try {
+        const response = await fetch('/WebFinall/orders');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        orders = await response.json(); // Gán dữ liệu vào biến orders
+        renderOrders(orders);
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        alert('Có lỗi xảy ra khi tải dữ liệu đơn hàng. Vui lòng thử lại sau.');
+    }
+}
+
+function viewOrder(orderId) {
+    console.log('Viewing order:', orderId);
+    console.log('Available orders:', window.orders);
+    
+    if (!Array.isArray(window.orders)) {
+        console.error('Orders is not an array:', window.orders);
+        alert('Có lỗi xảy ra khi tải dữ liệu đơn hàng');
+        return;
+    }
+    
+    const order = window.orders.find(o => o.orderId === orderId);
+    if (!order) {
+        console.error('Order not found:', orderId);
+        alert('Không tìm thấy thông tin đơn hàng');
+        return;
+    }
+
+    // Populate customer information
+    document.getElementById('viewCustomerName').textContent = order.customerName || 'N/A';
+    document.getElementById('viewCustomerEmail').textContent = order.customerEmail || 'N/A';
+    document.getElementById('viewCustomerPhone').textContent = order.customerPhone || 'N/A';
+    document.getElementById('viewCustomerAddress').textContent = order.address || 'N/A';
+    
+    // Populate order information
+    document.getElementById('viewOrderId').textContent = order.orderId || 'N/A';
+    document.getElementById('viewOrderDate').textContent = formatDate(order.orderDate) || 'N/A';
+    document.getElementById('viewOrderStatus').innerHTML = getStatusBadge(order.status);
+    document.getElementById('viewExpectedDelivery').textContent = formatDate(order.expectedDelivery) || 'N/A';
+    
+    // Populate order items
+    const itemsContainer = document.getElementById('viewOrderItems');
+    itemsContainer.innerHTML = '';
+    
+    let totalWeight = 0;
+    
+    if (order.products && order.products.length > 0) {
+        order.products.forEach(product => {
+            const productWeight = product.weight * product.quantity;
+            totalWeight += productWeight;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>\${product.name}</td>
+                <td>\${product.quantity}</td>
+                <td>\${formatCurrency(product.price)}</td>
+                <td>\${formatWeight(productWeight)}</td>
+                <td>\${formatCurrency(product.price * product.quantity)}</td>
+            `;
+            itemsContainer.appendChild(row);
+        });
+    } else {
+        itemsContainer.innerHTML = '<tr><td colspan="5" class="text-center">Không có sản phẩm</td></tr>';
+    }
+    
+    // Set total amount and weight
+    const total = order.products ? order.products.reduce((sum, product) => 
+        sum + (product.price * product.quantity), 0) : 0;
+    document.getElementById('viewOrderTotal').textContent = formatCurrency(total);
+    document.getElementById('viewOrderWeight').textContent = formatWeight(totalWeight);
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+    modal.show();
+}
+
+// Helper function to format currency
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(amount);
+}
+
+// Helper function to format weight
+function formatWeight(weight) {
+    if (weight >= 1000) {
+        return (weight / 1000).toFixed(2) + ' kg';
+    }
+    return weight + ' g';
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'N/A';
+  
+  return date.toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+// Helper function to get status badge
+function getStatusBadge(status) {
+  const statusMap = {
+    'ready_to_pick': { text: 'Chờ lấy hàng', class: 'bg-warning' },
+    'picking': { text: 'Đang lấy hàng', class: 'bg-info' },
+    'delivering': { text: 'Đang giao hàng', class: 'bg-primary' },
+    'delivered': { text: 'Đã giao hàng', class: 'bg-success' },
+    'cancel': { text: 'Đã hủy', class: 'bg-danger' }
+  };
+  
+  const statusInfo = statusMap[status] || { text: status, class: 'bg-secondary' };
+  return `<span class="badge \${statusInfo.class}">\${statusInfo.text}</span>`;
+}
+
+// Make sure Bootstrap is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof bootstrap === 'undefined') {
+    console.error('Bootstrap is not loaded!');
+  }
+});
+
+// Function to delete an order
+function deleteOrder(orderId) {
+    if (!orderId) {
+        console.error('Invalid order ID');
+        return;
+    }
+    console.log(orderId)
+
+    if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
+        fetch(`/WebFinall/orders/\${orderId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Không thể xóa đơn hàng');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Remove the order from the local array
+            window.orders = window.orders.filter(order => order.orderId !== orderId);
+            // Re-render the orders table
+            renderOrders(window.orders);
+            alert('Xóa đơn hàng thành công!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi xóa đơn hàng: ' + error.message);
+        });
+    }
+}
+
+// Function to edit an order
+function editOrder(orderId) {
+    // TODO: Implement edit order functionality
+    alert('Chức năng chỉnh sửa đơn hàng đang được phát triển');
+}
+</script>
+
+<script>
+// Hàm format ngày tháng
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+
+// Hàm format danh sách sản phẩm
+function formatProducts(products) {
+    if (!products || products.length === 0) return 'Không có sản phẩm';
+    return products.map(p => `\${p.name} (x\${p.quantity})`).join(', ');
+}
+
+// Hàm render dữ liệu vào bảng
+function renderOrders(ordersData) {
+    const tbody = document.getElementById('ordersTableBody');
+    tbody.innerHTML = ''; // Xóa dữ liệu cũ
+
+    // Lưu orders vào biến global
+    window.orders = ordersData;
+
+    ordersData.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>#\${order.orderId}</td>
+            <td>\${order.customerName}</td>
+            <td>\${order.customerEmail || '-'}</td>
+            <td>\${order.customerPhone}</td>
+            <td>\${order.address}</td>
+            <td>\${formatDate(order.orderDate)}</td>
+            <td>\${formatProducts(order.products)}</td>
+            <td>\${formatDate(order.expectedDelivery)}</td>
+            <td>\${getStatusBadge(order.status)}</td>
+            <td>
+                <button class="btn btn-sm btn-info me-1" onclick="viewOrder('\${order.orderId}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-primary me-1" onclick="editOrder('\${order.orderId}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteOrder('\${order.orderId}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    // Cập nhật số liệu thống kê
+    updateOrderStats(ordersData);
+}
+
+// Hàm cập nhật số liệu thống kê
+function updateOrderStats(orders) {
+    const stats = {
+        total: orders.length,
+        pending: orders.filter(o => o.status === 'ready_to_pick').length,
+        processing: orders.filter(o => o.status === 'picking' || o.status === 'delivering').length,
+        completed: orders.filter(o => o.status === 'delivered').length
+    };
+
+    document.getElementById('totalOrders').textContent = stats.total;
+    document.getElementById('pendingOrders').textContent = stats.pending;
+    document.getElementById('processingOrders').textContent = stats.processing;
+    document.getElementById('completedOrders').textContent = stats.completed;
+}
+
+// Hàm fetch dữ liệu từ API
+async function fetchOrders() {
+    try {
+        const response = await fetch('/WebFinall/orders');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const orders = await response.json();
+        renderOrders(orders);
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        // Hiển thị thông báo lỗi cho người dùng
+        alert('Có lỗi xảy ra khi tải dữ liệu đơn hàng. Vui lòng thử lại sau.');
+    }
+}
+
+// Gọi hàm fetch khi trang được tải
+document.addEventListener('DOMContentLoaded', fetchOrders);
+
+// Hàm tìm kiếm đơn hàng
+document.getElementById('orderSearchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#ordersTableBody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Hàm lọc theo trạng thái
+document.querySelector('select.form-select').addEventListener('change', function(e) {
+    const status = e.target.value;
+    const rows = document.querySelectorAll('#ordersTableBody tr');
+    
+    rows.forEach(row => {
+        if (status === 'all') {
+            row.style.display = '';
+        } else {
+            const statusCell = row.querySelector('td:nth-child(9)');
+            const rowStatus = statusCell.textContent.toLowerCase();
+            row.style.display = rowStatus.includes(status) ? '' : 'none';
+        }
+    });
+});
+
 <script>
 $(document).ready(function() {
     // Load logs when page loads
@@ -2063,6 +2995,7 @@ function loadLogs() {
         }
     });
 }
+
 </script>
 </body>
 </html>

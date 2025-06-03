@@ -1235,6 +1235,38 @@
 
   .selector-arrow-modern.rotate svg {
     transform: rotate(180deg);
+
+  }
+
+  .store-selection {
+    padding: 15px;
+  }
+
+  .store-selection select {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .store-selection select:focus {
+    border-color: #ff7b00;
+    box-shadow: 0 0 0 0.2rem rgba(255, 123, 0, 0.25);
+  }
+
+  .store-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #ff7b00;
+  }
+
+  .store-info p {
+    margin-bottom: 8px;
+    color: #555;
+
   }
 </style>
 
@@ -1331,7 +1363,7 @@
                         <!-- Chọn tỉnh/thành phố -->
                         <div class="col-md-6 mb-3">
                           <label for="province" class="form-label">Tỉnh/Thành Phố *</label>
-                          <select class="form-select" id="province" name="province">
+                          <select class="form-select" id="province" name="province" onchange="loadGHNDistricts('province', 'district')">
                             <option value="">Chọn một tùy chọn...</option>
                           </select>
                         </div>
@@ -1339,7 +1371,7 @@
                         <!-- Chọn quận/huyện -->
                         <div class="col-md-6 mb-3">
                           <label for="district" class="form-label">Quận/Huyện *</label>
-                          <select class="form-select" id="district" name="district">
+                          <select class="form-select" id="district" name="district" onchange="loadGHNWards('district', 'ward')">
                             <option value="">Chọn quận/huyện...</option>
                           </select>
                         </div>
@@ -1357,6 +1389,10 @@
                       <input type="hidden" id="province_name" name="province_name" value="">
                       <input type="hidden" id="district_name" name="district_name" value="">
                       <input type="hidden" id="ward_name" name="ward_name" value="">
+                      <input type="hidden" id="fromWardCode" name="fromWardCode" value="">
+                      <input type="hidden" id="toWardCode" name="toWardCode" value="">
+                      <input type="hidden" id="districtId" name="districtId" value="">
+                      <input type="hidden" id="service_id" name="service_id" value="">
 
 
                       <div class="mb-3">
@@ -1371,46 +1407,53 @@
                         <label for="notes" class="form-label">Ghi Chú Đơn Hàng</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay địa điểm giao hàng"></textarea>
                       </div>
-                      <p>Địa chỉ cửa hàng mua: Tp.Cần thơ</p>
-                    </div>
 
-                  </div>
-                  <div id="cod-info" class="payment-inf">
-                    <form id="shippingForm">
-                    <h4 ><i class="fa-solid fa-truck"></i> <span>Chọn phương thức giao hàng</span></h4>
-                    <div class="card-body p-4" id="shipping-options">
+                      
+                      <!-- Thêm phần chọn cửa hàng -->
+                      <div class="mb-3">
+                        <label for="storeSelect" class="form-label">Chọn Cửa Hàng Mua Hàng</label>
+                        <select class="form-select" id="storeSelect" name="storeSelect">
+                          <option value="">Chọn cửa hàng...</option>
+                          <option value="1">Cửa hàng Hà Nội</option>
+                          <option value="2">Cửa hàng Hải Phòng</option>
+                          <option value="3">Cửa hàng Đà Nẵng</option>
+                          <option value="4">Cửa hàng TP.HCM</option>
+                          <option value="5">Cửa hàng Cần Thơ</option>
+                        </select>
+                      </div>
+                      
+                      <!-- Thông tin cửa hàng -->
+                      <div id="storeInfo" class="mb-3" style="display: none;">
+                        <div class="card">
+                          <div class="card-body">
+                            <h6 class="card-title">Thông Tin Cửa Hàng</h6>
+                            <p id="storeAddress"></p>
+                            <p id="storeHours"></p>
+                            <p id="storePhone"></p>
 
-                      <c:forEach var="item" items="${sessionScope.totalship.items}">
-                        <label class="shipping-option">
-                          <input type="radio"
-                                 name="shippingMethod"
-                                 value="${item.id}"
-                                 data-price="${item.price}"
-                                 id="shipping_${item.id}"
-                                 onchange="updateShippingCost(this)"
-                                 required>
-
-                          <div class="shipping-content">
-                            <span class="shipping-title">${item.name}</span>
-                            <span class="shipping-price">
-                <strong>
-                    <fmt:formatNumber value="${item.price}" type="number" groupingUsed="true" /> đ
-                </strong>
-            </span>
                           </div>
-                        </label>
-                        <input type="hidden" id="shippingPrice" name="shippingPrice" value="0">
-
-                      </c:forEach>
+                        </div>
+                      </div>
                     </div>
 
-                    <!-- Ô nhập mã giảm giá vận chuyển -->
-                    <div class="shipping-discount">
-                      <input type="text" id="shippingCoupon" placeholder="Nhập mã giảm giá vận chuyển">
-                      <button id="applyShippingCoupon">Áp dụng</button>
-                    </div>
-                    </form>
                   </div>
+                    <div id="cod-info" class="payment-inf">
+                        <h4><i class="fa-solid fa-truck"></i> <span>Chọn phương thức giao hàng</span></h4>
+                        <div class="card-body p-4" id="shipping-options">
+                            <!-- This will be populated by GHN API -->
+                            <div id="ghn-services-loading" style="display: none;">Đang tải dịch vụ vận chuyển...</div>
+                            <div id="ghn-services-container"></div>
+                            <input type="hidden" id="shippingPrice" name="shippingPrice" value="0">
+                            <input type="hidden" id="selectedServiceId" name="selectedServiceId" value="">
+                        </div>
+
+
+                        <div class="shipping-discount">
+                            <input type="text" id="shippingCoupon" placeholder="Nhập mã giảm giá vận chuyển">
+                            <button type="button" id="applyShippingCoupon">Áp dụng</button>
+                        </div>
+                    </div>
+
 
                 </div>
 
@@ -1646,147 +1689,467 @@
   <%@include file="footer.jsp"%>
 </div>
 <script>
-  // Hàm tải tỉnh/thành phố từ API
-  // Hàm tải tỉnh/thành phố từ API
-  async function loadProvinces() {
-    const response = await fetch('https://esgoo.net/api-tinhthanh/1/0.htm');
-    const data = await response.json();
-    const provinceSelect = document.getElementById('province');
+  const ghnApiKey = 'f5ce69a3-35aa-11f0-b930-ca8d03ab5418';
+  const ghnShopId = '5787774';
 
-    if (data.error === 0) {
-      data.data.forEach(province => {
-        let option = new Option(province.full_name, province.id);
-        provinceSelect.add(option);
-      });
+  let fromDistrictId = '0';
+  let defaultProvinceId = '1';
+
+  const storeLocations = {
+    '1': {
+      name: 'Cửa hàng Hà Nội',
+      provinceId: '201',
+      districtId: '3440',
+      wardId:"13010",
+      address: '123 Phường Xuân Phương , Quận Nam Từ Liêm, TP. Hà Nội',
+      hours: '8:00 - 22:00',
+      phone: '(024) 123 456'
+    },
+    '2': {
+      name: 'Cửa hàng Hải Dương',
+      provinceId: '225',
+      districtId: '1817',
+      wardId:"91356",
+      address: '456 Xã Phúc Điền, Huyện Cẩm Giàng, TP. Hải Dương',
+      hours: '8:00 - 22:00',
+      phone: '(0225) 234 567'
+    },
+    '3': {
+      name: 'Cửa hàng KomTum',
+      provinceId: '259',
+      districtId: '3446',
+      wardId:"361003",
+      address: '789 Xã Ia Tơi, Huyện Ia H Drai, TP.KomTum',
+      hours: '8:00 - 22:00',
+      phone: '(0236) 345 678'
+    },
+    '4': {
+      name: 'Cửa hàng TP.HCM',
+      provinceId: '202',
+      districtId: '1442',
+      wardId:"20106",
+      address: '321 Phường Đa Kao, Q.1, TP.HCM',
+      hours: '8:00 - 22:00',
+      phone: '(028) 456 789'
+    },
+    '5': {
+      name: 'Cửa hàng Cần Thơ',
+      provinceId: '220',
+      districtId: '1572',
+      wardId:"550103",
+      address: '654 Phường An Hòa, Q. Ninh Kiều, TP. Cần Thơ',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
+    },
+    '6': {
+      name: 'Cửa hàng Cà Mau',
+      provinceId: '252',
+      districtId: '2186',
+      wardId:"610701",
+      address: '654 Nguyễn Văn Linh, Huyện Ngọc Hiển, TP. Cà Mau',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
+    },
+    '7': {
+      name: 'Cửa hàng Bình Thuận',
+      provinceId: '258',
+      districtId: '3196',
+      wardId:"470610",
+      address: '654 Xã Thắng Hải, Huyện Hàm Tân, TP. Bình Thuận',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
     }
-  }
 
-  // Hàm tải quận/huyện theo tỉnh/thành phố
-  async function loadDistricts(provinceID) {
-    const districtSelect = document.getElementById('district');
-    const wardSelect = document.getElementById('ward');
 
-    // Reset quận/huyện và phường/xã
-    districtSelect.innerHTML = '<option value="">Chọn quận/huyện...</option>';
-    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+  };
 
-    if (!provinceID) return;
+  document.getElementById('storeSelect').addEventListener('change', async function () {
+    const storeInfo = document.getElementById('storeInfo');
+    const storeAddress = document.getElementById('storeAddress');
+    const storeHours = document.getElementById('storeHours');
+    const storePhone = document.getElementById('storePhone');
 
-    try {
-      const url = 'https://esgoo.net/api-tinhthanh/2/' + provinceID + '.htm';
-      const response = await fetch(url);
-      const data = await response.json();
+    if (this.value) {
+      storeInfo.style.display = 'block';
+      const selectedStore = storeLocations[this.value];
 
-      if (data.error === 0 && data.data) {
-        data.data.forEach(district => {
-          let option = new Option(district.full_name, district.id);
-          districtSelect.add(option);
+      storeAddress.innerHTML = `<strong>Địa chỉ:</strong> \${selectedStore.address}`;
+      storeHours.innerHTML = `<strong>Giờ mở cửa:</strong> \${selectedStore.hours}`;
+      storePhone.innerHTML = `<strong>Điện thoại:</strong> \${selectedStore.phone}`;
+
+      defaultProvinceId = selectedStore.provinceId;
+      fromDistrictId = selectedStore.districtId;
+
+      console.log('defaultProvinceId:', defaultProvinceId);
+      console.log('fromDistrictId:', fromDistrictId);
+
+      await loadGHNDistricts(defaultProvinceId, fromDistrictId);
+
+      setTimeout(async () => {
+        const districtSelect = document.getElementById('district');
+        if (districtSelect && districtSelect.value) {
+          await loadGHNWards('district', 'ward');
+          await loadGHNAvailableServices(districtSelect.value);
+
+          const selectedService = document.querySelector('input[name="shippingMethod"]:checked');
+          if (selectedService) {
+            await calculateGHNShippingFee(selectedService.value, districtSelect.value);
+          }
+        }
+      }, 500);
+    } else {
+      storeInfo.style.display = 'none';
+    }
+  });
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        await loadGHNProvinces();
+
+        // Gán tỉnh mặc định
+        const provinceSelect = document.getElementById('province');
+        provinceSelect.value = defaultProvinceId;
+        await loadGHNDistricts('province', 'district');
+
+        // Gán quận mặc định
+        const districtSelect = document.getElementById('district');
+        districtSelect.value = fromDistrictId;
+        await loadGHNWards('district', 'ward');
+
+        // Gắn sự kiện onchange sau khi load xong
+        provinceSelect.addEventListener('change', () => {
+            loadGHNDistricts('province', 'district');
         });
-      }
-    } catch (error) {
-      console.error("Lỗi tải quận/huyện:", error);
-    }
-  }
 
-  // Hàm tải phường/xã theo quận/huyện
-  async function loadWards(districtID) {
-    const wardSelect = document.getElementById('ward');
-    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
-
-    if (!districtID) return;
-
-    const url = 'https://esgoo.net/api-tinhthanh/3/' + districtID + '.htm';
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.error === 0) {
-      data.data.forEach(ward => {
-        let option = new Option(ward.full_name, ward.id);
-        wardSelect.add(option);
-      });
-    }
-  }
-
-  // Khi trang tải, tải tỉnh/thành phố
-  loadProvinces();
-
-  // Khi chọn tỉnh/thành phố
-  document.getElementById('province').addEventListener('change', function () {
-    const provinceID = this.value;
-    const provinceName = this.options[this.selectedIndex].text; // Lấy tên tỉnh/thành phố
-    document.getElementById('province_name').value = provinceName; // Cập nhật giá trị vào input ẩn
-    loadDistricts(provinceID);
-  });
-
-  // Khi chọn quận/huyện
-  document.getElementById('district').addEventListener('change', function () {
-    const districtID = this.value;
-    const districtName = this.options[this.selectedIndex].text; // Lấy tên quận/huyện
-    document.getElementById('district_name').value = districtName; // Cập nhật giá trị vào input ẩn
-    loadWards(districtID);
-  });
-
-  // Khi chọn phường/xã
-  document.getElementById('ward').addEventListener('change', function () {
-    const wardID = this.value;
-    const wardName = this.options[this.selectedIndex].text; // Lấy tên phường/xã
-    document.getElementById('ward_name').value = wardName; // Cập nhật giá trị vào input ẩn
-  });
-
-</script>
-
-
-<script>
-
-
-  function handlePaymentSelection(selectedRadio) {
-    // Lấy tất cả các phần tử collapse
-    const paymentCollapses = document.querySelectorAll('.accordion-collapse');
-
-    // Ẩn tất cả các phần collapse
-    paymentCollapses.forEach((collapse) => {
-      collapse.classList.remove('show');
+        districtSelect.addEventListener('change', () => {
+            loadGHNWards('district', 'ward');
+        });
     });
 
-    // Hiển thị phần tương ứng với radio được chọn
-    const selectedId = selectedRadio.id;
-    const collapseId = selectedId + 'Collapse'; // Tạo id của phần collapse tương ứng
-    const targetCollapse = document.getElementById(collapseId);
-
-    if (targetCollapse) {
-      targetCollapse.classList.add('show');
+    async function loadGHNProvinces() {
+        try {
+            const res = await fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+                headers: { Token: ghnApiKey }
+            });
+            const data = await res.json();
+            if (data.code === 200) {
+                const provinceSelect = document.getElementById('province');
+                provinceSelect.innerHTML = '<option value="">Chọn tỉnh/thành...</option>';
+                data.data.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.ProvinceID;
+                    option.textContent = p.ProvinceName;
+                    option.setAttribute('data-name', p.ProvinceName);
+                    provinceSelect.appendChild(option);
+                });
+            }
+        } catch (err) {
+            console.error('Lỗi khi tải tỉnh/thành:', err);
+        }
     }
 
-    selectedRadio.form.submit();
+    async function loadGHNDistricts(provinceElementId, districtElementId) {
+        const provinceSelect = document.getElementById(provinceElementId);
+        if (!provinceSelect) {
+            console.warn('Province select element not found');
+            return;
+        }
+
+        const provinceId = provinceSelect.value;
+        const provinceName = provinceSelect.options[provinceSelect.selectedIndex]?.getAttribute('data-name');
+        if (provinceName) {
+            const provinceNameInput = document.getElementById('province_name');
+            if (provinceNameInput) {
+                provinceNameInput.value = provinceName;
+            }
+        }
+
+        if (!provinceId) {
+            console.warn('No province ID selected');
+            return;
+        }
+
+        try {
+            const res = await fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/district', {
+                headers: { Token: ghnApiKey }
+            });
+            const data = await res.json();
+            if (data.code === 200) {
+                const districts = data.data.filter(d => d.ProvinceID == provinceId);
+                const districtSelect = document.getElementById(districtElementId);
+                if (!districtSelect) {
+                    console.warn('District select element not found');
+                    return;
+                }
+                
+                districtSelect.innerHTML = '<option value="">Chọn quận/huyện...</option>';
+                districts.forEach(d => {
+                    const option = document.createElement('option');
+                    option.value = d.DistrictID;
+                    option.textContent = d.DistrictName;
+                    option.setAttribute('data-name', d.DistrictName);
+                    districtSelect.appendChild(option);
+                });
+
+                // Reset ward
+                const wardSelect = document.getElementById('ward');
+                if (wardSelect) {
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+                }
+
+                // Add change event listener to update districtId
+                districtSelect.addEventListener('change', function() {
+                    document.getElementById('districtId').value = this.value;
+                });
+            }
+        } catch (err) {
+            console.error('Lỗi khi tải quận/huyện:', err);
+        }
+    }
+
+    async function loadGHNWards(districtElementId, wardElementId) {
+        const districtSelect = document.getElementById(districtElementId);
+        const districtId = districtSelect.value;
+
+        if (!districtId || districtId.trim() === '') {
+            console.warn('Không có districtId. Bỏ qua gọi API phường/xã.');
+            return;
+        }
+
+        const districtName = districtSelect.options[districtSelect.selectedIndex]?.getAttribute('data-name');
+        if (districtName) {
+            document.getElementById('district_name').value = districtName;
+        }
+        console.log(districtId)
+
+        try {
+            const res = await fetch(`https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=\${districtId}`, {
+                headers: { Token: ghnApiKey }
+            });
+            const data = await res.json();
+            if (data.code === 200) {
+                const wardSelect = document.getElementById(wardElementId);
+                wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+                data.data.forEach(w => {
+                    const option = document.createElement('option');
+                    option.value = w.WardCode;
+                    option.textContent = w.WardName;
+                    option.setAttribute('data-name', w.WardName);
+                    wardSelect.appendChild(option);
+                });
+
+                // Update toWardCode when ward is selected
+                wardSelect.addEventListener('change', function() {
+                    const wardCode = this.value;
+                    document.getElementById('toWardCode').value = wardCode;
+                    document.getElementById('ward_name').value = this.options[this.selectedIndex].getAttribute('data-name');
+                });
+
+                // Nếu cần tính phí
+                if (fromDistrictId && districtId) {
+                    await loadGHNAvailableServices(districtId);
+                }
+            }
+        } catch (err) {
+            console.error('Lỗi khi tải phường/xã:', err);
+        }
+    }
 
 
-  }
-  fetch('https://esgoo.net/api-tinhthanh/1/0.htm')
-          .then(response => response.json())
-          .then(data => console.log(data));
 
 
+    // Load available GHN services
+    async function loadGHNAvailableServices(toDistrictId) {
 
-  let productTotal = parseFloat(<%= cart.getTotalPrice() %>); // Tổng tiền sản phẩm
+        console.log(toDistrictId + "jpamg")
+        const servicesContainer = document.getElementById('ghn-services-container');
+        const loadingElement = document.getElementById('ghn-services-loading');
 
-  function updateShippingCost(radio) {
-    // Lấy phí giao hàng từ giá trị radio button
-    let shippingCost = parseFloat(radio.getAttribute("data-price")) || 0;
+        servicesContainer.innerHTML = '';
+        loadingElement.style.display = 'block';
+        console.log(toDistrictId)
+      console.log(fromDistrictId)
 
-    // Cập nhật giá trị của trường ẩn
-    document.getElementById("shippingPrice").value = shippingCost;
+        try {
+            const res = await fetch('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services', {
+                method: 'POST',
+                headers: {
+                    token: ghnApiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    shop_id: parseInt(ghnShopId),
+                    from_district: parseInt(fromDistrictId),
+                    to_district: parseInt(toDistrictId)
+                })
+            });
 
-    // Tính tổng tiền
-    let total = productTotal + shippingCost;
+            const data = await res.json();
+            console.log(data)
+            loadingElement.style.display = 'none';
 
-    // Hiển thị tổng tiền
-    document.getElementById("totalAmount").textContent = new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(total);
-  }
+            if (data.code === 200) {
+                data.data.forEach(service => {
+                    const serviceElement = document.createElement('div');
+                    serviceElement.className = 'shipping-option';
+                    serviceElement.innerHTML = `
+            <label class="shipping-option">
+              <input type="radio" name="shippingMethod"
+                     value="\${service.service_type_id}"
+                     data-price="0"
+                     onchange="calculateGHNShippingFee(\${service.service_type_id},\${toDistrictId})">
+              <div class="shipping-content">
+                <span class="shipping-title">\${service.short_name}</span>
+                <span class="shipping-price" id="price-\${service.service_type_id}">
+                  <strong>Đang tính phí...</strong>
+                </span>
+              </div>
+            </label>
+          `;
+                    servicesContainer.appendChild(serviceElement);
+                    console.log(service.service_type_id)
+
+                    // Calculate initial fee for each service
+                    calculateGHNShippingFee(service.service_type_id, toDistrictId);
+                });
+
+                // Add event listener to update service_id when shipping method changes
+                const shippingMethods = document.querySelectorAll('input[name="shippingMethod"]');
+                shippingMethods.forEach(method => {
+                    method.addEventListener('change', function() {
+                        document.getElementById('service_id').value = this.value;
+                    });
+                });
+            } else {
+                servicesContainer.innerHTML = '<p>Không có dịch vụ vận chuyển nào khả dụng cho địa chỉ này</p>';
+            }
+        } catch (error) {
+            loadingElement.style.display = 'none';
+            servicesContainer.innerHTML = '<p>Lỗi khi tải dịch vụ vận chuyển</p>';
+            console.error('Error loading services:', error);
+        }
+    }
+
+    // Calculate GHN shipping fee
+    async function calculateGHNShippingFee(serviceTypeId, toDistrictId) {
+
+        // Validate required parameters
+        if (!serviceTypeId || !toDistrictId || !fromDistrictId) {
+            console.error('Missing required parameters:', {
+                serviceTypeId,
+                toDistrictId,
+                fromDistrictId
+            });
+            return;
+        }
+
+        // Get total weight from cart items
+        let totalWeight = 0;
+        <c:forEach var="item" items="${sessionScope.cr7.items}">
+        totalWeight += parseInt(${item.weight}) * parseInt(${item.quantity});
+        </c:forEach>
+
+        // Ensure weight is at least 100g and convert to grams if needed
+        totalWeight = Math.max(100, totalWeight);
+
+        // Round weight to nearest 100g
+        totalWeight = Math.ceil(totalWeight / 100) * 100;
+        console.log(totalWeight + "Hoangvu")
+
+        // Get total value for insurance (optional)
+        const totalValue = ${sessionScope.cr7.totalPrice};
+
+        // Log all parameters for debugging
+        console.log('Shipping Fee Calculation Parameters:', {
+            toDistrictId: parseInt(toDistrictId),
+            serviceTypeId: parseInt(serviceTypeId),
+            weight: totalWeight,
+            insuranceValue: totalValue,
+            shopId: ghnShopId
+        });
+
+        try {
+          const requestBody = {
+            from_ward_code: storeLocations[document.getElementById('storeSelect').value].wardId,
+            to_district_id: parseInt(toDistrictId),
+            to_ward_code: document.getElementById('toWardCode').value,
+            weight: totalWeight,
+            insurance_value: totalValue,
+            service_type_id: parseInt(serviceTypeId),
+            coupon: document.getElementById('shippingCoupon')?.value || null,
+            shop_id: parseInt(ghnShopId),
+            length: 20,
+            width: 15,
+            height: 10
+          };
+
+            console.log("Request body gửi GHN:", requestBody);
+
+            const response = await fetch('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Token: ghnApiKey,
+                    ShopId: ghnShopId
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+
+            if (data.code === 200) {
+                const priceElement = document.getElementById(`price-\${serviceTypeId}`);
+                if (priceElement) {
+                    priceElement.innerHTML = `<strong>\${formatCurrency(data.data.total)} đ</strong>`;
+                }
+
+                // Update hidden field if this service is selected
+                if (document.querySelector(`input[name="shippingMethod"]:checked`)?.value == serviceTypeId) {
+                    document.getElementById('shippingPrice').value = data.data.total;
+                    document.getElementById('selectedServiceId').value = serviceTypeId;
+                    updateOrderSummary(data.data.total);
+                }
+            } else {
+                console.error('GHN API Error:', data);
+                const priceElement = document.getElementById(`price-\${serviceTypeId}`);
+                if (priceElement) {
+                    priceElement.innerHTML = `<strong>Không thể tính phí</strong>`;
+                }
+            }
+        } catch (error) {
+            console.error('Error calculating shipping fee:', error);
+            const priceElement = document.getElementById(`price-\${serviceTypeId}`);
+            if (priceElement) {
+                priceElement.innerHTML = `<strong>Lỗi tính phí</strong>`;
+            }
+        }
+    }
+
+    // Helper function to format currency
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN').format(amount);
+    }
+
+    // Update order summary with shipping fee
+    function updateOrderSummary(shippingFee) {
+        document.getElementById('shipping-fee').textContent = formatCurrency(shippingFee) + ' đ';
 
 
+        // Calculate and update final total
+        const cartTotal = ${sessionScope.cr7.totalPrice};
+        const finalTotal = cartTotal + shippingFee;
+        document.getElementById('final-total').textContent = formatCurrency(finalTotal) + ' đ';
+    }
+
+    // Apply shipping coupon
+    document.getElementById('applyShippingCoupon').addEventListener('click', function() {
+        const selectedService = document.querySelector('input[name="shippingMethod"]:checked');
+        if (selectedService && selectedService.value) {
+            const toDistrict = document.getElementById('district').value;
+            calculateGHNShippingFee(selectedService.value, toDistrict);
+        } else {
+            alert('Vui lòng chọn phương thức vận chuyển trước');
+        }
+    });
 
 </script>
 <script>
@@ -1926,6 +2289,7 @@
     });
   }
 </script>
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
