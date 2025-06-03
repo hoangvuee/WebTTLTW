@@ -1,6 +1,10 @@
 package Admin;
 
+import Models.User.User;
+import Services.LogService;
 import Services.ServiceAddCategories;
+import Services.ServiceRole;
+import Utils.LogActions;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,19 +16,18 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(value = "/addCategories")
+@WebServlet(value = "/admin/addCategories")
 public class AddCategorie extends HttpServlet {
     ServiceAddCategories serviceAddCategories = new ServiceAddCategories();
+    private final ServiceRole serviceRole = new ServiceRole();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        Integer idRole = (Integer) session.getAttribute("idRole");
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("userInfor");
 
-        if (idRole == null || idRole != 1) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-            return;
-        }
 
         String categoryName = req.getParameter("categoryName");
         String categoryDescription = req.getParameter("categoryDescription");
@@ -36,15 +39,32 @@ public class AddCategorie extends HttpServlet {
             req.setAttribute("successMessage", "Category added successfully!");
 
             // Chuyển hướng về trang giao diện thêm category
-            RequestDispatcher dispatcher = req.getRequestDispatcher("admin/categorie.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("categorie.jsp");
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.CATEGORY_ADD,
+                    "Added new category: " + categoryName,
+                    ipAddress,
+                    userAgent
+            );
+
             dispatcher.forward(req, resp);
 
         } catch (SQLException e) {
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.CATEGORY_ADD_FAILED,
+                    "Failed to add category: " + e.getMessage(),
+                    ipAddress,
+                    userAgent
+            );
             // Thêm thông báo lỗi vào request attribute
             req.setAttribute("errorMessage", "Error adding category. Please try again.");
 
             // Chuyển hướng lại về trang giao diện thêm category
-            RequestDispatcher dispatcher = req.getRequestDispatcher("admin/categorie.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("categorie.jsp");
             dispatcher.forward(req, resp);
         }
     }

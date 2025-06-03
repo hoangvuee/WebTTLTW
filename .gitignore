@@ -11,7 +11,9 @@ target/
 *.iws
 *.iml
 *.ipr
-
+*.ymal
+src\main\java\Controller\LettuceRedisServlet.java
+.gitignore
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -36,3 +38,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+compose.yaml
+src/main/java/Controller/LettuceRedisServlet.java

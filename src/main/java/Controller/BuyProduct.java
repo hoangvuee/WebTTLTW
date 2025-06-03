@@ -41,7 +41,7 @@ public class BuyProduct extends HttpServlet {
 
 
             session.setAttribute("cr7",cart);
-            resp.sendRedirect("giohang.jsp");
+            resp.sendRedirect("shoppingCart.jsp");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

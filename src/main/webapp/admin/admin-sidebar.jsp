@@ -8,15 +8,15 @@
         <a class="nav-link ${pageContext.request.requestURI.endsWith('index.jsp') ? 'active' : ''}" href="../index.jsp">Trang chủ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " href="../getAllProduct">Quản lý sản phẩm</a>
+        <a class="nav-link " href="../admin/getAllProduct">Quản lý sản phẩm</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-order.jsp') ? 'active' : ''}" href="../getOrderManage">Quản lý đơn hàng</a>
+        <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-order.jsp') ? 'active' : ''}" href="../admin/getOrderManage">Quản lý đơn hàng</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-user.jsp') ? 'active' : ''}" href="../getAllUser">Quản lý người dùng</a>
+        <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-user.jsp') ? 'active' : ''}" href="../admin/getAllUser">Quản lý người dùng</a>
       </li>
       <li class="nav-item">
         <a class="nav-link ${pageContext.request.requestURI.endsWith('manage_comments.jsp') ? 'active' : ''}" href="../all-comments">Quản lý bình luận</a>

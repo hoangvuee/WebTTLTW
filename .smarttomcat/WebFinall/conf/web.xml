@@ -18,8 +18,8 @@
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
-                      https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
-  version="6.1">
+                      https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+  version="6.0">
 
   <!-- ======================== Introduction ============================== -->
   <!-- This document defines default values for *all* web applications      -->
@@ -116,11 +116,6 @@
   <!--                       headers only valid for GET requests, RFC 9110  -->
   <!--                       (which obsoletes RFC 7233) now allows partial  -->
   <!--                       puts. [true]                                   -->
-  <!--                                                                      -->
-  <!--   directoryRedirectStatusCode                                        -->
-  <!--                       Status code to use for directory redirects.    -->
-  <!--                       Possible values: 301, 302, 307, 308            -->
-  <!--                       [302]                                          -->
 
     <servlet>
         <servlet-name>default</servlet-name>
@@ -160,9 +155,9 @@
   <!--                       pages.  See the jasper documentation for more  -->
   <!--                       information.                                   -->
   <!--                                                                      -->
-  <!--   compilerSourceVM    Compiler source VM. [17]                       -->
+  <!--   compilerSourceVM    Compiler source VM. [11]                      -->
   <!--                                                                      -->
-  <!--   compilerTargetVM    Compiler target VM. [17]                       -->
+  <!--   compilerTargetVM    Compiler target VM. [11]                      -->
   <!--                                                                      -->
   <!--   development         Is Jasper used in development mode? If true,   -->
   <!--                       the frequency at which JSPs are checked for    -->
@@ -185,6 +180,8 @@
   <!--   engineOptionsClass  Allows specifying the Options class used to    -->
   <!--                       configure Jasper. If not present, the default  -->
   <!--                       EmbeddedServletOptions will be used.           -->
+  <!--                       This option is ignored when running under a    -->
+  <!--                       SecurityManager.                               -->
   <!--                                                                      -->
   <!--   errorOnUseBeanInvalidClassAttribute                                -->
   <!--                       Should Jasper issue an error when the value of -->
@@ -242,6 +239,8 @@
   <!--   scratchdir          What scratch directory should we use when      -->
   <!--                       compiling JSP pages?  [default work directory  -->
   <!--                       for the current web application]               -->
+  <!--                       This option is ignored when running under a    -->
+  <!--                       SecurityManager.                               -->
   <!--                                                                      -->
   <!--   suppressSmap        Should the generation of SMAP info for JSR45   -->
   <!--                       debugging be suppressed?  [false]              -->
@@ -282,15 +281,7 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
 
-    <servlet>
-        <servlet-name>MySQLConnectionServlet</servlet-name>
-        <servlet-class>MySQLConnectionServlet</servlet-class>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>MySQLConnectionServlet</servlet-name>
-        <url-pattern>/mysqlConnection</url-pattern>
-    </servlet-mapping>
   <!-- NOTE: An SSI Filter is also available as an alternative SSI          -->
   <!-- implementation. Use either the Servlet or the Filter but NOT both.   -->
   <!--                                                                      -->
@@ -530,6 +521,19 @@
     </filter>
 -->
 
+  <!-- A filter that triggers request parameters parsing and rejects the    -->
+  <!-- request if some parameters were skipped because of parsing errors or -->
+  <!-- request size limitations.                                            -->
+<!--
+    <filter>
+        <filter-name>failedRequestFilter</filter-name>
+        <filter-class>
+          org.apache.catalina.filters.FailedRequestFilter
+        </filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+-->
+
 
   <!-- NOTE: An SSI Servlet is also available as an alternative SSI         -->
   <!-- implementation. Use either the Servlet or the Filter but NOT both.   -->
@@ -604,6 +608,14 @@
 <!--
     <filter-mapping>
         <filter-name>setCharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+-->
+
+  <!-- The mapping for the Failed Request Filter -->
+<!--
+    <filter-mapping>
+        <filter-name>failedRequestFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 -->

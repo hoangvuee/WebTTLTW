@@ -1,8 +1,14 @@
 package Controller.Account;
 
+
 import Models.User.User;
+import Sercurity.JwtUtil;
+import Services.LogService;
 import Services.ServiceRole;
 import Services.ServiceUser;
+import Utils.LogActions;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,71 +16,168 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
-@WebServlet(
-        value = "/checkLogin"
-)
+@WebServlet("/checkLogin")
 public class SignIn extends HttpServlet {
     ServiceUser serviceUser = new ServiceUser();
     ServiceRole serviceRole = new ServiceRole();
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        Integer id = (Integer) session.getAttribute("idUser");
-        if (id != null) {
+        HttpSession session = req.getSession();
+        session.removeAttribute("errorType");
+        session.removeAttribute("errorMessage");
+        session.removeAttribute("redirectPage");
+        session.removeAttribute("redirectDelay");
+        Integer idUser = (Integer) session.getAttribute("idUser");
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
+        // Nếu đã đăng nhập thì chuyển hướng
+        if (idUser != null) {
             resp.sendRedirect("setupData");
             return;
-        } else {
-            session = req.getSession(true);
         }
 
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        String hassPassword;
+
+        // Đếm số lần đăng nhập sai
+        Integer failedAttempts = (Integer) session.getAttribute("failedAttempts");
+        failedAttempts = (failedAttempts == null) ? 0 : failedAttempts;
+
+        // Kiểm tra reCAPTCHA nếu sai từ 3 lần trở lên
+        if (failedAttempts >= 3) {
+            String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
+            if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty() || !verifyCaptcha(gRecaptchaResponse)) {
+                session.setAttribute("errorType", "captcha");
+                session.setAttribute("errorMessage", "Vui lòng xác minh CAPTCHA!");
+                session.setAttribute("failedAttempts", failedAttempts);
+                resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+                return;
+            }
+        }
 
         try {
-            hassPassword = serviceUser.hashPassword(password);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (serviceUser.checkCredentials(email, hassPassword)) {
-            try {
-                if(serviceUser.checkIsAvtive(email,hassPassword) == 0){
-                    req.setAttribute("errorMessage", "Tài khoản bị khoá");
-                    req.getRequestDispatcher("Account/login.jsp").forward(req, resp);
+            String hashedPassword = serviceUser.hashPassword(password);
+            if (serviceUser.checkCredentials(email, hashedPassword)) {
+                // Kiểm tra trạng thái tài khoản
+                if (!serviceUser.isUserActiveByEmail(email)) {
+                    // Tài khoản chưa xác thực
+                    session.setAttribute("errorType", "unverified");
+                    session.setAttribute("errorMessage", "Tài khoản chưa được xác thực! Vui lòng kiểm tra email để kích hoạt tài khoản.");
+                    session.setAttribute("redirectPage", req.getContextPath() + "/Account/activeAccount.jsp?email=" + URLEncoder.encode(email, "UTF-8"));
+                    session.setAttribute("redirectDelay", 5);
+                    session.setAttribute("unverifiedEmail", email);
+                    resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+                    return;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            // Xử lý thành công
-            int idUser = 0;
-            int idRole = 0;
-            String nameRole = null;
-            try {
-                idUser = serviceUser.check(email, hassPassword);
-                idRole = serviceUser.checkRole(email, hassPassword);
-                nameRole = serviceRole.getRoleNameById(idRole);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
 
-            session.setAttribute("idUser", idUser);
-            session.setAttribute("idRole", idRole);
-            session.setAttribute("nameRole", nameRole);
+                // Tài khoản đã xác thực - tiến hành đăng nhập
+                session.removeAttribute("failedAttempts");
+                session.removeAttribute("unverifiedEmail");
+                session.removeAttribute("errorType");
+                session.removeAttribute("errorMessage");
 
-            User user = serviceUser.getUserByIdInfor(idUser);
-            if (user != null) {
-                session.setAttribute("userInfor", user);
+                int id = serviceUser.check(email, hashedPassword);
+                int idRole = serviceUser.checkRole(email, hashedPassword);
+                String nameRole = serviceRole.getRoleNameById(idRole);
+
+                session.setAttribute("idUser", id);
+                session.setAttribute("idRole", idRole);
+                session.setAttribute("nameRole", nameRole);
+
+                User user = serviceUser.getUserByEmail(email);
+                if (user != null) {
+                    LogService.logUserActivity(
+                            user.getEmail(),
+                            nameRole,
+                            LogActions.USER_LOGIN,
+                            "Successful login",
+                            ipAddress,
+                            userAgent
+                    );
+                    session.setAttribute("userInfor", user);
+                    String token = JwtUtil.generateToken(email, nameRole);
+                    session.setAttribute("authToken", token);
+                    resp.setHeader("Authorization", "Bearer " + token);
+                }
+
+                resp.sendRedirect("setupData");
+            } else {
+                // Sai thông tin đăng nhập
+                failedAttempts++;
+                LogService.logUserActivity(
+                        "Unknown",
+                        "Guest",
+                        LogActions.LOGIN_FAILED,
+                        "Failed login attempt #" + failedAttempts + " for email: " + email,
+                        ipAddress,
+                        userAgent
+                );
+                session.setAttribute("errorType", "login");
+                session.setAttribute("errorMessage", "Sai tài khoản hoặc mật khẩu!");
+                session.setAttribute("failedAttempts", failedAttempts);
+                resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
             }
-            resp.sendRedirect("setupData");
-        } else {
-            // Xử lý thất bại
-            req.setAttribute("errorMessage", "Sai tài khoản hoặc mật khẩu.");
-            req.getRequestDispatcher("Account/login.jsp").forward(req, resp);
+        } catch (NoSuchAlgorithmException e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống khi xử lý mật khẩu");
+            resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+        } catch (SQLException e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống khi truy vấn dữ liệu");
+            resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
+        } catch (Exception e) {
+            session.setAttribute("errorType", "system");
+            session.setAttribute("errorMessage", "Lỗi hệ thống không xác định");
+            resp.sendRedirect(req.getContextPath() + "/Account/login.jsp");
         }
     }
+
+    // Kiểm tra reCAPTCHA với Google
+    public boolean verifyCaptcha(String gRecaptchaResponse) {
+        String url = "https://www.google.com/recaptcha/api/siteverify";
+        String secretKey = "6Lf30PwqAAAAACfRxfocU0gf-EAtO13Av4NyP0l9"; // Thay bằng key thực tế
+
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+
+            String postParams = "secret=" + secretKey + "&response=" + gRecaptchaResponse;
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = postParams.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // Đọc phản hồi từ Google
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Parse JSON
+            JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
+            return jsonResponse.get("success").getAsBoolean();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

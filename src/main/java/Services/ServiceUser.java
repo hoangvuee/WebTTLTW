@@ -35,6 +35,9 @@ public class ServiceUser {
 
         return userDao.getUserById(id);
     }
+    public String getEmailbyId(int id) {
+        return userDao.getemailById(id);
+    }
 
     public List<User> getAllUsers() {
 
@@ -51,7 +54,9 @@ public class ServiceUser {
 
         return userDao.registerUser(user);
     }
-
+    public boolean updateBasicUserInfo(User user) {
+        return userDao.updateBasicUserInfo(user);
+    }
 
     public User getUserByEmail(String email) {
 
@@ -110,8 +115,16 @@ public class ServiceUser {
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 10);
     }
+    public boolean updateUserActive(String email, boolean isActive){
+        return userDao.updateUserActive(email, isActive);
+    }
     public boolean checkCredentials(String email, String password) {
-        return userDao.checkCredentials(email,password);
+
+            return userDao.checkCredentials(email,password);
+
+
+
+
     }
     public int checkRole(String email, String pass) throws SQLException {
 
@@ -165,27 +178,16 @@ public class ServiceUser {
         }
         return false;
     }
+    public String getUserAvatar(int idUser) {
+        return userDao.getUserAvatar(idUser);
+    }
+    public boolean isUserActiveByEmail(String email){
+        return userDao.isUserActiveByEmail(email);
+    }
+
     public static void main(String[] args) throws SQLException {
         ServiceUser s  = new ServiceUser();
         System.out.println(s.check("jane.doe@example.com","password456"));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }

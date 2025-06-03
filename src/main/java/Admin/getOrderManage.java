@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        value = "/getOrderManage"
+        value = "/admin/getOrderManage"
 )
 public class getOrderManage  extends HttpServlet {
     ServiceOrder serviceOrder = new ServiceOrder();
@@ -21,11 +21,7 @@ public class getOrderManage  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session1 = req.getSession(false);
-        Integer idRole = (Integer) session1.getAttribute("idRole");
-        if(idRole == null || idRole != 1){
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
-        }
+
         ListOrder items ;
         HttpSession session = req.getSession(true);
 
@@ -34,7 +30,7 @@ public class getOrderManage  extends HttpServlet {
                 items = serviceOrder.getAllOrders();
                 System.out.println(items.getItems().size());
                 session.setAttribute("order_manage",items);
-                resp.sendRedirect("admin/manage-order.jsp");
+                resp.sendRedirect("manage-order.jsp");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
