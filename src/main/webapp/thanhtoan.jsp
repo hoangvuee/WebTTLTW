@@ -1236,6 +1236,36 @@
   .selector-arrow-modern.rotate svg {
     transform: rotate(180deg);
   }
+
+  .store-selection {
+    padding: 15px;
+  }
+
+  .store-selection select {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .store-selection select:focus {
+    border-color: #ff7b00;
+    box-shadow: 0 0 0 0.2rem rgba(255, 123, 0, 0.25);
+  }
+
+  .store-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #ff7b00;
+  }
+
+  .store-info p {
+    margin-bottom: 8px;
+    color: #555;
+  }
 </style>
 
 <body>
@@ -1357,6 +1387,10 @@
                       <input type="hidden" id="province_name" name="province_name" value="">
                       <input type="hidden" id="district_name" name="district_name" value="">
                       <input type="hidden" id="ward_name" name="ward_name" value="">
+                      <input type="hidden" id="fromWardCode" name="fromWardCode" value="">
+                      <input type="hidden" id="toWardCode" name="toWardCode" value="">
+                      <input type="hidden" id="districtId" name="districtId" value="">
+                      <input type="hidden" id="service_id" name="service_id" value="">
 
 
                       <div class="mb-3">
@@ -1371,7 +1405,31 @@
                         <label for="notes" class="form-label">Ghi Chú Đơn Hàng</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay địa điểm giao hàng"></textarea>
                       </div>
-                      <p>Địa chỉ cửa hàng mua: Tp.Cần thơ</p>
+                      
+                      <!-- Thêm phần chọn cửa hàng -->
+                      <div class="mb-3">
+                        <label for="storeSelect" class="form-label">Chọn Cửa Hàng Mua Hàng</label>
+                        <select class="form-select" id="storeSelect" name="storeSelect">
+                          <option value="">Chọn cửa hàng...</option>
+                          <option value="1">Cửa hàng Hà Nội</option>
+                          <option value="2">Cửa hàng Hải Phòng</option>
+                          <option value="3">Cửa hàng Đà Nẵng</option>
+                          <option value="4">Cửa hàng TP.HCM</option>
+                          <option value="5">Cửa hàng Cần Thơ</option>
+                        </select>
+                      </div>
+                      
+                      <!-- Thông tin cửa hàng -->
+                      <div id="storeInfo" class="mb-3" style="display: none;">
+                        <div class="card">
+                          <div class="card-body">
+                            <h6 class="card-title">Thông Tin Cửa Hàng</h6>
+                            <p id="storeAddress"></p>
+                            <p id="storeHours"></p>
+                            <p id="storePhone"></p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                   </div>
@@ -1625,10 +1683,118 @@
   <%@include file="footer.jsp"%>
 </div>
 <script>
-    const ghnApiKey = 'f5ce69a3-35aa-11f0-b930-ca8d03ab5418';
-    const ghnShopId = '5787774';
-    const fromDistrictId = '1454'; // Quận Ninh Kiều, TP Cần Thơ
-    const defaultProvinceId = '92'; // Cần Thơ
+  const ghnApiKey = 'f5ce69a3-35aa-11f0-b930-ca8d03ab5418';
+  const ghnShopId = '5787774';
+
+  let fromDistrictId = '0';
+  let defaultProvinceId = '1';
+
+  const storeLocations = {
+    '1': {
+      name: 'Cửa hàng Hà Nội',
+      provinceId: '201',
+      districtId: '3440',
+      wardId:"13010",
+      address: '123 Phường Xuân Phương , Quận Nam Từ Liêm, TP. Hà Nội',
+      hours: '8:00 - 22:00',
+      phone: '(024) 123 456'
+    },
+    '2': {
+      name: 'Cửa hàng Hải Dương',
+      provinceId: '225',
+      districtId: '1817',
+      wardId:"91356",
+      address: '456 Xã Phúc Điền, Huyện Cẩm Giàng, TP. Hải Dương',
+      hours: '8:00 - 22:00',
+      phone: '(0225) 234 567'
+    },
+    '3': {
+      name: 'Cửa hàng KomTum',
+      provinceId: '259',
+      districtId: '3446',
+      wardId:"361003",
+      address: '789 Xã Ia Tơi, Huyện Ia H Drai, TP.KomTum',
+      hours: '8:00 - 22:00',
+      phone: '(0236) 345 678'
+    },
+    '4': {
+      name: 'Cửa hàng TP.HCM',
+      provinceId: '202',
+      districtId: '1442',
+      wardId:"20106",
+      address: '321 Phường Đa Kao, Q.1, TP.HCM',
+      hours: '8:00 - 22:00',
+      phone: '(028) 456 789'
+    },
+    '5': {
+      name: 'Cửa hàng Cần Thơ',
+      provinceId: '220',
+      districtId: '1572',
+      wardId:"550103",
+      address: '654 Phường An Hòa, Q. Ninh Kiều, TP. Cần Thơ',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
+    },
+    '6': {
+      name: 'Cửa hàng Cà Mau',
+      provinceId: '252',
+      districtId: '2186',
+      wardId:"610701",
+      address: '654 Nguyễn Văn Linh, Huyện Ngọc Hiển, TP. Cà Mau',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
+    },
+    '7': {
+      name: 'Cửa hàng Bình Thuận',
+      provinceId: '258',
+      districtId: '3196',
+      wardId:"470610",
+      address: '654 Xã Thắng Hải, Huyện Hàm Tân, TP. Bình Thuận',
+      hours: '8:00 - 22:00',
+      phone: '(0292) 567 890'
+    }
+
+
+  };
+
+  document.getElementById('storeSelect').addEventListener('change', async function () {
+    const storeInfo = document.getElementById('storeInfo');
+    const storeAddress = document.getElementById('storeAddress');
+    const storeHours = document.getElementById('storeHours');
+    const storePhone = document.getElementById('storePhone');
+
+    if (this.value) {
+      storeInfo.style.display = 'block';
+      const selectedStore = storeLocations[this.value];
+
+      storeAddress.innerHTML = `<strong>Địa chỉ:</strong> \${selectedStore.address}`;
+      storeHours.innerHTML = `<strong>Giờ mở cửa:</strong> \${selectedStore.hours}`;
+      storePhone.innerHTML = `<strong>Điện thoại:</strong> \${selectedStore.phone}`;
+
+      defaultProvinceId = selectedStore.provinceId;
+      fromDistrictId = selectedStore.districtId;
+
+      console.log('defaultProvinceId:', defaultProvinceId);
+      console.log('fromDistrictId:', fromDistrictId);
+
+      await loadGHNDistricts(defaultProvinceId, fromDistrictId);
+
+      setTimeout(async () => {
+        const districtSelect = document.getElementById('district');
+        if (districtSelect && districtSelect.value) {
+          await loadGHNWards('district', 'ward');
+          await loadGHNAvailableServices(districtSelect.value);
+
+          const selectedService = document.querySelector('input[name="shippingMethod"]:checked');
+          if (selectedService) {
+            await calculateGHNShippingFee(selectedService.value, districtSelect.value);
+          }
+        }
+      }, 500);
+    } else {
+      storeInfo.style.display = 'none';
+    }
+  });
 
     document.addEventListener('DOMContentLoaded', async function () {
         await loadGHNProvinces();
@@ -1677,14 +1843,22 @@
 
     async function loadGHNDistricts(provinceElementId, districtElementId) {
         const provinceSelect = document.getElementById(provinceElementId);
+        if (!provinceSelect) {
+            console.warn('Province select element not found');
+            return;
+        }
+
         const provinceId = provinceSelect.value;
         const provinceName = provinceSelect.options[provinceSelect.selectedIndex]?.getAttribute('data-name');
         if (provinceName) {
-            document.getElementById('province_name').value = provinceName;
+            const provinceNameInput = document.getElementById('province_name');
+            if (provinceNameInput) {
+                provinceNameInput.value = provinceName;
+            }
         }
 
         if (!provinceId) {
-            console.warn('Không có provinceId');
+            console.warn('No province ID selected');
             return;
         }
 
@@ -1696,6 +1870,11 @@
             if (data.code === 200) {
                 const districts = data.data.filter(d => d.ProvinceID == provinceId);
                 const districtSelect = document.getElementById(districtElementId);
+                if (!districtSelect) {
+                    console.warn('District select element not found');
+                    return;
+                }
+                
                 districtSelect.innerHTML = '<option value="">Chọn quận/huyện...</option>';
                 districts.forEach(d => {
                     const option = document.createElement('option');
@@ -1706,7 +1885,15 @@
                 });
 
                 // Reset ward
-                document.getElementById('ward').innerHTML = '<option value="">Chọn phường/xã...</option>';
+                const wardSelect = document.getElementById('ward');
+                if (wardSelect) {
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã...</option>';
+                }
+
+                // Add change event listener to update districtId
+                districtSelect.addEventListener('change', function() {
+                    document.getElementById('districtId').value = this.value;
+                });
             }
         } catch (err) {
             console.error('Lỗi khi tải quận/huyện:', err);
@@ -1744,6 +1931,13 @@
                     wardSelect.appendChild(option);
                 });
 
+                // Update toWardCode when ward is selected
+                wardSelect.addEventListener('change', function() {
+                    const wardCode = this.value;
+                    document.getElementById('toWardCode').value = wardCode;
+                    document.getElementById('ward_name').value = this.options[this.selectedIndex].getAttribute('data-name');
+                });
+
                 // Nếu cần tính phí
                 if (fromDistrictId && districtId) {
                     await loadGHNAvailableServices(districtId);
@@ -1758,12 +1952,15 @@
 
     // Load available GHN services
     async function loadGHNAvailableServices(toDistrictId) {
+
         console.log(toDistrictId + "jpamg")
         const servicesContainer = document.getElementById('ghn-services-container');
         const loadingElement = document.getElementById('ghn-services-loading');
 
         servicesContainer.innerHTML = '';
         loadingElement.style.display = 'block';
+        console.log(toDistrictId)
+      console.log(fromDistrictId)
 
         try {
             const res = await fetch('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services', {
@@ -1780,9 +1977,10 @@
             });
 
             const data = await res.json();
+            console.log(data)
             loadingElement.style.display = 'none';
 
-            if (data.code === 200 && data.data.length > 0) {
+            if (data.code === 200) {
                 data.data.forEach(service => {
                     const serviceElement = document.createElement('div');
                     serviceElement.className = 'shipping-option';
@@ -1791,7 +1989,7 @@
               <input type="radio" name="shippingMethod"
                      value="\${service.service_type_id}"
                      data-price="0"
-                     onchange="calculateGHNShippingFee(\${service.service_type_id}, \${toDistrictId})">
+                     onchange="calculateGHNShippingFee(\${service.service_type_id},\${toDistrictId})">
               <div class="shipping-content">
                 <span class="shipping-title">\${service.short_name}</span>
                 <span class="shipping-price" id="price-\${service.service_type_id}">
@@ -1801,9 +1999,18 @@
             </label>
           `;
                     servicesContainer.appendChild(serviceElement);
+                    console.log(service.service_type_id)
 
                     // Calculate initial fee for each service
                     calculateGHNShippingFee(service.service_type_id, toDistrictId);
+                });
+
+                // Add event listener to update service_id when shipping method changes
+                const shippingMethods = document.querySelectorAll('input[name="shippingMethod"]');
+                shippingMethods.forEach(method => {
+                    method.addEventListener('change', function() {
+                        document.getElementById('service_id').value = this.value;
+                    });
                 });
             } else {
                 servicesContainer.innerHTML = '<p>Không có dịch vụ vận chuyển nào khả dụng cho địa chỉ này</p>';
@@ -1817,19 +2024,59 @@
 
     // Calculate GHN shipping fee
     async function calculateGHNShippingFee(serviceTypeId, toDistrictId) {
+
+        // Validate required parameters
+        if (!serviceTypeId || !toDistrictId || !fromDistrictId) {
+            console.error('Missing required parameters:', {
+                serviceTypeId,
+                toDistrictId,
+                fromDistrictId
+            });
+            return;
+        }
+
         // Get total weight from cart items
         let totalWeight = 0;
         <c:forEach var="item" items="${sessionScope.cr7.items}">
-        totalWeight += ${item.weight * item.quantity};
+        totalWeight += parseInt(${item.weight}) * parseInt(${item.quantity});
         </c:forEach>
 
-        // Default to 1000g if no items
-        if (totalWeight <= 0) totalWeight = 1000;
+        // Ensure weight is at least 100g and convert to grams if needed
+        totalWeight = Math.max(100, totalWeight);
+
+        // Round weight to nearest 100g
+        totalWeight = Math.ceil(totalWeight / 100) * 100;
+        console.log(totalWeight + "Hoangvu")
 
         // Get total value for insurance (optional)
         const totalValue = ${sessionScope.cr7.totalPrice};
 
+        // Log all parameters for debugging
+        console.log('Shipping Fee Calculation Parameters:', {
+            toDistrictId: parseInt(toDistrictId),
+            serviceTypeId: parseInt(serviceTypeId),
+            weight: totalWeight,
+            insuranceValue: totalValue,
+            shopId: ghnShopId
+        });
+
         try {
+          const requestBody = {
+            from_ward_code: storeLocations[document.getElementById('storeSelect').value].wardId,
+            to_district_id: parseInt(toDistrictId),
+            to_ward_code: document.getElementById('toWardCode').value,
+            weight: totalWeight,
+            insurance_value: totalValue,
+            service_type_id: parseInt(serviceTypeId),
+            coupon: document.getElementById('shippingCoupon')?.value || null,
+            shop_id: parseInt(ghnShopId),
+            length: 20,
+            width: 15,
+            height: 10
+          };
+
+            console.log("Request body gửi GHN:", requestBody);
+
             const response = await fetch('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee', {
                 method: 'POST',
                 headers: {
@@ -1837,14 +2084,7 @@
                     Token: ghnApiKey,
                     ShopId: ghnShopId
                 },
-                body: JSON.stringify({
-                    from_district_id: parseInt(fromDistrictId),
-                    to_district_id: parseInt(toDistrictId),
-                    service_type_id: parseInt(serviceTypeId),
-                    weight: totalWeight,
-                    insurance_value: totalValue,
-                    coupon: document.getElementById('shippingCoupon').value || null
-                })
+                body: JSON.stringify(requestBody)
             });
 
             const data = await response.json();
@@ -1861,9 +2101,19 @@
                     document.getElementById('selectedServiceId').value = serviceTypeId;
                     updateOrderSummary(data.data.total);
                 }
+            } else {
+                console.error('GHN API Error:', data);
+                const priceElement = document.getElementById(`price-\${serviceTypeId}`);
+                if (priceElement) {
+                    priceElement.innerHTML = `<strong>Không thể tính phí</strong>`;
+                }
             }
         } catch (error) {
             console.error('Error calculating shipping fee:', error);
+            const priceElement = document.getElementById(`price-\${serviceTypeId}`);
+            if (priceElement) {
+                priceElement.innerHTML = `<strong>Lỗi tính phí</strong>`;
+            }
         }
     }
 
@@ -2030,6 +2280,9 @@
     });
   }
 </script>
+
+
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
