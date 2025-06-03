@@ -35,6 +35,9 @@ public class ServiceUser {
 
         return userDao.getUserById(id);
     }
+    public String getEmailbyId(int id) {
+        return userDao.getemailById(id);
+    }
 
     public List<User> getAllUsers() {
 

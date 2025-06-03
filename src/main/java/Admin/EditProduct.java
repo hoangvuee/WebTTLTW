@@ -1,16 +1,19 @@
 package Admin;
 
-
 import DTO.ProductDTO;
 import Models.Description.Description;
 import Models.Sale.Sale;
+import Models.User.User;
+import Models.inforTransaction.Product;
+import Sercurity.JwtUtil;
 import Services.*;
+import Utils.LogActions;
 import com.google.gson.Gson;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +30,6 @@ import java.util.List;
 )
 
 public class EditProduct extends HttpServlet {
-
     private static final Gson gson = new Gson();
     private final ServiceAddProduct productService = new ServiceAddProduct();
     private ServiceSale serviceSale = new ServiceSale();
@@ -35,6 +37,8 @@ public class EditProduct extends HttpServlet {
     private ServiceImage serviceImage  = new ServiceImage();
 
     private ServiceProduct serviceProduct = new ServiceProduct();
+    ServiceRole serviceRole = new ServiceRole();
+    ServiceUser serviceUser = new ServiceUser();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,6 +64,9 @@ public class EditProduct extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/plain;charset=UTF-8");
+        HttpSession session = req.getSession();
+        String ipAddress = req.getRemoteAddr();
+        String userAgent = req.getHeader("User-Agent");
 
         try {
             // Lấy các tham số từ form
@@ -130,20 +137,33 @@ public class EditProduct extends HttpServlet {
                 ServiceFile.saveFileToImgFolder(filePart,getServletContext());
 
             }
+            User user = (User) session.getAttribute("userInfor");
+            ServiceRole serviceRole = new ServiceRole();
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.EDIT_PRODUCT,
+                    "Added product: " + name + " (ID: " + productId + ")",
+                    ipAddress,
+                    userAgent );
 
             // Update Variant
             serviceProduct.updateProductDetail(id,productId,weight,price,activeTemp,quantity);
-
-
-
-
-
             resp.getWriter().write("Product updated successfully");
 
     } catch (Exception e) {
         e.printStackTrace();
+            int productId = Integer.parseInt(req.getParameter("productId"));
+            User user = (User) session.getAttribute("userInfor");
+            ServiceRole serviceRole = new ServiceRole();
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.EDIT_PRODUCT_FAILED,
+                    "Edit Product id"+productId+" Failed",
+                    ipAddress,
+                    userAgent );
         resp.getWriter().write("Failed to update product: " + e.getMessage());
     }
 }
 }
-

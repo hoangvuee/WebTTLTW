@@ -152,6 +152,21 @@ public class UserDao {
         }
         return null;
     }
+    public String getemailById(int id) {
+        ConnDB dao = new ConnDB();
+        String sql = "SELECT email FROM users WHERE id = ?";
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("email");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public  User getUserByIdInfor(int userId) {
         // Thông tin kết nối cơ sở dữ liệu
 
@@ -630,7 +645,7 @@ ConnDB dao = new ConnDB();
        // boolean ui = Boolean.parseBoolean("1");
       //  System.out.println(ui);
         //System.out.println(s.checkIsAvtive("user@gmail.com",h));
-        System.out.println(s.isUserActiveByEmail("vue@gmail.com"));
+        System.out.println(s.getemailById(38));
 
     }
 

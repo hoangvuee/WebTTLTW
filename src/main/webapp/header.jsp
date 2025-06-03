@@ -98,7 +98,7 @@
                             <!-- Menu dành cho admin -->
                             <c:if test="${sessionScope.idRole == '1'}">
                                 <li class="nav-item">
-                                    <a class="nav-link fw-bold text-dark" href="${pageContext.request.contextPath}/admin/getAllProduct">
+                                    <a class="nav-link fw-bold text-dark" href="${pageContext.request.contextPath}/admin/admin.jsp">
                                         ADMIN
                                     </a>
                                 </li>

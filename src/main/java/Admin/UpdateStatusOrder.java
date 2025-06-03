@@ -1,7 +1,7 @@
 package Admin;
 
-import Dao.ActivityLogDAO;
 import Models.User.User;
+import Services.LogService;
 import Services.ServiceOrder;
 import Services.ServiceRole;
 import Utils.LogActions;
@@ -18,11 +18,13 @@ import java.io.IOException;
         value = "/admin/updateOrderStatus"
 )
 public class UpdateStatusOrder  extends HttpServlet {
-    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     ServiceOrder serviceOrder = new ServiceOrder();
     ServiceRole serviceRole = new ServiceRole();
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String ipAddress = req.getRemoteAddr();
         String userAgent = req.getHeader("User-Agent");
         HttpSession session = req.getSession();
@@ -32,23 +34,23 @@ public class UpdateStatusOrder  extends HttpServlet {
             int idOrder = Integer.parseInt(req.getParameter("idOrder"));
             int isActive = Integer.parseInt(req.getParameter("status"));
             serviceOrder.updateOrderStatus(idOrder,isActive);
-            activityLogDAO.logUserActivity(
-                user.getUserName(),
-                serviceRole.getRoleNameById(user.getIdRole()),
-                LogActions.ORDER_STATUS_UPDATE,
-                "Updated order status - Order ID: " + idOrder + " to status: " + isActive,
-                ipAddress,
-                userAgent
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.ORDER_STATUS_UPDATE,
+                    "Updated order status - Order ID: " + idOrder + " to status: " + isActive,
+                    ipAddress,
+                    userAgent
             );
             resp.sendRedirect("getOrderManage");
         } catch (Exception e) {
-            activityLogDAO.logUserActivity(
-                user.getUserName(),
-                serviceRole.getRoleNameById(user.getIdRole()),
-                LogActions.ORDER_STATUS_UPDATE_FAILED,
-                "Failed to update order status: " + e.getMessage(),
-                ipAddress,
-                userAgent
+            LogService.logUserActivity(
+                    user.getUserName(),
+                    serviceRole.getRoleNameById(user.getIdRole()),
+                    LogActions.ORDER_STATUS_UPDATE_FAILED,
+                    "Failed to update order status: " + e.getMessage(),
+                    ipAddress,
+                    userAgent
             );
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update order status");
         }

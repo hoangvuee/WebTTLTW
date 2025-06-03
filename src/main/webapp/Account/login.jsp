@@ -268,7 +268,7 @@
             <button type="submit" class="btn btn-dark w-100">Đăng nhập</button>
 
 
-            <div class="alert alert-danger text-center" role="alert">
+            <div class="alert alert-danger text-center" role="alert" id="alert">
                 <%
                     String errorType = (String) session.getAttribute("errorType");
                     String errorMessage = (String) session.getAttribute("errorMessage");

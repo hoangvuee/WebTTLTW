@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -14,7 +15,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
+
   <link rel="stylesheet" href="../css/user.css">
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -44,7 +47,6 @@
     <form class="d-flex">
       <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search">
     </form>
-
     <ul class="navbar-nav align-items-center">
       <li class="nav-item position-relative">
         <a class="nav-link" href="#"><i class="fas fa-bell"></i> <span class="badge bg-danger rounded-pill">3</span></a>
@@ -52,16 +54,17 @@
       <li class="nav-item position-relative mx-3">
         <a class="nav-link" href="#"><i class="fas fa-envelope"></i> <span class="badge bg-primary rounded-pill">5</span></a>
       </li>
+      <c:set var="item" value="${sessionScope.userInfor}"/>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-          <img src="image/Logo-Zalo-Arc.png.webp" class="rounded-circle me-2" height="30" alt="User">
-          <span>John Doe</span>
+          <img src="../img/${item.image}" class="rounded-circle me-2" height="30" width="30" alt="User">
+          <span>${item.userName}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
           <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+          <li><a class="dropdown-item" href="${pageContext.request.contextPath}/index.jsp"><i class="fas fa-sign-out-alt me-2"></i>Back</a></li>
         </ul>
       </li>
     </ul>
@@ -142,24 +145,12 @@
           <thead>
           <tr>
             <th>User</th>
-            <th>Action</th>
+            <th>Action detail</th>
             <th>Time</th>
-            <th>Status</th>
+            <th>role</th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>Updated product</td>
-            <td>10:30 AM</td>
-            <td><span class="badge bg-success">Completed</span></td>
-          </tr>
-          <tr>
-            <td>Jane Smith</td>
-            <td>Created new order</td>
-            <td>09:45 AM</td>
-            <td><span class="badge bg-warning">Pending</span></td>
-          </tr>
+          <tbody id="LogActivity">
           </tbody>
         </table>
       </div>
@@ -1058,6 +1049,7 @@
                     <div class="col-md-4 mb-3">
                       <div class="current-image-container border rounded p-2 text-center">
                         <img src="../img/1735387762942_nam-bao-ngu-xam-tuoi-ngon-01.jpg" id="currentProductImage" class="img-fluid rounded" alt="Current Product Image">
+
                         <div class="mt-2 small text-muted">Main Image</div>
                       </div>
                     </div>
@@ -1456,6 +1448,7 @@
 
 
 <script src="../js/admin.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
@@ -1696,7 +1689,7 @@
       formData.append('descriptions', JSON.stringify(descriptions));
 
       // Gửi dữ liệu lên server
-      fetch('http://localhost:8080/WebFinall/admin/addProduct', {
+      fetch('/WebFinall/admin/addProduct', {
         method: 'POST',
         body: formData
       })
@@ -2255,6 +2248,7 @@
   });
 </script>
 <script  src="${pageContext.request.contextPath}/js/admin.js"></script>
+
 
 <!-- Modal Quản lý User -->
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -2945,6 +2939,63 @@ document.querySelector('select.form-select').addEventListener('change', function
         }
     });
 });
+
+<script>
+$(document).ready(function() {
+    // Load logs when page loads
+    loadLogs();
+
+    // Refresh logs every 30 seconds
+    setInterval(loadLogs, 30000);
+});
+
+function loadLogs() {
+    $.ajax({
+        url: '/WebFinall/admin/getRecentActivities',
+        method: 'GET',
+        success: function(data) {
+            console.log("Received data:", data); // Debug log
+            const tbody = $('#LogActivity');
+            tbody.empty();
+
+            if (Array.isArray(data)) {
+                data.forEach(log => {
+                    const date = new Date(log.createdAt);
+                    const formattedDate = date.toLocaleString('vi-VN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+
+                    const row = `
+                        <tr>
+                            <td>${'$'}{log.username ? log.username : 'N/A'}</td>
+                            <td>${'$'}{log.details ? log.details : 'N/A'}</td>
+                            <td>${'$'}{formattedDate}</td>
+                            <td>
+                                <span class="badge ${'$'}{log.roleName === 'Admin' ? 'bg-danger' : 'bg-secondary'}">
+                                    ${'$'}{log.roleName ? log.roleName : 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            } else {
+                console.error("Data is not an array:", data);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading logs:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+        }
+    });
+}
+
 </script>
 </body>
 </html>

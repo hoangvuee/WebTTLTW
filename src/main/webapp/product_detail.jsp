@@ -912,18 +912,18 @@
             </li>
         </ul>
     <div class="tab-content mt-3">
+        <c:forEach var="item" items="${sessionScope.product_detail.items}" >
         <!-- Tab Mô Tả -->
         <div class="tab-pane fade show active" id="mo-ta">
             <div class="container mt-5" id="des0">
-                <h5 class="fw-bold" style="color: #B0501D;">Thông tin Nấm Đùi Gà Tươi</h5>
-                <p>Nấm Đùi Gà Tươi là nấm ăn thông dụng với vị ngon ngọt bùi, phần thịt nấm săn chắc nên ăn rất thú vị. Loại nấm này có thể dùng trong cả món chay và món mặn, cách chế biến cũng dễ dàng, các món thường thấy như nấm nướng mỡ hành/phô mai, thả lẩu, xào xả ớt, nấu canh,…
-                    Nấm Đùi Gà Tươi rất giàu dinh dưỡng cho cơ thể tiếp thu, từ đó giúp hỗ trợ hệ tiêu hóa đường ruột, giảm tiểu đường và huyết áp, kích thích vị giác hiệu quả.</p>
+                <h5 class="fw-bold" style="color: #B0501D;">Thông tin ${item.name}</h5>
+                <p>${item.description}</p>
 
                 <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td><strong>Giá nấm lẻ</strong></td>
-                        <td>165.000 VND/kg</td>
+                        <td> <fmt:formatNumber value="${item.maxPrice}" type="number" groupingUsed="true" /> VND/kg</td>
                     </tr>
                     <tr>
                         <td><strong>Xuất xứ</strong></td>
@@ -950,9 +950,9 @@
             </div>
             <div class="container mt-5" id="des1">
                 <!-- Trang 1 -->
-                <h2 class="text-center text-danger">Ưu điểm của Nấm Kim Châm Hàn Quốc Tươi</h2>
+                <h2 class="text-center text-danger">Ưu điểm của ${item.name}</h2>
                 <div class="text-center">
-                    <img src="image/1735387762935_nam-bao-ngu-xam-tuoi-06.jpg" class="img-fluid" alt="Nấm Kim Châm" width="40%">
+                    <img src="img/${item.image1}" class="img-fluid" alt="Nấm Kim Châm" width="40%">
                 </div>
                 <ul class="mt-4">
                     <li>Nấm Kim Châm Hàn Quốc tươi là loại nấm có khá nhiều vitamin, chất xơ, protid, lipid và các loại axit amin.</li>
@@ -966,9 +966,9 @@
 
             <div class="container mt-5" id="des2">
                 <!-- Trang 2 -->
-                <h2 class="text-center text-danger">Hàm lượng dinh dưỡng trong Nấm Kim Châm Hàn Quốc tươi</h2>
+                <h2 class="text-center text-danger">Hàm lượng dinh dưỡng trong ${item.name}</h2>
                 <div class="text-center">
-                    <img src="image/1735387762935_nam-bao-ngu-xam-tuoi-06.jpg" class="img-fluid" alt="Nấm Kim Châm"  width="40%">
+                    <img src="img/${item.image2}" class="img-fluid" alt="Nấm Kim Châm"  width="40%">
                 </div>
                 <ul class="mt-4">
                     <li>Chứa nhiều vitamin C, E, PP, và nhóm vitamin B (B1, B2, B6, B12...).</li>
@@ -977,8 +977,8 @@
                     <li>Chứa 16 loại axit amin, gồm 8 loại cơ thể không thể tự tổng hợp.</li>
                     <li>Có Flammutoxin giúp tăng cường hấp thụ chất.</li>
                 </ul>
-                <h3 class="mt-4 text-danger">Cách sử dụng Nấm Kim Châm Hàn Quốc</h3>
-                <h4 class="mt-3">Cách sơ chế nấm tươi</h4>
+                <h3 class="mt-4 text-danger">Cách sử dụng ${item.name}</h3>
+                <h4 class="mt-3">Cách sơ chế nấm</h4>
                 <ul>
                     <li>Dùng kéo/dao bén cắt nhẹ phần gốc nấm khoảng 2cm.</li>
                     <li>Rửa sơ với nước bằng cách bỏ vào thau nước rồi chà nhẹ.</li>
@@ -990,9 +990,9 @@
             </div>
             <div class="container mt-5" id="des3">
                 <!-- Trang 2 -->
-                <h2 class="text-danger">Cách chế biến Nấm Kim Châm Hàn Quốc Tươi</h2>
+                <h2 class="text-danger">Cách chế biến ${item.name}</h2>
                 <div class="text-center">
-                    <img src="image/1735387762935_nam-bao-ngu-xam-tuoi-06.jpg" class="img-fluid" alt="Nấm Kim Châm"  width="40%">
+                    <img src="img/${item.image3}" class="img-fluid" alt="Nấm Kim Châm"  width="40%">
                 </div>
                 <p>Có khá nhiều cách chế biến Nấm Kim Châm ngon để sử dụng rất đơn giản, như bạn có thể làm các món xào, canh, cháo hoặc kết hợp các món nướng với thịt… sẽ cực kỳ thơm ngon, chay mặn đều được.</p>
                 <h4 class="mt-3">Một số gợi ý bạn làm những món ngon như:</h4>
@@ -1003,16 +1003,16 @@
                     <li>Nấm trộn cay</li>
                     <li>Nấm sốt đậu</li>
                 </ul>
-                <h3 class="mt-4 text-danger">Tác dụng của Nấm Kim Châm Hàn Quốc Tươi</h3>
+                <h3 class="mt-4 text-danger">Tác dụng của ${item.name}</h3>
                 <ul>
                     <li>Điều hòa hệ miễn dịch và tăng cường sức đề kháng hiệu quả nhờ lượng Protein.</li>
                     <li>Cải thiện trí nhớ ở người lớn tuổi và tăng cường trí nhớ ở trẻ nhỏ nhờ có nhiều Lysin và Kẽm.</li>
                     <li>Điều hòa huyết áp (giảm với người hay tăng huyết áp).</li>
                 </ul>
-                <h4 class="mt-3 text-danger">Cách bảo quản Nấm Kim Châm Hàn Quốc Tươi</h4>
+                <h4 class="mt-3 text-danger">Cách bảo quản ${item.name}</h4>
                 <p>Khi bạn mua về, nếu đã cắt bịch ra rồi thì bạn nên dùng ngay trong ngày là ngon nhất. Nếu chưa dùng nấm ngay bạn nên để nguyên trong túi/khay và cho vào tủ lạnh ở ngăn mát hoặc tủ mát từ 3-5 độ C sẽ bảo quản được lên tới 15 ngày, tốt nhất bạn nên dùng trong 3-5 ngày đầu để đảm bảo độ tươi ngọt tự nhiên của nấm..</p>
                 <p>Khi lấy nấm ra để chế biến nhưng dùng không hết, nếu chưa ngâm nước bạn có thể cho phần nấm vào lại túi và bỏ lại vô tủ lạnh. Nếu đã ngâm/rửa nước bạn nên dùng hết cho chế biến để nấm không bị nhũn nấm. Còn khi đã chế biến mà ăn không hết, bạn có thể gói nấm vào giấy bạc và cho vào tủ lạnh, hôm sau hâm nóng lại dùng.</p>
-                <h4 class="mt-3 text-danger">Mua Nấm Kim Châm Hàn Quốc tươi ở đâu?</h4>
+                <h4 class="mt-3 text-danger">Mua Nấm ${item.name}?</h4>
                 <p>Bạn có thể đặt Nấm Kim Châm Hàn Quốc Tươi cùng nhiều loại nấm tươi khác qua các Kênh Bán Lẻ của Nấm Xanh. Bao gồm đặt ngay trên website này, đặt nhanh qua các kênh chat (ZaloOA, Zalo/Hotline 0868032463, Fanpage), đặt từ nền tảng TMĐT có giao Hỏa Tốc (Lazada, Shopee, TikiNGON, ShopeeFood, GrabMart) và TiktokShop..</p>
                 <p>Nếu bạn muốn ghé tận nơi, có thể tìm Store Nấm Xanh trên Google Maps nha. Do sản lượng nấm mỗi ngày Nấm Xanh xuất kho đến các đối tác hệ thống siêu thị, nhà hàng, chuỗi ẩm thực, nhà máy,… là rất lớn. Nên bạn có thể đặt trước, hoặc gọi trước khi đến để đảm bảo còn hàng loại nấm bạn cần.</p>
                 <h4 class="mt-3 text-danger">Mua hàng tại Nấm Xanh có an tâm?</h4>
@@ -1025,7 +1025,7 @@
             </div>
 
 
-
+            </c:forEach>
         </div>
 
         <!-- Tab Đánh Giá -->

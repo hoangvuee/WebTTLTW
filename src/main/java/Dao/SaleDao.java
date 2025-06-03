@@ -1,6 +1,5 @@
 package Dao;
 
-
 import DTO.PromotionDTO;
 import DTO.SaleDTO;
 import Models.Sale.Sale;
@@ -14,7 +13,6 @@ import java.util.Map;
 public class SaleDao {
     ConnDB dao = new ConnDB();
     public void insertSales(int variantId, Sale[] sales) throws SQLException {
-
 
         Connection conn = dao.getConn();
         String sql = "INSERT INTO sales (idVariant, salePercent, saleStartDate, saleEndDate) VALUES (?, ?, ?, ?)";
@@ -142,5 +140,4 @@ public class SaleDao {
         SaleDao saleDao = new SaleDao();
         System.out.println(saleDao.getSaleByIdVariant(String.valueOf(139)));
     }
-
 }

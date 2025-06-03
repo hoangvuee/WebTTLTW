@@ -4,12 +4,19 @@ import DTO.ProductDTO;
 import Dao.ConnDB;
 import Dao.ProductDao;
 import Models.ManageProduct.ListProductManage;
+import Models.ManageProduct.Product;
 import Models.Product.ListProduct;
 import Models.TopProductBuy.TopProduct;
+import Models.cart.Productt;
 import Models.cart.CartProduct;
+import Models.cart.Cart;
+import Models.inforTransaction.Transaction;
+import Models.inforTransaction.TransactionHistory;
 import Models.Products.Products;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +113,6 @@ public ListProduct getListProduct() throws SQLException {
         productDao.updateProductAndVariant(idProduct, weight, price, quantity, productDescription, idCategory, idSupplier, isActive);
 
     }
-
     public ProductDTO getProductByIDandWeight(String idProduct, float weight) {
         return productDao.getProductByIDandWeight(idProduct, weight);
     }
@@ -137,6 +143,7 @@ public ListProduct getListProduct() throws SQLException {
       s.getAllProductIds(list);
 
     }
+}
 
 
 

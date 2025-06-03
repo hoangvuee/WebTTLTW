@@ -26,6 +26,7 @@
         <servlet-name>SetupDataWeb</servlet-name>
         <url-pattern>/WebFinall/setupData</url-pattern>
     </servlet-mapping>
+
     <!-- Define welcome-file to redirect to setupData -->
     <welcome-file-list>
         <welcome-file>setupData</welcome-file>
