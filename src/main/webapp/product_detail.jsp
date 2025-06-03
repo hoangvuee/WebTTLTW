@@ -274,60 +274,71 @@
                     <div class="text-light fw-bold ms-3 pt-2" style="height:40px">ĐÁNH GIÁ & BÌNH LUẬN</div>
                 </div>
                 
-                <!-- Comment Form - Only show if user is logged in -->
+                <!-- Comment Form - Only show if user is logged in AND has purchased the product -->
                 <c:if test="${sessionScope.user != null}">
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Viết đánh giá của bạn</h5>
-                        </div>
-                        <div class="card-body">
-                            <c:if test="${not empty sessionScope.commentError}">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    ${sessionScope.commentError}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <c:choose>
+                        <c:when test="${sessionScope.hasPurchasedProduct == true}">
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Viết đánh giá của bạn</h5>
                                 </div>
-                                <% session.removeAttribute("commentError"); %>
-                            </c:if>
-                            <form action="add-comment" method="post">
-                                <input type="hidden" name="productId" value="${sessionScope.product_detail.items[0].id}">
-                                
-                                <div class="mb-3">
-                                    <label for="rating" class="form-label">Đánh giá</label>
-                                    <div class="rating-input">
-                                        <div class="d-flex">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="rating" id="rating1" value="1" required>
-                                                <label class="form-check-label" for="rating1">1 <i class="fa-solid fa-star text-warning"></i></label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
-                                                <label class="form-check-label" for="rating2">2 <i class="fa-solid fa-star text-warning"></i></label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
-                                                <label class="form-check-label" for="rating3">3 <i class="fa-solid fa-star text-warning"></i></label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
-                                                <label class="form-check-label" for="rating4">4 <i class="fa-solid fa-star text-warning"></i></label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="rating" id="rating5" value="5" checked>
-                                                <label class="form-check-label" for="rating5">5 <i class="fa-solid fa-star text-warning"></i></label>
+                                <div class="card-body">
+                                    <c:if test="${not empty sessionScope.commentError}">
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            ${sessionScope.commentError}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                        <% session.removeAttribute("commentError"); %>
+                                    </c:if>
+                                    <form action="add-comment" method="post">
+                                        <input type="hidden" name="productId" value="${sessionScope.product_detail.items[0].id}">
+                                        
+                                        <div class="mb-3">
+                                            <label for="rating" class="form-label">Đánh giá</label>
+                                            <div class="rating-input">
+                                                <div class="d-flex">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="rating" id="rating1" value="1" required>
+                                                        <label class="form-check-label" for="rating1">1 <i class="fa-solid fa-star text-warning"></i></label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
+                                                        <label class="form-check-label" for="rating2">2 <i class="fa-solid fa-star text-warning"></i></label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
+                                                        <label class="form-check-label" for="rating3">3 <i class="fa-solid fa-star text-warning"></i></label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
+                                                        <label class="form-check-label" for="rating4">4 <i class="fa-solid fa-star text-warning"></i></label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="rating" id="rating5" value="5" checked>
+                                                        <label class="form-check-label" for="rating5">5 <i class="fa-solid fa-star text-warning"></i></label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="content" class="form-label">Nội dung bình luận</label>
+                                            <textarea class="form-control" id="content" name="content" rows="3" required placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn text-white" style="background-color: #B0501D;">Gửi bình luận</button>
+                                    </form>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label for="content" class="form-label">Nội dung bình luận</label>
-                                    <textarea class="form-control" id="content" name="content" rows="3" required placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
-                                </div>
-                                
-                                <button type="submit" class="btn text-white" style="background-color: #B0501D;">Gửi bình luận</button>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- User is logged in but hasn't purchased the product -->
+                            <div class="alert alert-warning mb-4">
+                                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                                <strong>Lưu ý:</strong> Bạn chỉ có thể bình luận sau khi mua sản phẩm này.
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </c:if>
                 
                 <c:if test="${sessionScope.user == null}">
