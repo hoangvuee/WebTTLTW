@@ -319,12 +319,37 @@ public class OrderDao {
         }
     }
 
+    /**
+     * Check if a user has purchased a specific product
+     * @param userId The ID of the user
+     * @param productId The ID of the product
+     * @return true if the user has purchased the product, false otherwise
+     */
+    public boolean hasUserPurchasedProduct(int userId, int productId) {
+        String sql = "SELECT COUNT(*) AS count FROM orders o " +
+                     "JOIN order_details od ON o.id = od.idOrder " +
+                     "WHERE o.idUser = ? AND od.idProduct = ? AND o.isPaid = 1";
+        
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            stmt.setInt(2, productId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count") > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
     public static void main(String[] args) throws SQLException {
         OrderDao s = new OrderDao();
         s.getAllOrders();
     }
 }
-
-
-
-
