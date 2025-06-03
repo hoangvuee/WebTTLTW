@@ -1,7 +1,9 @@
 package Controller;
 
 import Dao.CommentDao;
+import Dao.OrderDao;
 import Models.Comment.Comments;
+import Models.ListUser.User;
 import Models.Products.Products;
 import Services.ServiceProduct;
 import jakarta.servlet.ServletException;
@@ -21,6 +23,7 @@ public class ProductDetail extends HttpServlet {
     Products pro = new Products();
     ServiceProduct serviceProduct = new ServiceProduct();
     CommentDao commentDao = new CommentDao();
+    OrderDao orderDao = new OrderDao();
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +37,15 @@ public class ProductDetail extends HttpServlet {
                 Comments comments = commentDao.getCommentsByProductId(productId);
                 HttpSession session = req.getSession(true);
                 session.setAttribute("comments", comments);
+                
+                // Check if user has purchased this product
+                User currentUser = (User) session.getAttribute("user");
+                if (currentUser != null) {
+                    boolean hasPurchased = orderDao.hasUserPurchasedProduct(currentUser.getId(), productId);
+                    session.setAttribute("hasPurchasedProduct", hasPurchased);
+                } else {
+                    session.setAttribute("hasPurchasedProduct", false);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
