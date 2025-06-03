@@ -267,19 +267,133 @@
     <div class="row">
         <div class="border border-1 mt-3"></div>
     </div>
-    <div class="row mt-4 mb-5">
-        <div class="col d-flex justify-content-center">
-            <ul class="nav">
-                <li class="nav_item">
-                    <div class="">
-
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="border rounded mb-4" style="background-color: #B0501D">
+                    <div class="text-light fw-bold ms-3 pt-2" style="height:40px">ĐÁNH GIÁ & BÌNH LUẬN</div>
+                </div>
+                
+                <!-- Comment Form - Only show if user is logged in -->
+                <c:if test="${sessionScope.user != null}">
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Viết đánh giá của bạn</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="add-comment" method="post">
+                                <input type="hidden" name="productId" value="${sessionScope.product_detail.items[0].id}">
+                                
+                                <div class="mb-3">
+                                    <label for="rating" class="form-label">Đánh giá</label>
+                                    <div class="rating-input">
+                                        <div class="d-flex">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="rating" id="rating1" value="1" required>
+                                                <label class="form-check-label" for="rating1">1 <i class="fa-solid fa-star text-warning"></i></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
+                                                <label class="form-check-label" for="rating2">2 <i class="fa-solid fa-star text-warning"></i></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
+                                                <label class="form-check-label" for="rating3">3 <i class="fa-solid fa-star text-warning"></i></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
+                                                <label class="form-check-label" for="rating4">4 <i class="fa-solid fa-star text-warning"></i></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="rating" id="rating5" value="5" checked>
+                                                <label class="form-check-label" for="rating5">5 <i class="fa-solid fa-star text-warning"></i></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Nội dung bình luận</label>
+                                    <textarea class="form-control" id="content" name="content" rows="3" required placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn text-white" style="background-color: #B0501D;">Gửi bình luận</button>
+                            </form>
+                        </div>
                     </div>
-                </li>
-
-            </ul>
+                </c:if>
+                
+                <c:if test="${sessionScope.user == null}">
+                    <div class="alert alert-info mb-4">
+                        <i class="fa-solid fa-circle-info me-2"></i>
+                        Vui lòng <a href="Account/login.jsp" class="alert-link">đăng nhập</a> để viết bình luận.
+                    </div>
+                </c:if>
+                
+                <!-- Comments List -->
+                <div class="comments-section">
+                    <h5 class="mb-3">Tất cả bình luận (<span id="commentCount">${empty sessionScope.comments.items ? 0 : sessionScope.comments.items.size()}</span>)</h5>
+                    
+                    <c:if test="${empty sessionScope.comments.items}">
+                        <div class="text-center py-5 border rounded bg-light">
+                            <i class="fa-regular fa-comment-dots fa-3x mb-3 text-secondary"></i>
+                            <h5 class="text-secondary">Chưa có bình luận nào</h5>
+                            <p class="text-muted">Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                        </div>
+                    </c:if>
+                    
+                    <c:forEach var="comment" items="${sessionScope.comments.items}">
+                        <div class="card mb-3 comment-card">
+                            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #f8f9fa;">
+                                <div>
+                                    <i class="fa-solid fa-user-circle me-2"></i>
+                                    <span class="fw-bold">${comment.userName}</span>
+                                </div>
+                                <div class="rating">
+                                    <c:forEach begin="1" end="5" var="i">
+                                        <c:choose>
+                                            <c:when test="${i <= comment.rating}">
+                                                <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fa-regular fa-star" style="color: #FFD43B;"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <p class="card-text">${comment.content}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fa-regular fa-clock me-1"></i>
+                                        <fmt:formatDate value="${comment.createdAt}" pattern="dd/MM/yyyy HH:mm" />
+                                    </small>
+                                    
+                                    <c:if test="${sessionScope.user != null && (sessionScope.user.id == comment.userId || sessionScope.user.role == 'admin')}">
+                                        <a href="delete-comment?commentId=${comment.id}&productId=${comment.productId}" 
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');" 
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="fa-solid fa-trash me-1"></i>Xóa
+                                        </a>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                    
+                    <c:if test="${not empty sessionScope.comments.items && sessionScope.comments.items.size() > 5}">
+                        <div class="text-center mt-3">
+                            <a href="all-comments" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-list me-1"></i>Xem tất cả bình luận
+                            </a>
+                        </div>
+                    </c:if>
+                </div>
+            </div>
         </div>
     </div>
-
 </section>
 <section>
     <div class="row">
