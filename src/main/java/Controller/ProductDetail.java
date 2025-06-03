@@ -1,7 +1,10 @@
 package Controller;
 
+import Dao.CommentDao;
+import Dao.OrderDao;
+import Models.Comment.Comments;
 import Models.Feedback.Feedback;
-
+import Models.ListUser.User;
 import Models.Products.Products;
 import Services.ServiceFeedback;
 import Services.ServiceProduct;
@@ -22,8 +25,11 @@ import java.util.List;
 )
 public class ProductDetail extends HttpServlet {
     Products pro = new Products();
-   ServiceProduct serviceProduct = new ServiceProduct();
-   ServiceFeedback serviceFeedback = new ServiceFeedback();
+    ServiceProduct serviceProduct = new ServiceProduct();
+    CommentDao commentDao = new CommentDao();
+    OrderDao orderDao = new OrderDao();
+    ServiceFeedback serviceFeedback = new ServiceFeedback();
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
@@ -35,7 +41,7 @@ public class ProductDetail extends HttpServlet {
 
         try {
             // Lấy thông tin sản phẩm
-             pro = serviceProduct.getProductDetail(id);
+            pro = serviceProduct.getProductDetail(id);
             if (pro == null) {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy sản phẩm");
                 return;
@@ -48,11 +54,25 @@ public class ProductDetail extends HttpServlet {
             if (feedbacks == null) {
                 feedbacks = new ArrayList<>();
             }
+            
+            // Load comments for this product
+            int productId = Integer.parseInt(id);
+            Comments comments = commentDao.getCommentsByProductId(productId);
+            
+            // Check if user has purchased this product
+            HttpSession session = req.getSession(true);
+            User currentUser = (User) session.getAttribute("user");
+            if (currentUser != null) {
+                boolean hasPurchased = orderDao.hasUserPurchasedProduct(currentUser.getId(), productId);
+                session.setAttribute("hasPurchasedProduct", hasPurchased);
+            } else {
+                session.setAttribute("hasPurchasedProduct", false);
+            }
 
             // Lưu vào session
-            HttpSession session = req.getSession(true);
             session.setAttribute("product_detail", pro);
             session.setAttribute("feedbacks", feedbacks);
+            session.setAttribute("comments", comments);
 
             // Kiểm tra xem product có items không để tránh lỗi NullPointerException
             if (pro.getItems() != null && !pro.getItems().isEmpty()) {
@@ -67,5 +87,4 @@ public class ProductDetail extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi xử lý dữ liệu");
         }
     }
-
 }

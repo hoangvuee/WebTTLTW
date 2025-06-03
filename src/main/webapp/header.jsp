@@ -87,6 +87,9 @@
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="btn dropdown-toggle fw-bold" data-bs-toggle="dropdown">CHIA SẺ</button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/all-comments">Bình luận người dùng</a></li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link fw-bold text-dark" href="#">HỢP TÁC</a>

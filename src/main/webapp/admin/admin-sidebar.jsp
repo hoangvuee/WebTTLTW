@@ -19,6 +19,9 @@
         <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-user.jsp') ? 'active' : ''}" href="../admin/getAllUser">Quản lý người dùng</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link ${pageContext.request.requestURI.endsWith('manage_comments.jsp') ? 'active' : ''}" href="../all-comments">Quản lý bình luận</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link ${pageContext.request.requestURI.endsWith('manage-user.jsp') ? 'active' : ''}" href="categorie.jsp">Thêm Category</a>
       </li>
       <li class="nav-item">
@@ -31,4 +34,3 @@
     </ul>
   </div>
 </nav>
-
