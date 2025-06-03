@@ -51,7 +51,9 @@ public class ServiceUser {
 
         return userDao.registerUser(user);
     }
-
+    public boolean updateBasicUserInfo(User user) {
+        return userDao.updateBasicUserInfo(user);
+    }
 
     public User getUserByEmail(String email) {
 
@@ -183,24 +185,6 @@ public class ServiceUser {
     public static void main(String[] args) throws SQLException {
         ServiceUser s  = new ServiceUser();
         System.out.println(s.check("jane.doe@example.com","password456"));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
