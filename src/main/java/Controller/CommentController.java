@@ -1,6 +1,7 @@
 package Controller;
 
 import Dao.CommentDao;
+import Dao.OrderDao;
 import Dao.ProductDao;
 import Models.Comment.Comment;
 import Models.Comment.Comments;
@@ -23,12 +24,14 @@ import java.io.IOException;
 public class CommentController extends HttpServlet {
     private CommentDao commentDao;
     private ProductDao productDao;
+    private OrderDao orderDao;
 
     @Override
     public void init() throws ServletException {
         super.init();
         commentDao = new CommentDao();
         productDao = new ProductDao();
+        orderDao = new OrderDao();
         
         // Create comments table if it doesn't exist
         commentDao.createCommentsTableIfNotExists();
@@ -110,6 +113,16 @@ public class CommentController extends HttpServlet {
             int productId = Integer.parseInt(request.getParameter("productId"));
             String content = request.getParameter("content");
             int rating = Integer.parseInt(request.getParameter("rating"));
+            
+            // Check if user has purchased this product
+            boolean hasPurchased = orderDao.hasUserPurchasedProduct(currentUser.getId(), productId);
+            
+            if (!hasPurchased) {
+                // User hasn't purchased this product, set error message and redirect back
+                session.setAttribute("commentError", "Bạn chỉ có thể bình luận sau khi mua sản phẩm này.");
+                response.sendRedirect("product_detail?id=" + productId);
+                return;
+            }
             
             // Create a new comment
             Comment comment = new Comment();
