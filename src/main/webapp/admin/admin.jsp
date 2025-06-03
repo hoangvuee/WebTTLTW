@@ -43,7 +43,6 @@
     <form class="d-flex">
       <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search">
     </form>
-
     <ul class="navbar-nav align-items-center">
       <li class="nav-item position-relative">
         <a class="nav-link" href="#"><i class="fas fa-bell"></i> <span class="badge bg-danger rounded-pill">3</span></a>
@@ -51,16 +50,17 @@
       <li class="nav-item position-relative mx-3">
         <a class="nav-link" href="#"><i class="fas fa-envelope"></i> <span class="badge bg-primary rounded-pill">5</span></a>
       </li>
+      <c:set var="item" value="${sessionScope.userInfor}"/>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-          <img src="image/Logo-Zalo-Arc.png.webp" class="rounded-circle me-2" height="30" alt="User">
-          <span>John Doe</span>
+          <img src="../img/${item.image}" class="rounded-circle me-2" height="30" width="30" alt="User">
+          <span>${item.userName}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
           <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+          <li><a class="dropdown-item" href="${pageContext.request.contextPath}/index.jsp"><i class="fas fa-sign-out-alt me-2"></i>Back</a></li>
         </ul>
       </li>
     </ul>
@@ -1449,7 +1449,7 @@
       formData.append('descriptions', JSON.stringify(descriptions));
 
       // Gửi dữ liệu lên server
-      fetch('http://localhost:8080/WebFinall/admin/addProduct', {
+      fetch('/WebFinall/admin/addProduct', {
         method: 'POST',
         body: formData
       })
