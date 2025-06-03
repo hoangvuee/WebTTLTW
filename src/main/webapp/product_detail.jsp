@@ -281,6 +281,13 @@
                             <h5 class="mb-0">Viết đánh giá của bạn</h5>
                         </div>
                         <div class="card-body">
+                            <c:if test="${not empty sessionScope.commentError}">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    ${sessionScope.commentError}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <% session.removeAttribute("commentError"); %>
+                            </c:if>
                             <form action="add-comment" method="post">
                                 <input type="hidden" name="productId" value="${sessionScope.product_detail.items[0].id}">
                                 
