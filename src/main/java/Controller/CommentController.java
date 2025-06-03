@@ -115,7 +115,7 @@ public class CommentController extends HttpServlet {
             Comment comment = new Comment();
             comment.setProductId(productId);
             comment.setUserId(currentUser.getId());
-            comment.setUserName(currentUser.getFullName());
+            comment.setUserName(currentUser.getName());
             comment.setContent(content);
             comment.setRating(rating);
             
