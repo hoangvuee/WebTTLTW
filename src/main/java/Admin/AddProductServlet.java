@@ -49,6 +49,8 @@ public class AddProductServlet extends HttpServlet {
         String userAgent = request.getHeader("User-Agent");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("userInfor");
+        System.out.println("User object: " + user);
+        System.out.println("User idRole: " + (user != null ? user.getIdRole() : "null"));
         ServiceRole serviceRole = new ServiceRole();
         try {
             // 1. Lấy các tham số cơ bản

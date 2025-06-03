@@ -3,6 +3,8 @@ package Controller.Account;
 import Services.RedisOTPService;
 import Services.ServiceEmail;
 import Services.TokenService;
+import Services.LogService;
+import Utils.LogActions;
 import com.google.gson.JsonObject;
 import com.google.protobuf.ServiceException;
 import jakarta.servlet.ServletException;
@@ -35,6 +37,14 @@ public class ActiveAccount extends HttpServlet {
             if (email == null || email.isEmpty()) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Email không được để trống");
+                LogService.logUserActivity(
+                    email,
+                    "GUEST",
+                    LogActions.SYSTEM_ERROR,
+                    "Email activation attempt failed: Empty email",
+                    req.getRemoteAddr(),
+                    req.getHeader("User-Agent")
+                );
                 out.print(jsonResponse.toString());
                 return;
             }
@@ -67,13 +77,37 @@ public class ActiveAccount extends HttpServlet {
             if (emailSent) {
                 jsonResponse.addProperty("success", true);
                 jsonResponse.addProperty("message", "Email xác thực đã được gửi thành công!");
+                LogService.logUserActivity(
+                    email,
+                    "GUEST",
+                    LogActions.USER_REGISTER,
+                    "Account activation email sent successfully",
+                    req.getRemoteAddr(),
+                    req.getHeader("User-Agent")
+                );
             } else {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Gửi email thất bại, vui lòng thử lại");
+                LogService.logUserActivity(
+                    email,
+                    "GUEST",
+                    LogActions.SYSTEM_ERROR,
+                    "Failed to send account activation email",
+                    req.getRemoteAddr(),
+                    req.getHeader("User-Agent")
+                );
             }
         } catch (Exception e) {
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Lỗi hệ thống: " + e.getMessage());
+            LogService.logUserActivity(
+                email,
+                "GUEST",
+                LogActions.SYSTEM_ERROR,
+                "System error during account activation: " + e.getMessage(),
+                req.getRemoteAddr(),
+                req.getHeader("User-Agent")
+            );
         }
 
         out.print(jsonResponse.toString());
