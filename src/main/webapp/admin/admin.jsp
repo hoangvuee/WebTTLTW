@@ -2939,8 +2939,6 @@ document.querySelector('select.form-select').addEventListener('change', function
         }
     });
 });
-
-<script>
 $(document).ready(function() {
     // Load logs when page loads
     loadLogs();
