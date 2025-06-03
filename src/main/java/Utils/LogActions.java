@@ -48,4 +48,7 @@ public class LogActions {
     public static final String CATEGORY_ADD_FAILED = "CATEGORY_ADD_FAILED";
     public static final String SHIPPING_ADD = "SHIPPING_ADD";
     public static final String SHIPPING_ADD_FAILED = "SHIPPING_ADD_FAILED";
+
+    public static final String EDIT_PRODUCT = "EDIT_PRODUCT";
+    public static final String EDIT_PRODUCT_FAILED = "EDIT_PRODUCT_FAILED";
 }

@@ -1,6 +1,7 @@
 package Controller.Account;
 
 import Dao.UserDao;
+import Dao.ActivityLogDAO;
 import Models.User.User;
 import Sercurity.JwtUtil;
 import Services.ServiceRole;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.json.JSONObject;
+import log.ActivityLog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,8 +75,10 @@ public class GoogleLoginServlet extends HttpServlet {
         session.setAttribute("authToken", jwtToken);
         System.out.println(jwtToken);
 
-
-
+        // Log activity
+        ActivityLogDAO activityLogDAO = new ActivityLogDAO();
+        ActivityLog activityLog = new ActivityLog(user.getUserName(), serviceRole.getRoleNameById(user.getIdRole()), "GOOGLE_LOGIN_SUCCESS", "Successful Google login ", request.getRemoteAddr(), request.getHeader("User-Agent"));
+        activityLogDAO.log(activityLog);
 
         response.setContentType("application/json");
         response.getWriter().write("{\"status\": \"success\"}");

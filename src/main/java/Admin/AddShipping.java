@@ -2,6 +2,7 @@ package Admin;
 
 import Dao.ActivityLogDAO;
 import Models.User.User;
+import Services.LogService;
 import Services.ServiceRole;
 import Services.ServiceShipping;
 import Utils.LogActions;
@@ -19,7 +20,6 @@ import java.sql.SQLException;
 @WebServlet(value = "/admin/addShipping")
 public class AddShipping extends HttpServlet {
     ServiceShipping serviceShipping = new ServiceShipping();
-    private final ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     private final ServiceRole serviceRole = new ServiceRole();
 
 
@@ -36,7 +36,7 @@ public class AddShipping extends HttpServlet {
         try {
             User user = (User) session.getAttribute("userInfor");
             serviceShipping.addShipping(nameShipping, price);
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.SHIPPING_ADD,
@@ -53,7 +53,7 @@ public class AddShipping extends HttpServlet {
 
         } catch (SQLException e) {
             User user = (User) session.getAttribute("userInfor");
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.SHIPPING_ADD_FAILED,

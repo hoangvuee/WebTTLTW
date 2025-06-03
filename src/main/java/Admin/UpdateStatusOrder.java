@@ -1,7 +1,7 @@
 package Admin;
 
-import Dao.ActivityLogDAO;
 import Models.User.User;
+import Services.LogService;
 import Services.ServiceOrder;
 import Services.ServiceRole;
 import Utils.LogActions;
@@ -19,7 +19,6 @@ import java.io.IOException;
 )
 public class UpdateStatusOrder  extends HttpServlet {
     ServiceOrder serviceOrder = new ServiceOrder();
-    private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     ServiceRole serviceRole = new ServiceRole();
 
 
@@ -35,7 +34,7 @@ public class UpdateStatusOrder  extends HttpServlet {
             int idOrder = Integer.parseInt(req.getParameter("idOrder"));
             int isActive = Integer.parseInt(req.getParameter("status"));
             serviceOrder.updateOrderStatus(idOrder,isActive);
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.ORDER_STATUS_UPDATE,
@@ -45,7 +44,7 @@ public class UpdateStatusOrder  extends HttpServlet {
             );
             resp.sendRedirect("getOrderManage");
         } catch (Exception e) {
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.ORDER_STATUS_UPDATE_FAILED,

@@ -1,7 +1,7 @@
 package Admin;
 
-import Dao.ActivityLogDAO;
 import Models.User.User;
+import Services.LogService;
 import Services.ServiceAddCategories;
 import Services.ServiceRole;
 import Utils.LogActions;
@@ -19,7 +19,6 @@ import java.sql.SQLException;
 @WebServlet(value = "/admin/addCategories")
 public class AddCategorie extends HttpServlet {
     ServiceAddCategories serviceAddCategories = new ServiceAddCategories();
-    private final ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     private final ServiceRole serviceRole = new ServiceRole();
 
     @Override
@@ -41,7 +40,7 @@ public class AddCategorie extends HttpServlet {
 
             // Chuyển hướng về trang giao diện thêm category
             RequestDispatcher dispatcher = req.getRequestDispatcher("categorie.jsp");
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.CATEGORY_ADD,
@@ -53,7 +52,7 @@ public class AddCategorie extends HttpServlet {
             dispatcher.forward(req, resp);
 
         } catch (SQLException e) {
-            activityLogDAO.logUserActivity(
+            LogService.logUserActivity(
                     user.getUserName(),
                     serviceRole.getRoleNameById(user.getIdRole()),
                     LogActions.CATEGORY_ADD_FAILED,
