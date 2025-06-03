@@ -308,6 +308,26 @@ ConnDB dao = new ConnDB();
         }
         return false;
     }
+    public boolean updateBasicUserInfo(User user) {
+        ConnDB dao = new ConnDB();
+        String sql = "UPDATE users SET email = ?, userName = ?, idRole = ?, isActive = ? WHERE id = ?";
+
+        try (Connection conn = dao.getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getUserName());
+            stmt.setInt(3, user.getIdRole());
+            stmt.setBoolean(4, user.isActive());
+            stmt.setInt(5, user.getId());
+
+            int result = stmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
     public ListUser getUsers() {
@@ -600,6 +620,7 @@ ConnDB dao = new ConnDB();
         }
         return false; // Trả về false nếu có lỗi hoặc không cập nhật được
     }
+
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
        UserDao s = new UserDao();
