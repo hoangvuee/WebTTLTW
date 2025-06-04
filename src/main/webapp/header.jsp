@@ -129,7 +129,9 @@
                                 <a href="${pageContext.request.contextPath}/shoppingCart.jsp">
                                     <button type="button" class="btn cart-icon">
                                         <i class="fa-solid fa-cart-shopping"></i>
-                                        <span class="cart-badge" id="cart-badge" style="margin: 0">3</span>
+                                        <span class="cart-badge" id="cart-badge" style="margin: 0">
+                                            ${sessionScope.cr7 != null ? sessionScope.cr7.items.size() : 0}
+                                        </span>
                                     </button>
                                 </a>
                             </li>

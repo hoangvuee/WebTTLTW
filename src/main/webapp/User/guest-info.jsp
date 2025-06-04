@@ -67,15 +67,6 @@
                                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Thay đổi mật khẩu</button>
 
                                 </div>
-                                <form action="../getOTP" method="GET">
-                                    <div class="mb-3">
-                                        <label for="otp1" class="form-label">Mã OTP</label>
-
-                                    </div>
-
-                                    <!-- Button gửi mã OTP -->
-                                    <button type="submit" class="btn btn-secondary" id="sendOtpBtn">Gửi mã OTP</button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -168,7 +159,10 @@
                         <!-- Trường OTP -->
                         <div class="mb-3">
                             <label for="otp1" class="form-label">Mã OTP</label>
-                            <input type="text" class="form-control" id="otp1" name="otp" required style="width: 20%">
+                            <div class="input-group" style="width: 50%;">
+                                <input type="text" class="form-control" id="otp1" name="otp" required>
+                                <button type="button" class="btn btn-secondary" id="sendOtpBtn" style="margin-left: 5px;">Gửi mã OTP</button>
+                            </div>
                         </div>
 
 
@@ -188,5 +182,20 @@
 <!-- Script-->
 <script src="/js/guest-info.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('sendOtpBtn').onclick = function() {
+    fetch('../getOTP', { method: 'GET' })
+        .then(response => {
+            if (response.ok) {
+                alert('Mã OTP đã được gửi!');
+            } else {
+                alert('Gửi mã OTP thất bại!');
+            }
+        })
+        .catch(() => {
+            alert('Có lỗi xảy ra khi gửi mã OTP!');
+        });
+};
+</script>
 </body>
 </html>

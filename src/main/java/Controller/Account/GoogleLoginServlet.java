@@ -6,6 +6,7 @@ import Models.User.User;
 import Sercurity.JwtUtil;
 import Services.ServiceRole;
 import Services.ServiceUser;
+import Utils.LogActions;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -77,7 +78,7 @@ public class GoogleLoginServlet extends HttpServlet {
 
         // Log activity
         ActivityLogDAO activityLogDAO = new ActivityLogDAO();
-        ActivityLog activityLog = new ActivityLog(user.getUserName(), serviceRole.getRoleNameById(user.getIdRole()), "GOOGLE_LOGIN_SUCCESS", "Successful Google login ", request.getRemoteAddr(), request.getHeader("User-Agent"));
+        ActivityLog activityLog = new ActivityLog(user.getUserName(), serviceRole.getRoleNameById(user.getIdRole()), LogActions.GOOGLE_LOGIN_SUCCESS, "Successful Google login ", request.getRemoteAddr(), request.getHeader("User-Agent"));
         activityLogDAO.log(activityLog);
 
         response.setContentType("application/json");

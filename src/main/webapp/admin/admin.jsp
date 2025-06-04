@@ -2787,7 +2787,7 @@ function deleteOrder(orderId) {
     console.log(orderId)
 
     if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
-        fetch(`/WebFinall/orders/\${orderId}`, {
+        fetch(`${pageContext.request.contextPath}/orders/\${orderId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -2897,7 +2897,7 @@ function updateOrderStats(orders) {
 // Hàm fetch dữ liệu từ API
 async function fetchOrders() {
     try {
-        const response = await fetch('/WebFinall/orders');
+        const response = await fetch('${pageContext.request.contextPath}/orders');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -2939,8 +2939,6 @@ document.querySelector('select.form-select').addEventListener('change', function
         }
     });
 });
-
-<script>
 $(document).ready(function() {
     // Load logs when page loads
     loadLogs();
@@ -2951,7 +2949,7 @@ $(document).ready(function() {
 
 function loadLogs() {
     $.ajax({
-        url: '/WebFinall/admin/getRecentActivities',
+        url: '${pageContext.request.contextPath}/admin/getRecentActivities',
         method: 'GET',
         success: function(data) {
             console.log("Received data:", data); // Debug log

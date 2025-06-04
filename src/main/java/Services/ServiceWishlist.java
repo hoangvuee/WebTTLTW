@@ -18,4 +18,8 @@ public class ServiceWishlist {
       return   wishlistDao.selectWishlist(idUser);
 
     }
+
+    public boolean deleteWishlist(int idUser, int idProduct) throws SQLException {
+        return wishlistDao.deleteWishlist(idUser, idProduct);
+    }
 }
