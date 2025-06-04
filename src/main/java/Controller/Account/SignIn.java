@@ -99,7 +99,7 @@ public class SignIn extends HttpServlet {
                 User user = serviceUser.getUserByEmail(email);
                 if (user != null) {
                     LogService.logUserActivity(
-                            user.getEmail(),
+                            user.getUserName(),
                             nameRole,
                             LogActions.USER_LOGIN,
                             "Successful login",

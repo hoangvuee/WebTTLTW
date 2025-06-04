@@ -14,22 +14,25 @@ public class WishlistDao {
     ConnDB dao = new ConnDB();
 
     public boolean addWishlist(int idUser, int idProduct) throws SQLException {
-
         String sql = "INSERT INTO wishlists (idUser, idProduct, addDate) VALUES (?, ?, NOW())";
-
-             PreparedStatement stmt = dao.conn.prepareStatement(sql) ;
-
-            stmt.setInt(1, idUser);
-            stmt.setInt(2, idProduct);
-
-            int rowsAffected = stmt.executeUpdate();
-           if(rowsAffected > 0){
-               return true;
-           }
-           return false;
+        PreparedStatement stmt = dao.conn.prepareStatement(sql);
+        stmt.setInt(1, idUser);
+        stmt.setInt(2, idProduct);
+        int rowsAffected = stmt.executeUpdate();
+        return rowsAffected > 0;
     }
+
+    public boolean deleteWishlist(int idUser, int idProduct) throws SQLException {
+        String sql = "DELETE FROM wishlists WHERE idUser = ? AND idProduct = ?";
+        PreparedStatement stmt = dao.conn.prepareStatement(sql);
+        stmt.setInt(1, idUser);
+        stmt.setInt(2, idProduct);
+        int rowsAffected = stmt.executeUpdate();
+        return rowsAffected > 0;
+    }
+
     public WishlistProduct selectWishlist(int idUser) throws SQLException {
-     WishlistProduct wishlistProduct = new WishlistProduct();
+        WishlistProduct wishlistProduct = new WishlistProduct();
 
         String sql = "SELECT \n" +
                 "    w.idProduct, \n" +
@@ -54,7 +57,7 @@ public class WishlistDao {
         PreparedStatement stmt = dao.conn.prepareStatement(sql);
         stmt.setInt(1, idUser);
 
-Product pro;
+        Product pro;
         ResultSet rs = stmt.executeQuery();
         String image = null;
         while (rs.next()) {
@@ -71,9 +74,10 @@ Product pro;
             wishlistProduct.addProductWishlist(pro);
         }
 
-
         return wishlistProduct;
     }
+    
+    
 
     public static void main(String[] args) throws SQLException {
         WishlistDao s = new WishlistDao();

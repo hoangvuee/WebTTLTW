@@ -1350,6 +1350,43 @@
     document.addEventListener('DOMContentLoaded', () => {
         // Lấy tất cả các phần tử <li> trong danh sách
         const listItems = document.querySelectorAll('#menuList .list-group-item');
+        const lsSection = document.getElementById('ls');
+        const checkSection = document.getElementById('check');
+
+        // Xử lý xóa sản phẩm khỏi wishlist
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('fa-trash-can')) {
+                const row = e.target.closest('tr');
+                const productId = row.querySelector('td:nth-child(3)').textContent;
+                
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách yêu thích?')) {
+                    fetch('deleteWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'productId=' + productId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            row.remove();
+                            // Nếu không còn sản phẩm nào, hiển thị thông báo
+                            const tbody = document.querySelector('#check table tbody');
+                            if (tbody.children.length === 0) {
+                                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có sản phẩm yêu thích nào</td></tr>';
+                            }
+                        } else {
+                            alert('Có lỗi xảy ra khi xóa sản phẩm: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi xóa sản phẩm');
+                    });
+                }
+            }
+        });
 
         // Gắn sự kiện click cho từng phần tử
         listItems.forEach(item => {
@@ -1359,6 +1396,15 @@
 
                 // Thêm class active vào <li> được nhấp
                 item.classList.add('active');
+
+                // Kiểm tra nếu click vào "Sản phẩm yêu thích"
+                if (item.textContent.trim() === 'Sản phẩm yêu thích') {
+                    lsSection.style.display = 'none';
+                    checkSection.style.display = 'block';
+                } else if (item.textContent.trim() === 'Lịch sử giao dịch') {
+                    lsSection.style.display = 'block';
+                    checkSection.style.display = 'none';
+                }
             });
         });
     });
