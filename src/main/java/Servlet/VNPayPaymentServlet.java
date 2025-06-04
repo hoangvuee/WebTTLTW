@@ -7,6 +7,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Hex;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +22,7 @@ public class VNPayPaymentServlet extends HttpServlet {
     private static final String VNP_TMN_CODE = "4E30I0VE";
     private static final String VNP_HASH_SECRET = "LOWGPKSNF7LPKB37CHOPWAED2EIMW0X8";
     private static final String VNP_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    private static final String VNP_RETURN_URL = "http://localhost:8080/WebFinall/vnpay-return";
+    private static final String VNP_RETURN_URL = "http://vcebook.io.vn:8080/WebFinall/vnpay-return";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,13 +61,13 @@ public class VNPayPaymentServlet extends HttpServlet {
             String fieldValue = vnp_Params.get(fieldName);
             if (fieldValue != null && !fieldValue.isEmpty()) {
                 // Tạo chuỗi hash data
-                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                
+                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+
                 // Tạo chuỗi query
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()))
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
                      .append('=')
-                     .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                
+                     .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+
                 if (i < fieldNames.size() - 1) {
                     hashData.append('&');
                     query.append('&');
@@ -82,7 +86,7 @@ public class VNPayPaymentServlet extends HttpServlet {
         job.addProperty("code", "00");
         job.addProperty("message", "success");
         job.addProperty("data", paymentUrl);
-        
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(new Gson().toJson(job));
@@ -94,17 +98,13 @@ public class VNPayPaymentServlet extends HttpServlet {
 
     private String hmacSHA512(String key, String data) {
         try {
-            javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA512");
-            javax.crypto.spec.SecretKeySpec secretKeySpec = new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
-            mac.init(secretKeySpec);
-            byte[] hash = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
+            Mac sha512Hmac = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+            sha512Hmac.init(secretKey);
+            byte[] hashBytes = sha512Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            return Hex.encodeHexString(hashBytes);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while hashing", e);
         }
     }
 } 
