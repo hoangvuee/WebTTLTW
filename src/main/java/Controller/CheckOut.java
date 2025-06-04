@@ -34,6 +34,8 @@ public class CheckOut extends HttpServlet {
 
         HttpSession session = req.getSession();
       Cart cart = (Cart) session.getAttribute("cr7");
+
+
         if (cart == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\": \"Cart is empty\"}");
@@ -48,6 +50,8 @@ public class CheckOut extends HttpServlet {
         String district = req.getParameter("district_name");
         String district_id = req.getParameter("districtId");
         String ward_id = req.getParameter("toWardCode");
+        double priceTotal = Double.parseDouble(req.getParameter("finalAmount"));
+        System.out.println(priceTotal);
         System.out.println(district_id);
         System.out.println(ward_id);
         String service_id = req.getParameter("service_id");
@@ -142,7 +146,7 @@ public class CheckOut extends HttpServlet {
                 payment,
                 shippingfee,
                 idUser,
-                cart.getTotalPrice(),
+                priceTotal,
                 receiveAddressUser,
                 items,
                 city,

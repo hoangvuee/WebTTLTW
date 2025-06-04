@@ -1235,7 +1235,6 @@
 
   .selector-arrow-modern.rotate svg {
     transform: rotate(180deg);
-
   }
 
   .store-selection {
@@ -1266,7 +1265,6 @@
   .store-info p {
     margin-bottom: 8px;
     color: #555;
-
   }
 </style>
 
@@ -1407,7 +1405,6 @@
                         <label for="notes" class="form-label">Ghi Chú Đơn Hàng</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay địa điểm giao hàng"></textarea>
                       </div>
-
                       
                       <!-- Thêm phần chọn cửa hàng -->
                       <div class="mb-3">
@@ -1430,7 +1427,6 @@
                             <p id="storeAddress"></p>
                             <p id="storeHours"></p>
                             <p id="storePhone"></p>
-
                           </div>
                         </div>
                       </div>
@@ -1447,13 +1443,11 @@
                             <input type="hidden" id="selectedServiceId" name="selectedServiceId" value="">
                         </div>
 
-
                         <div class="shipping-discount">
                             <input type="text" id="shippingCoupon" placeholder="Nhập mã giảm giá vận chuyển">
                             <button type="button" id="applyShippingCoupon">Áp dụng</button>
                         </div>
                     </div>
-
 
                 </div>
 
@@ -1671,6 +1665,7 @@
                       </li>
 
                     </ul>
+                    <input type="hidden" id="finalAmount" name="finalAmount" value="">
                     <button class="checkout-btn">
                       <i class="fas fa-credit-card"></i> Xác nhận thanh toán
                     </button>
@@ -1956,7 +1951,6 @@
 
 
 
-
     // Load available GHN services
     async function loadGHNAvailableServices(toDistrictId) {
 
@@ -2133,11 +2127,15 @@
     function updateOrderSummary(shippingFee) {
         document.getElementById('shipping-fee').textContent = formatCurrency(shippingFee) + ' đ';
 
-
         // Calculate and update final total
         const cartTotal = ${sessionScope.cr7.totalPrice};
         const finalTotal = cartTotal + shippingFee;
+        
+        // Update display
         document.getElementById('final-total').textContent = formatCurrency(finalTotal) + ' đ';
+        
+        // Update hidden input value
+        document.getElementById('finalAmount').value = finalTotal;
     }
 
     // Apply shipping coupon
@@ -2150,7 +2148,6 @@
             alert('Vui lòng chọn phương thức vận chuyển trước');
         }
     });
-
 </script>
 <script>
   function toggleDiscountList() {
@@ -2180,6 +2177,9 @@
 
     // Cập nhật hiển thị tổng cộng
     totalEl.textContent = newTotal.toLocaleString('vi-VN') + ' đ';
+    document.getElementById('finalAmount').value = newTotal;
+    
+    console.log(totalEl + "opopopopop")
 
     // Đóng dropdown
     document.querySelector('.discount-dropdown-modern').classList.remove('show');
@@ -2289,6 +2289,8 @@
     });
   }
 </script>
+
+
 
 </body>
 
